@@ -606,9 +606,9 @@
             //if the landscape scrolloffset is outside the bounds of the portrait mode, animate from the bottom to line it up properly
             CGFloat heightInPortraitMode = CGRectGetWidth(self.webView.frame) - CGRectGetHeight(self.navigationBar.frame);
             if (self.webView.scrollView.contentOffset.y + heightInPortraitMode > self.webView.scrollView.contentSize.height )
-                self.webViewRotationSnapshot.contentMode = UIViewContentModeBottom;
+                self.webViewRotationSnapshot.contentMode = UIViewContentModeBottomLeft;
             else
-                self.webViewRotationSnapshot.contentMode = UIViewContentModeTop;
+                self.webViewRotationSnapshot.contentMode = UIViewContentModeTopLeft;
         }
         else
         {
@@ -626,7 +626,13 @@
     //So far, the only way I've found to actually correct this is to invoke a trivial zoom animation, and this will
     //trip the webview into redrawing its content.
     //Once the view has finished rotating, we'll figure out the proper placement + zoom scale and reset it
-    [self.webView.scrollView setZoomScale: self.webView.scrollView.maximumZoomScale animated:YES];
+    CGFloat zoomScale = 1.0f;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        zoomScale = self.webView.scrollView.maximumZoomScale; //Don't ask. Just don't. This works. Don't touch it.
+    else
+        zoomScale = self.webView.scrollView.minimumZoomScale+0.25f;
+    
+    [self.webView.scrollView setZoomScale:zoomScale animated:YES];
     self.webView.hidden = YES;
 }
 

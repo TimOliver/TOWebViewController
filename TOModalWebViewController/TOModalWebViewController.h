@@ -29,10 +29,4 @@
 /* Get/set the current URL being displayed */
 @property (nonatomic,strong) NSURL *url;
 
-/*  The navigation bar will move out of view when the user scrolls down.
-    It will reappear when the user scrolls up at all (iPhone screen-szie only) */
-@property (nonatomic,assign) BOOL fullScreenWebView;
-
-
-
 @end

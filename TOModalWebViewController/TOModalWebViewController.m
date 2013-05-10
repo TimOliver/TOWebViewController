@@ -33,7 +33,12 @@
 
 #pragma mark -
 #pragma mark Hidden Properties/Methods
-@interface TOModalWebViewController () <UIWebViewDelegate,UIScrollViewDelegate>
+@interface TOModalWebViewController () <UIWebViewDelegate,UIScrollViewDelegate> {
+    
+}
+
+/* Gradient layer added to the background view */
+@property (nonatomic,strong) CAGradientLayer *gradientLayer;
 
 /* Navigation bar shown along the top of the view */
 @property (nonatomic,strong) UINavigationBar *navigationBar;
@@ -41,17 +46,46 @@
 /* The web view where all the magic happens */
 @property (nonatomic,strong) UIWebView *webView;
 
+/* The loading bar, displayed when a page is being loaded */
+@property (nonatomic,strong) UIImageView *loadingImageView;
+
+/* A snapshot of the web view, shown when rotating */
+@property (nonatomic,strong) UIImageView *webViewRotationSnapshot;
+
+/* Buttons to be displayed on the left in the navigation bar*/
 @property (nonatomic,strong) UIButton *backButton;
 @property (nonatomic,strong) UIButton *forwardButton;
 @property (nonatomic,strong) UIButton *reloadStopButton;
 
+/* The reload icon and stop icon will share the same icon */
 @property (nonatomic,strong) UIImage *reloadIcon;
 @property (nonatomic,strong) UIImage *stopIcon;
 
+/* The dismissal button displayed on the right of the nav bar. */
 @property (nonatomic,strong) UIButton *doneButton;
 
+/* State information saved from before the initial rotation event */
+@property (nonatomic,assign) CGSize webViewContentSize;
+@property (nonatomic,assign) CGPoint webViewContentOffset;
+
+/* Methods to derive state information from the web view */
+- (UIView *)webViewContentView;             //pull out the actual UIView used to display the web content
+- (BOOL)webViewPageWidthIsDynamic;          //The page will rescale its own content if the web view frame is changed (ie DON'T play a zooming animation)
+- (UIColor *)webViewPageBackgroundColor;    //try and determine the background colour of the current page
+- (CGFloat)webViewActualZoomScale;          //since zoomScale is sometimes inaccurate, this derives the proper active zoom scale in relation to the window size
+
+/* Review the current state and update button graphics/positions */
 - (void)refreshButtonsState;
 
+/* Methods to contain all of the functionality needed to properly animate the UIWebView rotating */
+- (void)setUpWebViewForRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
+- (void)animateWebViewRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
+- (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation;
+
+/* Calcuate the necessary positions/dimensions to render+animate a snapshot of the web view*/
+- (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
+
+/* Event callbacks for button taps */
 - (void)backButtonTapped:(id)sender;
 - (void)forwardButtonTapped:(id)sender;
 - (void)reloadStopButtonTapped:(id)sender;
@@ -85,19 +119,23 @@
     view.opaque = YES;
     self.view = view;
     
+    //add a gradient to the background view
+    self.gradientLayer = [CAGradientLayer layer];
+    self.gradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.0f alpha:0.0f] CGColor],(id)[[UIColor colorWithWhite:0.0f alpha:0.5f] CGColor]];
+    self.gradientLayer.frame = self.view.bounds;
+    [self.view.layer addSublayer:self.gradientLayer];
+    
     //Create the web view
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame))];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, NAVIGATION_BAR_HEIGHT, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-NAVIGATION_BAR_HEIGHT)];
     self.webView.delegate = self;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.backgroundColor = [UIColor clearColor];
     self.webView.scalesPageToFit = YES;
-    self.webView.clipsToBounds = NO;
-    self.webView.scrollView.clipsToBounds = NO;
-    self.webView.scrollView.contentInset = UIEdgeInsetsMake(NAVIGATION_BAR_HEIGHT, 0, 0, 0);
-    self.webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(NAVIGATION_BAR_HEIGHT, 0, 0, 0);
     self.webView.scrollView.delegate = self;
+    self.webView.contentMode = UIViewContentModeRedraw;
+    self.webView.opaque = YES;
     [self.view addSubview:self.webView];
-    
+  
     //Create the navigation bar
     self.navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(self.view.frame),NAVIGATION_BAR_HEIGHT)];
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -112,7 +150,11 @@
                                                UITextAttributeTextColor:[UIColor colorWithWhite:0.3f alpha:1.0f],
                                                UITextAttributeTextShadowOffset:[NSValue valueWithCGSize:CGSizeMake(0.0f,1.0f)],
                                                UITextAttributeTextShadowColor:[UIColor colorWithWhite:1.0f alpha:0.4f]};
-    
+  
+    //Set up the loading image bar
+    UIImage *loadingImage = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewLoadingBar.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 2, 0, 45)];
+    self.loadingImageView = [[UIImageView alloc] initWithImage:loadingImage];
+  
     //set up the buttons for the navigation bar
     CGRect buttonFrame; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
     UIImage *buttonPressedImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewIconPressedBG.png"]];
@@ -144,7 +186,7 @@
 
     NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
     
-    //remove the bottom shadow from the webview
+    //remove the top and bottom shadows from the webview
     for (UIView *view in self.webView.scrollView.subviews)
     {
         if ([view isKindOfClass:[UIImageView class]] && CGRectGetWidth(view.frame) == CGRectGetWidth(self.view.frame))
@@ -204,82 +246,38 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
     [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
-#pragma mark -
-#pragma mark State Handling
-- (void)refreshButtonsState
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    //Toggle the stop/reload button
-    if (self.webView.isLoading == NO)
-        [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
-    else
-        [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
+    return YES;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{ 
+    //get the web view ready for rotation
+    [self setUpWebViewForRotationToOrientation:toInterfaceOrientation withDuration:duration];
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    //reset the gradient layer's frame to match the new bounds
+    self.gradientLayer.frame = self.view.bounds;
     
-    //update the state for the back button
-    if (self.webView.canGoBack)
-        [self.backButton setEnabled:YES];
-    else
-        [self.backButton setEnabled:NO];
-    
-    //update the state for the forward button
-    if (self.webView.canGoForward && self.forwardButton.hidden)
-    {
-        UIView *containerView = self.forwardButton.superview;
-        
-        self.forwardButton.alpha = 0.0f;
-        self.forwardButton.hidden = NO;
-        
-        [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
-            //make the forward button visible
-            self.forwardButton.alpha = 1.0f;
-            
-            //animate the container to accomodate
-            CGRect frame = containerView.frame;
-            frame.size.width = (NAVIGATION_BUTTON_WIDTH*3) + (NAVIGATION_BUTTON_SPACING*2);
-            containerView.frame = frame;
-            
-            //move the reload buttons
-            frame = self.reloadStopButton.frame;
-            frame.origin.x = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING*2);
-            self.reloadStopButton.frame = frame;
-        }];
-    }
-    
-    if (self.webView.canGoForward == NO && self.forwardButton.hidden == NO)
-    {
-        UIView *containerView = self.forwardButton.superview;
-        self.forwardButton.alpha = 1.0f;
-        
-        [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:
-         ^{
-            //make the forward button invisible
-            self.forwardButton.alpha = 0.0f;
-            
-            //animate the container to accomodate
-            CGRect frame = containerView.frame;
-            frame.size.width = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING);
-            containerView.frame = frame;
-            
-            //move the reload buttons
-            frame = self.reloadStopButton.frame;
-            frame.origin.x = (NAVIGATION_BUTTON_WIDTH) + (NAVIGATION_BUTTON_SPACING);
-            self.reloadStopButton.frame = frame;
-        }
-        completion:^(BOOL completion)
-        {
-            self.forwardButton.hidden = YES;
-        }];
-    }
+    //animate the web view snapshot into the proper place
+    [self animateWebViewRotationToOrientation:toInterfaceOrientation withDuration:duration];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self restoreWebViewFromRotationFromOrientation:fromInterfaceOrientation];
 }
 
 #pragma mark -
 #pragma mark WebView Delegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    
     return YES;
 }
 
@@ -294,14 +292,8 @@
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     [self refreshButtonsState];
     
-    //NSLog(@"%f",self.webView.scrollView.contentOffset.y);
-    
     //set the navigation bar title
     self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    
-    //reset the scroll view if it's going past the top
-    //if (self.webView.scrollView.contentOffset.y == -NAVIGATION_BAR_HEIGHT)
-    //self.webView.scrollView.contentOffset = CGPointZero;
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -312,11 +304,9 @@
 
 #pragma mark -
 #pragma mark WebView ScrollView Delegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView
 {
-    //bit of a hack, if the scrollview snaps to <= 1 (eg, the user didn't do it, and it didn't animate), lock it back to the proper origin
-    if (scrollView.contentOffset.y <= 1.0f + FLT_EPSILON && scrollView.dragging == NO && scrollView.decelerating == NO && [scrollView.layer animationForKey:@"bounds"] == nil)
-        scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x,-NAVIGATION_BAR_HEIGHT);
+    
 }
 
 #pragma mark -
@@ -348,6 +338,356 @@
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark -
+#pragma mark Button State Handling
+- (void)refreshButtonsState
+{
+  //Toggle the stop/reload button
+  if (self.webView.isLoading == NO)
+    [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+  else
+    [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
+  
+  //update the state for the back button
+  if (self.webView.canGoBack)
+    [self.backButton setEnabled:YES];
+  else
+    [self.backButton setEnabled:NO];
+  
+  //update the state for the forward button
+  if (self.webView.canGoForward && self.forwardButton.hidden)
+  {
+    UIView *containerView = self.forwardButton.superview;
+    
+    self.forwardButton.alpha = 0.0f;
+    self.forwardButton.hidden = NO;
+    
+    [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
+      //make the forward button visible
+      self.forwardButton.alpha = 1.0f;
+      
+      //animate the container to accomodate
+      CGRect frame = containerView.frame;
+      frame.size.width = (NAVIGATION_BUTTON_WIDTH*3) + (NAVIGATION_BUTTON_SPACING*2);
+      containerView.frame = frame;
+      
+      //move the reload buttons
+      frame = self.reloadStopButton.frame;
+      frame.origin.x = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING*2);
+      self.reloadStopButton.frame = frame;
+    }];
+  }
+  
+  if (self.webView.canGoForward == NO && self.forwardButton.hidden == NO)
+  {
+    UIView *containerView = self.forwardButton.superview;
+    self.forwardButton.alpha = 1.0f;
+    
+    [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:
+     ^{
+       //make the forward button invisible
+       self.forwardButton.alpha = 0.0f;
+       
+       //animate the container to accomodate
+       CGRect frame = containerView.frame;
+       frame.size.width = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING);
+       containerView.frame = frame;
+       
+       //move the reload buttons
+       frame = self.reloadStopButton.frame;
+       frame.origin.x = (NAVIGATION_BUTTON_WIDTH) + (NAVIGATION_BUTTON_SPACING);
+       self.reloadStopButton.frame = frame;
+     }
+    completion:^(BOOL completion)
+     {
+       self.forwardButton.hidden = YES;
+     }];
+  }
+}
 
+#pragma mark -
+#pragma mark UIWebView Attrbutes
+- (UIView *)webViewContentView
+{
+    //loop through the views inside the webview, and pull out the one that renders HTML content
+    for (UIView *view in self.webView.scrollView.subviews)
+    {
+        if ([NSStringFromClass([view class]) rangeOfString:@"WebBrowser"].location != NSNotFound)
+            return view;
+    }
+    
+    return nil;
+}
+
+- (CGFloat)webViewActualZoomScale
+{
+    UIView *contentView = [self webViewContentView];
+    return CGRectGetWidth(contentView.frame) / CGRectGetWidth(self.webView.frame);
+}
+
+- (BOOL)webViewPageWidthIsDynamic
+{
+    //A bit of a crazy JavaScript that scans the HTML for a <meta name="viewport"> tag and dumps its contents
+    NSString *metaDataQuery =   @"(function() {"
+                                    @"var metaTags = document.getElementsByTagName('meta');"
+                                    @"for (i=0; i<metaTags.length; i++) {"
+                                        @"if (metaTags[i].name=='viewport') {"
+                                            @"return metaTags[i].getAttribute('content');"
+                                        @"}"
+                                    @"}"
+                                @"})()";
+    
+    NSString *pageViewPortContent = [self.webView stringByEvaluatingJavaScriptFromString:metaDataQuery];
+    if ([pageViewPortContent length] == 0)
+        return NO;
+    
+    //remove all white space and make sure it's all lower case
+    pageViewPortContent = [[pageViewPortContent stringByReplacingOccurrencesOfString:@" " withString:@""] lowercaseString];
+    
+    //check if the max page zoom is locked at 1
+    if ([pageViewPortContent rangeOfString:@"maximum-scale=1"].location != NSNotFound)
+        return YES;
+    
+    //check if zooming is intentionally disabled
+    if ([pageViewPortContent rangeOfString:@"user-scalable=no"].location != NSNotFound)
+        return YES;
+    
+    //check if width is set to align to the width of the device
+    if ([pageViewPortContent rangeOfString:@"width=device-width"].location != NSNotFound)
+        return YES;
+    
+    //check if initial scale is being forced (Apple seem to blanket apply this in Safari)
+    if ([pageViewPortContent rangeOfString:@"initial-scale=1"].location != NSNotFound)
+        return YES;
+    
+    return NO;
+}
+
+- (UIColor *)webViewPageBackgroundColor
+{
+    //Pull the current background colour from the web view
+    NSString *rgbString = [self.webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body,null).getPropertyValue('background-color');"];
+    
+    //if it wasn't found, or if it isn't a proper rgb value, just return white as the default
+    if ([rgbString length] == 0 || [rgbString rangeOfString:@"rgb"].location == NSNotFound)
+        return [UIColor whiteColor];
+    
+    //Assuming now the input is either 'rgb(255, 0, 0)' or 'rgba(255, 0, 0, 255)'
+    
+    //remove the 'rgba' componenet
+    rgbString = [rgbString stringByReplacingOccurrencesOfString:@"rgba" withString:@""];
+    //conversely, remove the 'rgb' component
+    rgbString = [rgbString stringByReplacingOccurrencesOfString:@"rgb" withString:@""];
+    //remove the brackets
+    rgbString = [rgbString stringByReplacingOccurrencesOfString:@"(" withString:@""];
+    rgbString = [rgbString stringByReplacingOccurrencesOfString:@")" withString:@""];
+    //remove all spaces
+    rgbString = [rgbString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    //we should now have something like '0,0,0'. Split it up via the commas
+    NSArray *componenets = [rgbString componentsSeparatedByString:@","];
+    
+    //Final output componenets
+    CGFloat red, green, blue, alpha = 1.0f;
+    
+    //if the alpha value is 0, this indicates the RGB value wasn't actually set in the page, so just return white
+    if ([componenets count] < 3 || ([componenets count] >= 4 && [[componenets objectAtIndex:3] integerValue] == 0))
+        return [UIColor whiteColor];
+    
+    red     = (CGFloat)[[componenets objectAtIndex:0] integerValue] / 255.0f;
+    green   = (CGFloat)[[componenets objectAtIndex:1] integerValue] / 255.0f;
+    blue    = (CGFloat)[[componenets objectAtIndex:2] integerValue] / 255.0f;
+    
+    if ([componenets count] >= 4)
+        alpha = (CGFloat)[[componenets objectAtIndex:3] integerValue] / 255.0f;
+    
+    return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
+#pragma mark -
+#pragma mark UIWebView Interface Rotation Handler
+- (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    CGRect  rect          = CGRectZero;
+    CGPoint contentOffset = self.webView.scrollView.contentOffset;
+    CGSize  contentSize   = self.webView.scrollView.contentSize;
+    CGSize  webViewSize   = self.webView.bounds.size;
+    CGFloat heightInPortraitMode = webViewSize.width - CGRectGetHeight(self.navigationBar.frame);
+    
+    //we're in portrait now, target orientation is landscape
+    //(So since we're zooming in, we don't need to worry about content outside the visible boundaries)
+    if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation))
+    {
+        //save the current scroll offset and size of the web view
+        rect.origin = contentOffset;
+        rect.size = webViewSize;
+    }
+    else //rotating from landscape to portrait. We need to make sure we capture content outside the visible region and pan it back in
+    {
+        if ([self webViewPageWidthIsDynamic])
+        {
+            //set the content offset for the view to be rendered
+            rect.origin = contentOffset;
+            if (contentOffset.y + heightInPortraitMode > contentSize.height )
+                rect.origin.y = contentSize.height - heightInPortraitMode;
+          
+            rect.size.width = webViewSize.width;
+            rect.size.height = heightInPortraitMode; //make it as tall as it is wide
+        }
+        else
+        {
+            //set the scroll offset
+            rect.origin = contentOffset;
+            
+            //The height of the region we're animating to, in the same space as the current content
+            CGFloat scaledHeight = heightInPortraitMode * (webViewSize.width / webViewSize.height);
+            rect.origin.y = (contentOffset.y+(webViewSize.height*0.5f)) - (scaledHeight*0.5f);
+            if (rect.origin.y < 0.0f)
+                rect.origin.y = 0.0f;
+            
+            rect.size.width = webViewSize.width;
+            rect.size.height = scaledHeight;
+        }
+    }
+  
+    return rect;
+}
+
+/* Called outside of the animation block. All of the views are currently in their 'before' state. */
+- (void)setUpWebViewForRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration
+{
+    //if there's already a snapshot in place (shouldn't be possible), just in case, remove it
+    if (self.webViewRotationSnapshot)
+    {
+        [self.webViewRotationSnapshot removeFromSuperview];
+        self.webViewRotationSnapshot = nil;
+    }
+    
+    UIView *webContentView      = [self webViewContentView];
+    UIColor *backgroundColor    = [self webViewPageBackgroundColor];
+    CGRect renderBounds         = [self rectForVisibleRegionOfWebViewAnimatingToOrientation:toOrientation];
+    
+    //generate a snapshot of the webview that we can animate more smoothly
+    UIGraphicsBeginImageContextWithOptions(renderBounds.size, YES, 0.0f);
+    {
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        //fill the who canvas with the web page's background colour (otherwise default colour is black)
+        CGContextSetFillColorWithColor(context, [backgroundColor CGColor]);
+        CGContextFillRect(context, CGRectMake(0,0,CGRectGetWidth(renderBounds),CGRectGetHeight(renderBounds)));
+        //offset the scroll view by the necessary amount
+        CGContextTranslateCTM(context, -renderBounds.origin.x, -renderBounds.origin.y);
+        //render the webview to the context
+        [webContentView.layer renderInContext:context];
+        //save the image to the image view
+        self.webViewRotationSnapshot = [[UIImageView alloc] initWithImage:UIGraphicsGetImageFromCurrentImageContext()];
+    }
+    UIGraphicsEndImageContext();
+    
+    //work out the starting frame for the snapshot based on page state and current orientation
+    CGRect frame = self.webView.frame;
+  
+    //If we're presently portrait, and animating to landscape
+    if (UIInterfaceOrientationIsLandscape(toOrientation))
+    {
+        //If the current web page zoom is locked (eg, it's a mobile site), set an appropriate background colour and don't zoom the image
+        if ([self webViewPageWidthIsDynamic])
+        {
+            self.webViewRotationSnapshot.backgroundColor = backgroundColor;
+            self.webViewRotationSnapshot.contentMode = UIViewContentModeTop;
+        }
+    }
+    else //if we're currently landscape and we're animating to portrait
+    {
+        //If the current web page zoom is locked like above, 
+        if ([self webViewPageWidthIsDynamic])
+        {
+            self.webViewRotationSnapshot.backgroundColor = backgroundColor;
+            
+            //if the landscape scrolloffset is outside the bounds of the portrait mode, animate from the bottom to line it up properly
+            CGFloat heightInPortraitMode = CGRectGetWidth(self.webView.frame) - CGRectGetHeight(self.navigationBar.frame);
+            if (self.webView.scrollView.contentOffset.y + heightInPortraitMode > self.webView.scrollView.contentSize.height )
+                self.webViewRotationSnapshot.contentMode = UIViewContentModeBottom;
+            else
+                self.webViewRotationSnapshot.contentMode = UIViewContentModeTop;
+        }
+        else
+        {
+            frame.size = self.webViewRotationSnapshot.image.size;
+        }
+    }
+
+    self.webViewRotationSnapshot.frame = frame;
+  
+    [self.view insertSubview:self.webViewRotationSnapshot belowSubview:self.navigationBar];
+    
+    //This is a dirty, dirty, DIRTY hack. When a UIWebView's frame changes (At least on iOS 6), in certain conditions,
+    //the content view will NOT resize with it. This can result in visual artifacts, such as black bars up the side,
+    //and weird touch feedback like not being able to properly zoom out until the user has first zoomed in and released the touch.
+    //So far, the only way I've found to actually correct this is to invoke a trivial zoom animation, and this will
+    //trip the webview into redrawing its content.
+    //Once the view has finished rotating, we'll figure out the proper placement + zoom scale and reset it
+    [self.webView.scrollView setZoomScale: self.webView.scrollView.maximumZoomScale animated:YES];
+    self.webView.hidden = YES;
+}
+
+/* Called within the animation block. All views will be set to their 'destination' state. */
+- (void)animateWebViewRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration
+{
+    //remove all animations presently applied to the web view
+    [self.webView.layer removeAllAnimations];
+    [self.webView.scrollView.layer removeAllAnimations];
+  
+    //animate the image view rotating to the proper dimensions
+    CGRect frame = self.webView.frame;
+    
+    if ([self webViewPageWidthIsDynamic] == NO)
+    {
+        frame.size.height = CGRectGetWidth(self.webView.frame) * (CGRectGetHeight(self.webViewRotationSnapshot.frame)/CGRectGetWidth(self.webViewRotationSnapshot.frame));
+    }
+    
+    self.webViewRotationSnapshot.frame = frame;
+}
+
+- (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation
+{
+    //Sweet merciful crap. This hack is even dirtier than the one above. ಠ_ಠ
+    //So we need to get the web view content to align to the new zoom scale. The transition NEEDS to be instant,
+    //but we can't use animated:NO since that won't commit the zoom properly and cause visual glitches (ie HAS to be animated:YES).
+    //So to solve this, we're accessing the core animation layer and temporarily increasing the animation speed of the scrollview.
+    //The zoom event is still occurring, but it's so fast, it seems instant
+    [self.webView.scrollView.layer removeAllAnimations];
+    self.webView.scrollView.layer.speed = 9999.0f;
+    [self.webView.scrollView setZoomScale:self.webView.scrollView.minimumZoomScale animated:YES];
+    
+    //Pull out the animation and attach a delegate so we can tell when it's finished, and jam it back in
+    CABasicAnimation *anim = [[self.webView.scrollView.layer animationForKey:@"bounds"] mutableCopy];
+    if (anim == nil)
+    {
+        [self animationDidStop:nil finished:YES];
+        return;
+    }
+    
+    [self.webView.scrollView.layer removeAnimationForKey:@"bounds"];
+    [anim setDelegate:self];
+    [self.webView.scrollView.layer addAnimation:anim forKey:@"bounds"];
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+    if(flag == NO)
+        return;
+    
+    //remove the rotation screenshot
+    [self.webViewRotationSnapshot removeFromSuperview];
+    self.webViewRotationSnapshot = nil;
+    
+    [self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    
+    //restore proper scroll speed
+    self.webView.scrollView.layer.speed = 1.0f;
+    
+    //when the rotation and animation is complete, FINALLY unhide the web view
+    self.webView.hidden = NO;
+}
 
 @end

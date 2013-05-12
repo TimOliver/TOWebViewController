@@ -3,9 +3,9 @@
 //
 //  Copyright 2013 Timothy Oliver. All rights reserved.
 //
-//  Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress
+//  Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress,
+//  also licensed under the MIT License. Re-implemented by Timothy Oliver.
 //  https://github.com/ninjinkun/NJKWebViewProgress
-//  (Integrated/Re-implemented by Timothy Oliver)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to

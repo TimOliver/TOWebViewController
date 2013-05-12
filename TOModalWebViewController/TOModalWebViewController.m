@@ -3,9 +3,9 @@
 //
 //  Copyright 2013 Timothy Oliver. All rights reserved.
 //
-//  Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress
+//  Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress,
+//  also licensed under the MIT License. Re-implemented by Timothy Oliver.
 //  https://github.com/ninjinkun/NJKWebViewProgress
-//  (Integrated/Re-implemented by Timothy Oliver)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
@@ -45,13 +45,14 @@
 /* Unique URL triggered when JavaScript reports page load is complete */
 NSString *kCompleteRPCURL = @"webviewprogress:///complete";
 
-static const float kInitialProgressValue = 0.1;
-static const float kBeforeInteractiveMaxProgressValue = 0.5;
-static const float kAfterInteractiveMaxProgressValue = 0.9;
+/* Default load values to defer to during the load process */
+static const float kInitialProgressValue                = 0.1f;
+static const float kBeforeInteractiveMaxProgressValue   = 0.5f;
+static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 #pragma mark -
 #pragma mark Hidden Properties/Methods
-@interface TOModalWebViewController () <UIWebViewDelegate,UIScrollViewDelegate> {
+@interface TOModalWebViewController () <UIWebViewDelegate> {
     
     //Save the state of the web view before we rotate so we can properly re-align it afterwards
     struct {
@@ -498,8 +499,6 @@ static const float kAfterInteractiveMaxProgressValue = 0.9;
                 }];
             }
         }];
-        
-        NSLog( @"%f", _loadingProgressState.loadingProgress);
     }
 }
 

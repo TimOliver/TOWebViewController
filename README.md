@@ -31,6 +31,8 @@ my requirements, not to mention would be properly reusable in other projects wou
 TOModalWebViewController is licensed under the MIT License. I don't personally require attribution, but make sure 
 to shower [ninjinkun](https://github.com/ninjinkun) with much love for making tracking the page load state possible.
 
+- - -
+
 Copyright 2013 Timothy Oliver. All rights reserved.
 
 Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress,

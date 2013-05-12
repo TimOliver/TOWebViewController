@@ -169,7 +169,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.backgroundColor = [UIColor clearColor];
     self.webView.scalesPageToFit = YES;
-    self.webView.scrollView.delegate = self;
     self.webView.contentMode = UIViewContentModeRedraw;
     self.webView.opaque = YES;
     [self.view addSubview:self.webView];

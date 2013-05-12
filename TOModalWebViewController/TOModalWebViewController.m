@@ -23,18 +23,31 @@
 #import "TOModalWebViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
+/* Navigation Bar Properties */
 #define NAVIGATION_BUTTON_WIDTH     31
 #define NAVIGATION_BUTTON_SIZE      CGSizeMake(31,31)
 #define NAVIGATION_BUTTON_SPACING   5
-
 #define NAVIGATION_BAR_HEIGHT       44.0f
-
 #define NAVIGATION_TOGGLE_ANIM_TIME 0.3
+
+/* The distance down from the top of the scrollview,
+    that must be scrolled before the rotation animation
+    aligns to the middle, and not along the top */
+#define CONTENT_OFFSET_THRESHOLD    20
 
 #pragma mark -
 #pragma mark Hidden Properties/Methods
 @interface TOModalWebViewController () <UIWebViewDelegate,UIScrollViewDelegate> {
     
+    //Save the state for the web view before we rotate so we can properly align it after
+    struct {
+        CGSize     frameSize;
+        CGSize     contentSize;
+        CGPoint    contentOffset;
+        CGFloat    zoomScale;
+        CGFloat    minimumZoomScale;
+        CGFloat    maximumZoomScale;
+    } _webViewState;
 }
 
 /* Gradient layer added to the background view */
@@ -64,17 +77,13 @@
 /* The dismissal button displayed on the right of the nav bar. */
 @property (nonatomic,strong) UIButton *doneButton;
 
-/* State information saved from before the initial rotation event */
-@property (nonatomic,assign) CGSize webViewContentSize;
-@property (nonatomic,assign) CGPoint webViewContentOffset;
-
 /* Methods to derive state information from the web view */
 - (UIView *)webViewContentView;             //pull out the actual UIView used to display the web content
 - (BOOL)webViewPageWidthIsDynamic;          //The page will rescale its own content if the web view frame is changed (ie DON'T play a zooming animation)
 - (UIColor *)webViewPageBackgroundColor;    //try and determine the background colour of the current page
 - (CGFloat)webViewActualZoomScale;          //since zoomScale is sometimes inaccurate, this derives the proper active zoom scale in relation to the window size
 
-/* Review the current state and update button graphics/positions */
+/* Review the current state of the web view and update the UI controls in the nav bar to match it */
 - (void)refreshButtonsState;
 
 /* Methods to contain all of the functionality needed to properly animate the UIWebView rotating */
@@ -82,7 +91,7 @@
 - (void)animateWebViewRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
 - (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation;
 
-/* Calcuate the necessary positions/dimensions to render+animate a snapshot of the web view*/
+/* Calcuate the necessary positions/dimensions to render a snapshot of the web view for animation */
 - (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 
 /* Event callbacks for button taps */
@@ -300,13 +309,6 @@
 {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     [self refreshButtonsState];
-}
-
-#pragma mark -
-#pragma mark WebView ScrollView Delegate
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView
-{
-    
 }
 
 #pragma mark -
@@ -541,9 +543,16 @@
             
             //The height of the region we're animating to, in the same space as the current content
             CGFloat scaledHeight = heightInPortraitMode * (webViewSize.width / webViewSize.height);
+            
+            //assume we're animating outwards with the visible region being the center.
+            //so make sure to capture everything above and below it
             rect.origin.y = (contentOffset.y+(webViewSize.height*0.5f)) - (scaledHeight*0.5f);
-            if (rect.origin.y < 0.0f)
+            
+            //if this takes us past the visible region, clamp it
+            if (rect.origin.y < 0.0f) 
                 rect.origin.y = 0.0f;
+            else if (rect.origin.y + scaledHeight > contentSize.height)
+                rect.origin.y = contentSize.height - scaledHeight;
             
             rect.size.width = webViewSize.width;
             rect.size.height = scaledHeight;
@@ -563,12 +572,21 @@
         self.webViewRotationSnapshot = nil;
     }
     
+    //Save the current state so we can use it to properly translate after the rotation is complete
+    _webViewState.frameSize         = self.webView.frame.size;
+    _webViewState.contentSize       = self.webView.scrollView.contentSize;
+    _webViewState.zoomScale         = self.webView.scrollView.zoomScale;
+    _webViewState.contentOffset     = self.webView.scrollView.contentOffset;
+    _webViewState.minimumZoomScale  = self.webView.scrollView.minimumZoomScale;
+    _webViewState.maximumZoomScale  = self.webView.scrollView.maximumZoomScale;
+    
     UIView *webContentView      = [self webViewContentView];
     UIColor *backgroundColor    = [self webViewPageBackgroundColor];
     CGRect renderBounds         = [self rectForVisibleRegionOfWebViewAnimatingToOrientation:toOrientation];
     
     //generate a snapshot of the webview that we can animate more smoothly
-    UIGraphicsBeginImageContextWithOptions(renderBounds.size, YES, 0.0f);
+    //Don't enable Retina on iPads since the 3rd gen iPad can't handle it very well 
+    UIGraphicsBeginImageContextWithOptions(renderBounds.size, YES, (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) ? 1.0f : 0.0f);
     {
         CGContextRef context = UIGraphicsGetCurrentContext();
         //fill the who canvas with the web page's background colour (otherwise default colour is black)
@@ -612,7 +630,10 @@
         }
         else
         {
-            frame.size = self.webViewRotationSnapshot.image.size;
+            frame.size  = self.webViewRotationSnapshot.image.size;
+            //position the webview in the center
+            if( _webViewState.contentOffset.y > CONTENT_OFFSET_THRESHOLD )
+                frame.origin.y  = CGRectGetMinY(self.webView.frame) + ((CGRectGetHeight(self.webView.frame)*0.5) - CGRectGetHeight(frame)*0.5);
         }
     }
 
@@ -626,12 +647,8 @@
     //So far, the only way I've found to actually correct this is to invoke a trivial zoom animation, and this will
     //trip the webview into redrawing its content.
     //Once the view has finished rotating, we'll figure out the proper placement + zoom scale and reset it
-    CGFloat zoomScale = 1.0f;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        zoomScale = self.webView.scrollView.maximumZoomScale; //Don't ask. Just don't. This works. Don't touch it.
-    else
-        zoomScale = self.webView.scrollView.minimumZoomScale+0.25f;
-    
+    CGFloat zoomScale = (self.webView.scrollView.minimumZoomScale+self.webView.scrollView.maximumZoomScale) * 0.5f; //zoom into the mid point of the scale. Zooming into either extreme does nothing.
+    self.webView.scrollView.layer.speed = 9999.0f;
     [self.webView.scrollView setZoomScale:zoomScale animated:YES];
     self.webView.hidden = YES;
 }
@@ -646,9 +663,16 @@
     //animate the image view rotating to the proper dimensions
     CGRect frame = self.webView.frame;
     
+    //We only need to scale/translate the image view if the web page has a static width
     if ([self webViewPageWidthIsDynamic] == NO)
     {
         frame.size.height = CGRectGetWidth(self.webView.frame) * (CGRectGetHeight(self.webViewRotationSnapshot.frame)/CGRectGetWidth(self.webViewRotationSnapshot.frame));
+        
+        //If we're sufficiently scrolled down, animate towards the center of the view, not the top
+        if (_webViewState.contentOffset.y > CONTENT_OFFSET_THRESHOLD)
+        {
+            frame.origin.y = (CGRectGetHeight(self.webView.frame)*0.5f) - (CGRectGetHeight(frame)*0.5f);
+        }
     }
     
     self.webViewRotationSnapshot.frame = frame;
@@ -656,14 +680,25 @@
 
 - (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation
 {
+    
+    //Side Note: When a UIWebView has just had its bounds change, its minimumZoomScale and maximumZoomScale become completely (almost arbitrarily) different.
+    //But, it WILL rest back to minimumZoomScale = 1.0f, after the next time the user interacts with it.
+    //For resetting the state right now (as the user hasn't touched it yet), we must use the 'different' values, and translate the original state to them.
+    //---
     //Sweet merciful crap. This hack is even dirtier than the one above. ಠ_ಠ
     //So we need to get the web view content to align to the new zoom scale. The transition NEEDS to be instant,
     //but we can't use animated:NO since that won't commit the zoom properly and cause visual glitches (ie HAS to be animated:YES).
     //So to solve this, we're accessing the core animation layer and temporarily increasing the animation speed of the scrollview.
     //The zoom event is still occurring, but it's so fast, it seems instant
     [self.webView.scrollView.layer removeAllAnimations];
+    CGFloat translatedScale = ((_webViewState.zoomScale/_webViewState.minimumZoomScale) * self.webView.scrollView.minimumZoomScale);
+    
+    //if we ended up scrolling past the max zoom size, just extend it.
+    if (translatedScale > self.webView.scrollView.maximumZoomScale)
+        self.webView.scrollView.maximumZoomScale = translatedScale;
+    
     self.webView.scrollView.layer.speed = 9999.0f;
-    [self.webView.scrollView setZoomScale:self.webView.scrollView.minimumZoomScale animated:YES];
+    [self.webView.scrollView setZoomScale:translatedScale animated:YES];
     
     //Pull out the animation and attach a delegate so we can tell when it's finished, and jam it back in
     CABasicAnimation *anim = [[self.webView.scrollView.layer animationForKey:@"bounds"] mutableCopy];
@@ -683,17 +718,50 @@
     if(flag == NO)
         return;
     
-    //remove the rotation screenshot
-    [self.webViewRotationSnapshot removeFromSuperview];
-    self.webViewRotationSnapshot = nil;
+    //when the rotation and animation is complete, FINALLY unhide the web view
+    self.webView.hidden = NO;
     
-    [self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    CGSize contentSize = self.webView.scrollView.contentSize;
+    CGPoint translatedContentOffset = _webViewState.contentOffset;
+    
+    //if the page is a mobile site, just re-add the original content offset
+    if ([self webViewPageWidthIsDynamic])
+    {
+        //if the content offset expands beyond the new boundary of the view, reset it
+        translatedContentOffset.y = MIN(_webViewState.contentOffset.y, (contentSize.height - CGRectGetHeight(self.webView.frame)));
+        translatedContentOffset.y = MAX(_webViewState.contentOffset.y, self.webView.scrollView.contentInset.top);
+    }
+    else //else, determine the magnitude we zoomed in/out by and translate the scroll offset to compensate
+    {
+        CGFloat magnitude = contentSize.width / _webViewState.contentSize.width;
+        translatedContentOffset.x *= magnitude;
+        translatedContentOffset.y *= magnitude;
+        
+        //if we were sufficiently scrolled from the top, make sure to line up to the middle, not the top
+        if (_webViewState.contentOffset.y > CONTENT_OFFSET_THRESHOLD)
+        {
+            if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
+                translatedContentOffset.y += ((CGRectGetHeight(self.webViewRotationSnapshot.frame))*0.5f) - (CGRectGetHeight(self.webView.frame)*0.5f) + CGRectGetHeight(self.navigationBar.frame);
+            else
+                translatedContentOffset.y -= (CGRectGetHeight(self.webView.frame)*0.5f) - (((_webViewState.frameSize.height*magnitude)*0.5f) + CGRectGetHeight(self.navigationBar.frame));
+        }   
+            
+        //clamp it to the actual scroll region
+        translatedContentOffset.x = MAX(translatedContentOffset.x, self.webView.scrollView.contentInset.left);
+        translatedContentOffset.x = MIN(translatedContentOffset.x, contentSize.width - CGRectGetWidth(self.webView.frame));
+        
+        translatedContentOffset.y = MAX(translatedContentOffset.y, self.webView.scrollView.contentInset.top);
+        translatedContentOffset.y = MIN(translatedContentOffset.y, contentSize.height - CGRectGetHeight(self.webView.frame));
+    }
+    
+    [self.webView.scrollView setContentOffset:translatedContentOffset animated:NO];
     
     //restore proper scroll speed
     self.webView.scrollView.layer.speed = 1.0f;
     
-    //when the rotation and animation is complete, FINALLY unhide the web view
-    self.webView.hidden = NO;
+    //remove the rotation screenshot
+    [self.webViewRotationSnapshot removeFromSuperview];
+    self.webViewRotationSnapshot = nil;
 }
 
 @end

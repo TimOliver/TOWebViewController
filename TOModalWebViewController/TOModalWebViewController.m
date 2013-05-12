@@ -338,13 +338,23 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
+- (void)setLoadingBarTintColor:(UIColor *)loadingBarTintColor
+{
+    if (loadingBarTintColor == self.loadingBarTintColor)
+        return;
+    
+    _loadingBarTintColor = loadingBarTintColor;
+    
+    self.loadingBarView.backgroundColor = self.loadingBarTintColor;
+}
+
 #pragma mark -
 #pragma mark WebView Delegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     BOOL shouldStart = YES;
     
-    //TODO: Implement TOModalWebViewController
+    //TODO: Implement TOModalWebViewController Delegate callback
     
     //if the URL is the load completed notification from JavaScript
     if ([request.URL.absoluteString isEqualToString:kCompleteRPCURL])

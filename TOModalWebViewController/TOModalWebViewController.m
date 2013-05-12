@@ -631,9 +631,23 @@
         else
         {
             frame.size  = self.webViewRotationSnapshot.image.size;
-            //position the webview in the center
+        
             if( _webViewState.contentOffset.y > CONTENT_OFFSET_THRESHOLD )
-                frame.origin.y  = CGRectGetMinY(self.webView.frame) + ((CGRectGetHeight(self.webView.frame)*0.5) - CGRectGetHeight(frame)*0.5);
+            {
+                //Work out the size we're rotating to
+                CGFloat heightInPortraitMode = CGRectGetWidth(self.webView.frame) - CGRectGetHeight(self.navigationBar.frame);
+                CGFloat scaledHeight = heightInPortraitMode * (CGRectGetWidth(self.webView.frame) / CGRectGetHeight(self.webView.frame));
+                CGFloat topDelta = (scaledHeight*0.5f) - CGRectGetHeight(self.webView.frame)*0.5f;
+                
+                //adjust as needed to fit the top or bottom
+                if (_webViewState.contentOffset.y - topDelta < 0.0f)
+                    frame.origin.y = CGRectGetMinY(self.webView.frame) - _webViewState.contentOffset.y;
+                else if (_webViewState.contentOffset.y + CGRectGetHeight(self.webView.frame) + topDelta > _webViewState.contentSize.height)
+                    frame.origin.y = (CGRectGetMaxY(self.webView.frame) - CGRectGetHeight(frame)) + ((_webViewState.contentSize.height - CGRectGetHeight(self.webView.frame) - _webViewState.contentOffset.y));
+                else //position the webview in the center
+                    frame.origin.y = CGRectGetMinY(self.webView.frame) + ((CGRectGetHeight(self.webView.frame)*0.5) - CGRectGetHeight(frame)*0.5);
+                    
+            }
         }
     }
 
@@ -671,7 +685,18 @@
         //If we're sufficiently scrolled down, animate towards the center of the view, not the top
         if (_webViewState.contentOffset.y > CONTENT_OFFSET_THRESHOLD)
         {
-            frame.origin.y = (CGRectGetHeight(self.webView.frame)*0.5f) - (CGRectGetHeight(frame)*0.5f);
+            //Work out the offset we're rotating to
+            CGFloat heightInPortraitMode = _webViewState.frameSize.width - CGRectGetHeight(self.navigationBar.frame);
+            CGFloat scaledHeight = heightInPortraitMode * (_webViewState.frameSize.width / _webViewState.frameSize.height);
+            CGFloat topDelta = (scaledHeight*0.5f) - _webViewState.frameSize.height*0.5f;
+            
+            //adjust as needed to fit the top or bottom
+            if (_webViewState.contentOffset.y - topDelta < 0.0f)
+                frame.origin.y = CGRectGetMinY(self.webView.frame);
+            else if (_webViewState.contentOffset.y + CGRectGetHeight(self.webView.frame) + topDelta > _webViewState.contentSize.height)
+                frame.origin.y = CGRectGetMaxY(self.webView.frame) - CGRectGetHeight(frame);
+            else //position the webview in the center
+                frame.origin.y = (CGRectGetHeight(self.webView.frame)*0.5f) - (CGRectGetHeight(frame)*0.5f);
         }
     }
     

@@ -3,6 +3,10 @@
 //
 //  Copyright 2013 Timothy Oliver. All rights reserved.
 //
+//  Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress
+//  https://github.com/ninjinkun/NJKWebViewProgress
+//  (Integrated/Re-implemented by Timothy Oliver)
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
 //  deal in the Software without restriction, including without limitation the
@@ -24,22 +28,32 @@
 #import <QuartzCore/QuartzCore.h>
 
 /* Navigation Bar Properties */
-#define NAVIGATION_BUTTON_WIDTH     31
-#define NAVIGATION_BUTTON_SIZE      CGSizeMake(31,31)
-#define NAVIGATION_BUTTON_SPACING   5
-#define NAVIGATION_BAR_HEIGHT       44.0f
-#define NAVIGATION_TOGGLE_ANIM_TIME 0.3
+#define NAVIGATION_BUTTON_WIDTH         31
+#define NAVIGATION_BUTTON_SIZE          CGSizeMake(31,31)
+#define NAVIGATION_BUTTON_SPACING       5
+#define NAVIGATION_BAR_HEIGHT           44.0f
+#define NAVIGATION_TOGGLE_ANIM_TIME     0.3
 
 /* The distance down from the top of the scrollview,
     that must be scrolled before the rotation animation
     aligns to the middle, and not along the top */
 #define CONTENT_OFFSET_THRESHOLD    20
 
+/* Hieght of the loading progress bar view */
+#define LOADING_BAR_HEIGHT          2
+
+/* Unique URL triggered when JavaScript reports page load is complete */
+NSString *kCompleteRPCURL = @"webviewprogress:///complete";
+
+static const float kInitialProgressValue = 0.1;
+static const float kBeforeInteractiveMaxProgressValue = 0.5;
+static const float kAfterInteractiveMaxProgressValue = 0.9;
+
 #pragma mark -
 #pragma mark Hidden Properties/Methods
 @interface TOModalWebViewController () <UIWebViewDelegate,UIScrollViewDelegate> {
     
-    //Save the state for the web view before we rotate so we can properly align it after
+    //Save the state of the web view before we rotate so we can properly re-align it afterwards
     struct {
         CGSize     frameSize;
         CGSize     contentSize;
@@ -48,6 +62,14 @@
         CGFloat    minimumZoomScale;
         CGFloat    maximumZoomScale;
     } _webViewState;
+    
+    //State tracking for load progress of current page
+    struct {
+        NSInteger   loadingCount;   //Number of requests concurrently being handled
+        NSInteger   maxLoadCount;   //Maximum number of load requests that was reached
+        BOOL        interactive;    //Load progress has reached the point where users may interact with the content
+        CGFloat     loadingProgress;   //Between 0.0 and 1.0, the load progress of the current page
+    } _loadingProgressState;
 }
 
 /* Gradient layer added to the background view */
@@ -60,7 +82,7 @@
 @property (nonatomic,strong) UIWebView *webView;
 
 /* The loading bar, displayed when a page is being loaded */
-@property (nonatomic,strong) UIImageView *loadingImageView;
+@property (nonatomic,strong) UIView *loadingBarView;
 
 /* A snapshot of the web view, shown when rotating */
 @property (nonatomic,strong) UIImageView *webViewRotationSnapshot;
@@ -86,6 +108,14 @@
 - (void)reloadStopButtonTapped:(id)sender;
 - (void)doneButtonTapped:(id)sender;
 
+/* Methods related to tracking load progress of current page */
+- (void)resetLoadProgress;
+- (void)startLoadProgress;
+- (void)incrementLoadProgress;
+- (void)finishLoadProgress;
+- (void)setLoadingProgress:(CGFloat)loadingProgress;
+- (void)handleLoadRequestCompletion; //Called each time a request successfully (or unsuccessfully) completes
+
 /* Methods to contain all of the functionality needed to properly animate the UIWebView rotating */
 - (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 - (void)setUpWebViewForRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
@@ -110,6 +140,7 @@
     if (self = [super init])
     {
         self.url = url;
+        self.loadingBarTintColor = [UIColor colorWithRed:234/255.0f green:7.0f/255.0f blue:7.0f/255.0f alpha:1.0f];
     }
     
     return self;
@@ -157,10 +188,17 @@
                                                UITextAttributeTextShadowOffset:[NSValue valueWithCGSize:CGSizeMake(0.0f,1.0f)],
                                                UITextAttributeTextShadowColor:[UIColor colorWithWhite:1.0f alpha:0.4f]};
   
-    //Set up the loading image bar
-    UIImage *loadingImage = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewLoadingBar.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 2, 0, 45)];
-    self.loadingImageView = [[UIImageView alloc] initWithImage:loadingImage];
-  
+    //Set up the loading bar
+    CGFloat maxWidth = MAX(CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
+    self.loadingBarView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navigationBar.frame), maxWidth, LOADING_BAR_HEIGHT)];
+    self.loadingBarView.backgroundColor = self.loadingBarTintColor;
+    
+    //set up a subtle gradient to add over the loading bar
+    CAGradientLayer *loadingBarGradientLayer = [CAGradientLayer layer];
+    loadingBarGradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.0f alpha:0.25f] CGColor],(id)[[UIColor colorWithWhite:0.0f alpha:0.0f] CGColor]];
+    loadingBarGradientLayer.frame = self.loadingBarView.bounds;
+    [self.loadingBarView.layer addSublayer:loadingBarGradientLayer];
+    
     //set up the buttons for the navigation bar
     CGRect buttonFrame; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
     UIImage *buttonPressedImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewIconPressedBG.png"]];
@@ -281,30 +319,78 @@
 }
 
 #pragma mark -
+#pragma mark Manual Property Accessors
+- (void)setUrl:(NSURL *)url
+{
+    if (self.url == url)
+        return;
+    
+    _url = url;
+    
+    [self.webView stopLoading];
+    [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+}
+
+#pragma mark -
 #pragma mark WebView Delegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    return YES;
+    BOOL shouldStart = YES;
+    
+    //TODO: Implement TOModalWebViewController
+    
+    //if the URL is the load completed notification from JavaScript
+    if ([request.URL.absoluteString isEqualToString:kCompleteRPCURL])
+    {
+        [self finishLoadProgress];
+        return NO;
+    }
+    
+    //If the URL contrains a fragement jump (eg an anchor tag), check to see if it relates to the current page, or another
+    BOOL isFragmentJump = NO;
+    if (request.URL.fragment)
+    {
+        NSString *nonFragmentURL = [request.URL.absoluteString stringByReplacingOccurrencesOfString:[@"#" stringByAppendingString:request.URL.fragment] withString:@""];
+        isFragmentJump = [nonFragmentURL isEqualToString:webView.request.URL.absoluteString];
+    }
+    
+    BOOL isTopLevelNavigation = [request.mainDocumentURL isEqual:request.URL];
+    
+    BOOL isHTTP = [request.URL.scheme isEqualToString:@"http"] || [request.URL.scheme isEqualToString:@"https"];
+    if (shouldStart && !isFragmentJump && isHTTP && isTopLevelNavigation && navigationType != UIWebViewNavigationTypeBackForward)
+    {
+        //Save the URL in the accessor property
+        _url = [request URL];
+        [self resetLoadProgress];
+    }
+    
+    return shouldStart;
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    //increment the number of load requests started
+    _loadingProgressState.loadingCount++;
+    
+    //keep track if this is the highest number of concurrent requests
+    _loadingProgressState.maxLoadCount = MAX(_loadingProgressState.maxLoadCount, _loadingProgressState.loadingCount);
+    
+    //start tracking the load state
+    [self startLoadProgress];
+    
+    //update the navigation bar buttons
     [self refreshButtonsState];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [self handleLoadRequestCompletion];
     [self refreshButtonsState];
-    
-    //set the navigation bar title
-    self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [self handleLoadRequestCompletion];
     [self refreshButtonsState];
 }
 
@@ -338,70 +424,184 @@
 }
 
 #pragma mark -
+#pragma mark Page Load Progress Tracking Handlers
+- (void)resetLoadProgress
+{
+    memset( &_loadingProgressState, 0, sizeof(_loadingProgressState));
+    [self setLoadingProgress:0.0f];
+}
+
+- (void)startLoadProgress
+{
+    //If we haven't started loading yet, set the progress to small, but visible value
+    if (_loadingProgressState.loadingProgress < kInitialProgressValue)
+    {
+        //reset the loading bar
+        CGRect frame = self.loadingBarView.frame;
+        frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame);
+        self.loadingBarView.frame = frame;
+        self.loadingBarView.alpha = 1.0f;
+        
+        //add the loading bar to the view
+        [self.view insertSubview:self.loadingBarView aboveSubview:self.navigationBar];
+        
+        //kickstart the loading progress
+        [self setLoadingProgress:kInitialProgressValue];
+        
+        //show that loading started in the status bar
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    }
+}
+
+- (void)incrementLoadProgress
+{
+    float progress          = _loadingProgressState.loadingProgress;
+    float maxProgress       = _loadingProgressState.interactive ? kAfterInteractiveMaxProgressValue : kBeforeInteractiveMaxProgressValue;
+    float remainingPercent  = (float)_loadingProgressState.loadingCount / (float)_loadingProgressState.maxLoadCount;
+    float increment         = (maxProgress - progress) * remainingPercent;
+    progress                = fmin((progress+increment), maxProgress);
+    
+    [self setLoadingProgress:progress];
+}
+
+- (void)finishLoadProgress
+{
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [self setLoadingProgress:1.0f];
+}
+
+- (void)setLoadingProgress:(CGFloat)loadingProgress
+{
+    // progress should be incremental only
+    if (loadingProgress > _loadingProgressState.loadingProgress || loadingProgress == 0)
+    {
+        _loadingProgressState.loadingProgress = loadingProgress;
+        
+        //Update the loading bar progress to match
+        CGRect frame = self.loadingBarView.frame;
+        frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame) + (CGRectGetWidth(self.view.bounds) * _loadingProgressState.loadingProgress);
+        
+        [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+            self.loadingBarView.frame = frame;
+        } completion:^(BOOL finished) {
+            //once loading is complete, fade it out
+            if (_loadingProgressState.loadingProgress >= 1.0f - FLT_EPSILON)
+            {
+                [UIView animateWithDuration:0.2f animations:^{
+                    self.loadingBarView.alpha = 0.0f;
+                }];
+            }
+        }];
+        
+        NSLog( @"%f", _loadingProgressState.loadingProgress);
+    }
+}
+
+- (void)handleLoadRequestCompletion
+{
+    //decrement the number of concurrent requests
+    _loadingProgressState.loadingCount--;
+    
+    //update the progress bar
+    [self incrementLoadProgress];
+    
+    //Query the webview to see what load state JavaScript perceives it at
+    NSString *readyState = [self.webView stringByEvaluatingJavaScriptFromString:@"document.readyState"];
+    
+    //interactive means the page has loaded sufficiently to allow user interaction now
+    BOOL interactive = [readyState isEqualToString:@"interactive"];
+    if (interactive)
+    {
+        _loadingProgressState.interactive = YES;
+        
+        //if we're at the interactive state, attach a Javascript listener to inform us when the page has fully loaded
+        NSString *waitForCompleteJS = [NSString stringWithFormat:   @"window.addEventListener('load',function() { "
+                                       @"var iframe = document.createElement('iframe');"
+                                       @"iframe.style.display = 'none';"
+                                       @"iframe.src = '%@';"
+                                       @"document.body.appendChild(iframe);"
+                                       @"}, false);", kCompleteRPCURL];
+        
+        [self.webView stringByEvaluatingJavaScriptFromString:waitForCompleteJS];
+    }
+    
+    BOOL isNotRedirect = self.url && [self.url isEqual:self.webView.request.mainDocumentURL];
+    
+    BOOL complete = [readyState isEqualToString:@"complete"];
+    if (complete && isNotRedirect)
+    {
+        [self finishLoadProgress];
+    }
+    
+    //set the navigation bar title
+    self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+}
+
+#pragma mark -
 #pragma mark Button State Handling
 - (void)refreshButtonsState
 {
   //Toggle the stop/reload button
   if (self.webView.isLoading == NO)
-    [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+      [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
   else
-    [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
+      [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
   
   //update the state for the back button
   if (self.webView.canGoBack)
-    [self.backButton setEnabled:YES];
+      [self.backButton setEnabled:YES];
   else
-    [self.backButton setEnabled:NO];
+      [self.backButton setEnabled:NO];
   
   //update the state for the forward button
   if (self.webView.canGoForward && self.forwardButton.hidden)
   {
-    UIView *containerView = self.forwardButton.superview;
+      UIView *containerView = self.forwardButton.superview;
     
-    self.forwardButton.alpha = 0.0f;
-    self.forwardButton.hidden = NO;
+      self.forwardButton.alpha = 0.0f;
+      self.forwardButton.hidden = NO;
     
-    [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
-      //make the forward button visible
-      self.forwardButton.alpha = 1.0f;
+      [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
+          //make the forward button visible
+          self.forwardButton.alpha = 1.0f;
       
-      //animate the container to accomodate
-      CGRect frame = containerView.frame;
-      frame.size.width = (NAVIGATION_BUTTON_WIDTH*3) + (NAVIGATION_BUTTON_SPACING*2);
-      containerView.frame = frame;
+          //animate the container to accomodate
+          CGRect frame = containerView.frame;
+          frame.size.width = (NAVIGATION_BUTTON_WIDTH*3) + (NAVIGATION_BUTTON_SPACING*2);
+          containerView.frame = frame;
       
-      //move the reload buttons
-      frame = self.reloadStopButton.frame;
-      frame.origin.x = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING*2);
-      self.reloadStopButton.frame = frame;
-    }];
+          //move the reload buttons
+          frame = self.reloadStopButton.frame;
+          frame.origin.x = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING*2);
+          self.reloadStopButton.frame = frame;
+      }];
   }
   
-  if (self.webView.canGoForward == NO && self.forwardButton.hidden == NO)
-  {
-    UIView *containerView = self.forwardButton.superview;
-    self.forwardButton.alpha = 1.0f;
+    if (self.webView.canGoForward == NO && self.forwardButton.hidden == NO)
+    {
+        UIView *containerView = self.forwardButton.superview;
+        self.forwardButton.alpha = 1.0f;
     
-    [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:
-     ^{
-       //make the forward button invisible
-       self.forwardButton.alpha = 0.0f;
+        [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:
+         ^{
+             //make the forward button invisible
+             self.forwardButton.alpha = 0.0f;
        
-       //animate the container to accomodate
-       CGRect frame = containerView.frame;
-       frame.size.width = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING);
-       containerView.frame = frame;
+             //animate the container to accomodate
+             CGRect frame = containerView.frame;
+             frame.size.width = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING);
+             containerView.frame = frame;
        
-       //move the reload buttons
-       frame = self.reloadStopButton.frame;
-       frame.origin.x = (NAVIGATION_BUTTON_WIDTH) + (NAVIGATION_BUTTON_SPACING);
-       self.reloadStopButton.frame = frame;
-     }
-    completion:^(BOOL completion)
-     {
-       self.forwardButton.hidden = YES;
-     }];
-  }
+             //move the reload buttons
+             frame = self.reloadStopButton.frame;
+             frame.origin.x = (NAVIGATION_BUTTON_WIDTH) + (NAVIGATION_BUTTON_SPACING);
+             self.reloadStopButton.frame = frame;
+       }
+        completion:^(BOOL completion)
+       {
+           self.forwardButton.hidden = YES;
+       }];
+    }
 }
 
 #pragma mark -
@@ -567,7 +767,7 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.modalPresentationStyle == UIModalPresentationFormSheet)
         return;
     
-    //Save the current state so we can use it to properly translate after the rotation is complete
+    //Save the current state so we can use it to properly transition after the rotation is complete
     _webViewState.frameSize         = self.webView.frame.size;
     _webViewState.contentSize       = self.webView.scrollView.contentSize;
     _webViewState.zoomScale         = self.webView.scrollView.zoomScale;
@@ -580,8 +780,7 @@
     CGRect renderBounds         = [self rectForVisibleRegionOfWebViewAnimatingToOrientation:toOrientation];
     
     //generate a snapshot of the webview that we can animate more smoothly
-    //Don't enable Retina on iPads since the 3rd gen iPad can't handle it very well 
-    UIGraphicsBeginImageContextWithOptions(renderBounds.size, YES, (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) ? 1.0f : 0.0f);
+    UIGraphicsBeginImageContextWithOptions(renderBounds.size, YES, 0.0f);
     {
         CGContextRef context = UIGraphicsGetCurrentContext();
         //fill the who canvas with the web page's background colour (otherwise default colour is black)
@@ -655,10 +854,15 @@
     //and weird touch feedback like not being able to properly zoom out until the user has first zoomed in and released the touch.
     //So far, the only way I've found to actually correct this is to invoke a trivial zoom animation, and this will
     //trip the webview into redrawing its content.
-    //Once the view has finished rotating, we'll figure out the proper placement + zoom scale and reset it
-    CGFloat zoomScale = (self.webView.scrollView.minimumZoomScale+self.webView.scrollView.maximumZoomScale) * 0.5f; //zoom into the mid point of the scale. Zooming into either extreme does nothing.
-    self.webView.scrollView.layer.speed = 9999.0f;
+    //Once the view has finished rotating, we'll figure out the proper placement + zoom scale and reset it.
+    
+    //This animation must be complete by the time the view rotation animation is complete, else we'll have incorrect bounds data. This will speed it up to near instant.
+    self.webView.scrollView.layer.speed = 9999.0f; 
+    
+    CGFloat zoomScale = (self.webView.scrollView.minimumZoomScale+self.webView.scrollView.maximumZoomScale) * 0.5f; //zoom into the mid point of the scale. Zooming into either extreme doesn't work.
     [self.webView.scrollView setZoomScale:zoomScale animated:YES];
+    
+    //hide the webview while the snapshot is animating
     self.webView.hidden = YES;
 }
 
@@ -712,23 +916,24 @@
     //But, it WILL rest back to minimumZoomScale = 1.0f, after the next time the user interacts with it.
     //For resetting the state right now (as the user hasn't touched it yet), we must use the 'different' values, and translate the original state to them.
     //---
-    //So we need to get the web view content to align to the new zoom scale. The transition NEEDS to be instant,
-    //but we can't use animated:NO since that won't commit the zoom properly and cause visual glitches (ie HAS to be animated:YES).
+    //So from this point, we need to 'coax' the web view content to align to the new zoom scale. The transition NEEDS to be instant,
+    //but we can't use animated:NO since that won't commit the zoom properly and will cause visual glitches (ie HAS to be animated:YES).
     //So to solve this, we're accessing the core animation layer and temporarily increasing the animation speed of the scrollview.
     //The zoom event is still occurring, but it's so fast, it seems instant
-    [self.webView.scrollView.layer removeAllAnimations];
     CGFloat translatedScale = ((_webViewState.zoomScale/_webViewState.minimumZoomScale) * self.webView.scrollView.minimumZoomScale);
     
     //if we ended up scrolling past the max zoom size, just extend it.
     if (translatedScale > self.webView.scrollView.maximumZoomScale)
         self.webView.scrollView.maximumZoomScale = translatedScale;
     
+    [self.webView.scrollView.layer removeAllAnimations];
+    
     self.webView.scrollView.layer.speed = 9999.0f;
     [self.webView.scrollView setZoomScale:translatedScale animated:YES];
     
-    //Pull out the animation and attach a delegate so we can tell when it's finished, and jam it back in
+    //Pull out the animation and attach a delegate so we can receive an event when it's finished, to clean it up properly
     CABasicAnimation *anim = [[self.webView.scrollView.layer animationForKey:@"bounds"] mutableCopy];
-    if (anim == nil)
+    if (anim == nil) //anim may be nil if the zoomScale wasn't sufficiently different to warrant an animation
     {
         [self animationDidStop:nil finished:YES];
         return;
@@ -741,23 +946,20 @@
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
-    if(flag == NO)
-        return;
-    
     //when the rotation and animation is complete, FINALLY unhide the web view
     self.webView.hidden = NO;
     
     CGSize contentSize = self.webView.scrollView.contentSize;
     CGPoint translatedContentOffset = _webViewState.contentOffset;
     
-    //if the page is a mobile site, just re-add the original content offset
+    //if the page is a mobile site, just re-add the original content offset. It'll size itself properly
     if ([self webViewPageWidthIsDynamic])
     {
         //if the content offset expands beyond the new boundary of the view, reset it
         translatedContentOffset.y = MIN(_webViewState.contentOffset.y, (contentSize.height - CGRectGetHeight(self.webView.frame)));
         translatedContentOffset.y = MAX(_webViewState.contentOffset.y, self.webView.scrollView.contentInset.top);
     }
-    else //else, determine the magnitude we zoomed in/out by and translate the scroll offset to compensate
+    else //else, determine the magnitude we zoomed in/out by and translate the scroll offset to line it up properly
     {
         CGFloat magnitude = contentSize.width / _webViewState.contentSize.width;
         translatedContentOffset.x *= magnitude;
@@ -780,6 +982,7 @@
         translatedContentOffset.y = MIN(translatedContentOffset.y, contentSize.height - CGRectGetHeight(self.webView.frame));
     }
     
+    //apply the translated offset (Thankfully, this one doens't have to be animated in order to work properly)
     [self.webView.scrollView setContentOffset:translatedContentOffset animated:NO];
     
     //restore proper scroll speed

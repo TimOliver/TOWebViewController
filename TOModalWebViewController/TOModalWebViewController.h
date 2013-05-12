@@ -3,6 +3,10 @@
 //
 //  Copyright 2013 Timothy Oliver. All rights reserved.
 //
+//  Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress
+//  https://github.com/ninjinkun/NJKWebViewProgress
+//  (Integrated/Re-implemented by Timothy Oliver)
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
 //  deal in the Software without restriction, including without limitation the
@@ -20,13 +24,17 @@
 //  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 #import <UIKit/UIKit.h>
 
 @interface TOModalWebViewController : UIViewController
 
 - (id)initWithURL: (NSURL *)url;
 
-/* Get/set the current URL being displayed */
+/* Get/set the current URL being displayed. (Will automatically start loading) */
 @property (nonatomic,strong) NSURL *url;
+
+/* Tint colour for the loading progress bar. Default colour is deep red. */
+@property (nonatomic,copy) UIColor *loadingBarTintColor;
 
 @end

@@ -23,8 +23,6 @@
 		227E46FE1737FD6E00C93613 /* ModalWebViewForwardIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 227E46EC1737FD6E00C93613 /* ModalWebViewForwardIcon@2x.png */; };
 		227E46FF1737FD6E00C93613 /* ModalWebViewIconPressedBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 227E46ED1737FD6E00C93613 /* ModalWebViewIconPressedBG.png */; };
 		227E47001737FD6E00C93613 /* ModalWebViewIconPressedBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 227E46EE1737FD6E00C93613 /* ModalWebViewIconPressedBG@2x.png */; };
-		227E47011737FD6E00C93613 /* ModalWebViewLoadingBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 227E46EF1737FD6E00C93613 /* ModalWebViewLoadingBar.png */; };
-		227E47021737FD6E00C93613 /* ModalWebViewLoadingBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 227E46F01737FD6E00C93613 /* ModalWebViewLoadingBar@2x.png */; };
 		227E47031737FD6E00C93613 /* ModalWebViewRefreshIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 227E46F11737FD6E00C93613 /* ModalWebViewRefreshIcon.png */; };
 		227E47041737FD6E00C93613 /* ModalWebViewRefreshIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 227E46F21737FD6E00C93613 /* ModalWebViewRefreshIcon@2x.png */; };
 		227E47051737FD6E00C93613 /* ModalWebViewStopIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 227E46F31737FD6E00C93613 /* ModalWebViewStopIcon.png */; };
@@ -66,8 +64,6 @@
 		227E46EC1737FD6E00C93613 /* ModalWebViewForwardIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ModalWebViewForwardIcon@2x.png"; sourceTree = "<group>"; };
 		227E46ED1737FD6E00C93613 /* ModalWebViewIconPressedBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ModalWebViewIconPressedBG.png; sourceTree = "<group>"; };
 		227E46EE1737FD6E00C93613 /* ModalWebViewIconPressedBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ModalWebViewIconPressedBG@2x.png"; sourceTree = "<group>"; };
-		227E46EF1737FD6E00C93613 /* ModalWebViewLoadingBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ModalWebViewLoadingBar.png; sourceTree = "<group>"; };
-		227E46F01737FD6E00C93613 /* ModalWebViewLoadingBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ModalWebViewLoadingBar@2x.png"; sourceTree = "<group>"; };
 		227E46F11737FD6E00C93613 /* ModalWebViewRefreshIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ModalWebViewRefreshIcon.png; sourceTree = "<group>"; };
 		227E46F21737FD6E00C93613 /* ModalWebViewRefreshIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ModalWebViewRefreshIcon@2x.png"; sourceTree = "<group>"; };
 		227E46F31737FD6E00C93613 /* ModalWebViewStopIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ModalWebViewStopIcon.png; sourceTree = "<group>"; };
@@ -111,8 +107,6 @@
 				227E46EC1737FD6E00C93613 /* ModalWebViewForwardIcon@2x.png */,
 				227E46ED1737FD6E00C93613 /* ModalWebViewIconPressedBG.png */,
 				227E46EE1737FD6E00C93613 /* ModalWebViewIconPressedBG@2x.png */,
-				227E46EF1737FD6E00C93613 /* ModalWebViewLoadingBar.png */,
-				227E46F01737FD6E00C93613 /* ModalWebViewLoadingBar@2x.png */,
 				227E46F11737FD6E00C93613 /* ModalWebViewRefreshIcon.png */,
 				227E46F21737FD6E00C93613 /* ModalWebViewRefreshIcon@2x.png */,
 				227E46F31737FD6E00C93613 /* ModalWebViewStopIcon.png */,
@@ -257,8 +251,6 @@
 				227E46FE1737FD6E00C93613 /* ModalWebViewForwardIcon@2x.png in Resources */,
 				227E46FF1737FD6E00C93613 /* ModalWebViewIconPressedBG.png in Resources */,
 				227E47001737FD6E00C93613 /* ModalWebViewIconPressedBG@2x.png in Resources */,
-				227E47011737FD6E00C93613 /* ModalWebViewLoadingBar.png in Resources */,
-				227E47021737FD6E00C93613 /* ModalWebViewLoadingBar@2x.png in Resources */,
 				227E47031737FD6E00C93613 /* ModalWebViewRefreshIcon.png in Resources */,
 				227E47041737FD6E00C93613 /* ModalWebViewRefreshIcon@2x.png in Resources */,
 				227E47051737FD6E00C93613 /* ModalWebViewStopIcon.png in Resources */,

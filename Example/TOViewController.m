@@ -18,7 +18,7 @@
 - (IBAction)openButtonTapped:(id)sender
 {
     TOModalWebViewController *webViewController = [[TOModalWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://icomics.co"]];
-    webViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+    webViewController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:webViewController animated:YES completion:nil];
 }
 

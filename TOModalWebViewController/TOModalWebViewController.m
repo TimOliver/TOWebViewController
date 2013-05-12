@@ -77,28 +77,25 @@
 /* The dismissal button displayed on the right of the nav bar. */
 @property (nonatomic,strong) UIButton *doneButton;
 
-/* Methods to derive state information from the web view */
-- (UIView *)webViewContentView;             //pull out the actual UIView used to display the web content
-- (BOOL)webViewPageWidthIsDynamic;          //The page will rescale its own content if the web view frame is changed (ie DON'T play a zooming animation)
-- (UIColor *)webViewPageBackgroundColor;    //try and determine the background colour of the current page
-- (CGFloat)webViewActualZoomScale;          //since zoomScale is sometimes inaccurate, this derives the proper active zoom scale in relation to the window size
-
 /* Review the current state of the web view and update the UI controls in the nav bar to match it */
 - (void)refreshButtonsState;
-
-/* Methods to contain all of the functionality needed to properly animate the UIWebView rotating */
-- (void)setUpWebViewForRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
-- (void)animateWebViewRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
-- (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation;
-
-/* Calcuate the necessary positions/dimensions to render a snapshot of the web view for animation */
-- (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 
 /* Event callbacks for button taps */
 - (void)backButtonTapped:(id)sender;
 - (void)forwardButtonTapped:(id)sender;
 - (void)reloadStopButtonTapped:(id)sender;
 - (void)doneButtonTapped:(id)sender;
+
+/* Methods to contain all of the functionality needed to properly animate the UIWebView rotating */
+- (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
+- (void)setUpWebViewForRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
+- (void)animateWebViewRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
+- (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation;
+
+/* Methods to derive state information from the web view */
+- (UIView *)webViewContentView;             //pull out the actual UIView used to display the web content so we can render from it
+- (BOOL)webViewPageWidthIsDynamic;          //The page will rescale its own content if the web view frame is changed (ie DON'T play a zooming animation)
+- (UIColor *)webViewPageBackgroundColor;    //try and determine the background colour of the current page
 
 @end
 
@@ -421,12 +418,6 @@
     return nil;
 }
 
-- (CGFloat)webViewActualZoomScale
-{
-    UIView *contentView = [self webViewContentView];
-    return CGRectGetWidth(contentView.frame) / CGRectGetWidth(self.webView.frame);
-}
-
 - (BOOL)webViewPageWidthIsDynamic
 {
     //A bit of a crazy JavaScript that scans the HTML for a <meta name="viewport"> tag and dumps its contents
@@ -572,6 +563,10 @@
         self.webViewRotationSnapshot = nil;
     }
     
+    // form sheet style controllers' bounds don't change, so implementing this is rather pointless
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.modalPresentationStyle == UIModalPresentationFormSheet)
+        return;
+    
     //Save the current state so we can use it to properly translate after the rotation is complete
     _webViewState.frameSize         = self.webView.frame.size;
     _webViewState.contentSize       = self.webView.scrollView.contentSize;
@@ -670,6 +665,10 @@
 /* Called within the animation block. All views will be set to their 'destination' state. */
 - (void)animateWebViewRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration
 {
+    /// form sheet style controllers' bounds don't change, so implemeting this is rather pointless
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.modalPresentationStyle == UIModalPresentationFormSheet)
+        return;
+    
     //remove all animations presently applied to the web view
     [self.webView.layer removeAllAnimations];
     [self.webView.scrollView.layer removeAllAnimations];
@@ -705,12 +704,14 @@
 
 - (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation
 {
+    /// form sheet style controllers' bounds don't change, so implemeting this is rather pointless
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.modalPresentationStyle == UIModalPresentationFormSheet)
+        return;
     
     //Side Note: When a UIWebView has just had its bounds change, its minimumZoomScale and maximumZoomScale become completely (almost arbitrarily) different.
     //But, it WILL rest back to minimumZoomScale = 1.0f, after the next time the user interacts with it.
     //For resetting the state right now (as the user hasn't touched it yet), we must use the 'different' values, and translate the original state to them.
     //---
-    //Sweet merciful crap. This hack is even dirtier than the one above. ಠ_ಠ
     //So we need to get the web view content to align to the new zoom scale. The transition NEEDS to be instant,
     //but we can't use animated:NO since that won't commit the zoom properly and cause visual glitches (ie HAS to be animated:YES).
     //So to solve this, we're accessing the core animation layer and temporarily increasing the animation speed of the scrollview.

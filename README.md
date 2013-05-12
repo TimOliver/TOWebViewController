@@ -1,7 +1,7 @@
 # TOModalWebViewController
 #### A modal view controller for iOS that allows users to quickly view web sites without needing to open Safari/Chrome
 
-![TOModalWebViewController on iPhone 5](https://raw.github.com/TimOliver/TOGridModalWebViewController/master/Screenshots/TOModalWebViewController.png)
+![TOModalWebViewController on iPhone 5](https://raw.github.com/TimOliver/TOModalWebViewController/master/Screenshots/TOModalWebViewController.png)
 
 ## WTF is this thing?
 

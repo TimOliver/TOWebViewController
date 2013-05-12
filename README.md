@@ -36,7 +36,7 @@ to shower [ninjinkun](https://github.com/ninjinkun) with much love for making tr
 Copyright 2013 Timothy Oliver. All rights reserved.
 
 Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress 
-( https://github.com/ninjinkun/NJKWebViewProgress ), also licensed under the MIT License. 
+(https://github.com/ninjinkun/NJKWebViewProgress), also licensed under the MIT License. 
 Re-implemented by Timothy Oliver.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

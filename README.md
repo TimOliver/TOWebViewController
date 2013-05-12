@@ -7,13 +7,14 @@
 
 TOModalWebViewController is another entry in my "re-inventing-the-wheel" collection for my commercial iOS app, [iComics](http://icomics.co/).
 As you can see from the screenshot, TOModalWebViewController is your standard web view controller designed with the intention of being able to quickly show
-the user a web page without needing to suspend the app and moving to Safari (or Chrome).
+the user web content without needing to switch to another app.
 
 ## So. Why was it necessary to write a new one from scratch?
 
-While I've already written a couple of Web View Controllers from scratch for other projects before (Most notably, in [iPokédex](http://www.ubergames.net/projects/ipokedex) ),
-they've always been really quick, slapdash implementations that I put together in 5 minutes. With iComics, and the myriad number of web enabled features I'm gearing up
-to add to it, I decided writing a really nice, elegant, flexible one that can handle all of my requirements would be the be the best way to go.
+While I've already written a couple of web view controllers from scratch for other projects before (Most notably, in [iPokédex](http://www.ubergames.net/projects/ipokedex) ),
+they've always been really quick, slapdash implementations that I put together in 5 minutes, that barely fit the job, but were often not really reusable in other projects. 
+With iComics, and the myriad number of web enabled features I'm gearing up to add to it, I decided writing a really nice, elegant, flexible one that can handle all of 
+my requirements, not to mention would be properly reusable in other projects would be the be the best way to go.
 
 ## Features
 

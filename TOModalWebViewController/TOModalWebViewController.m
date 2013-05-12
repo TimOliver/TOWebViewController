@@ -290,7 +290,13 @@ static const float kAfterInteractiveMaxProgressValue = 0.9;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+    
+    //reset the gradient layer in case the bounds changed before display
+    self.gradientLayer.frame = self.view.bounds;
+    
+    //start loading the initial page
+    if (self.url)
+        [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation

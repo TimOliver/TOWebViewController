@@ -315,6 +315,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //reset the gradient layer's frame to match the new bounds
     self.gradientLayer.frame = self.view.bounds;
     
+    //update the loading bar to match the proper bounds
+    CGRect frame = self.loadingBarView.frame;
+    frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame) + (CGRectGetWidth(self.view.bounds) * _loadingProgressState.loadingProgress);
+    self.loadingBarView.frame = frame;
+    
     //animate the web view snapshot into the proper place
     [self animateWebViewRotationToOrientation:toInterfaceOrientation withDuration:duration];
 }
@@ -483,6 +488,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)finishLoadProgress
 {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [self refreshButtonsState];
     [self setLoadingProgress:1.0f];
 }
 

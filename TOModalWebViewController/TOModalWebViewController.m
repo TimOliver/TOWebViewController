@@ -25,6 +25,7 @@
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import "TOModalWebViewController.h"
+#import "TOActionListPopoverView.h"
 #import <QuartzCore/QuartzCore.h>
 
 /* Navigation Bar Properties */
@@ -66,14 +67,14 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //State tracking for load progress of current page
     struct {
-        NSInteger   loadingCount;   //Number of requests concurrently being handled
-        NSInteger   maxLoadCount;   //Maximum number of load requests that was reached
-        BOOL        interactive;    //Load progress has reached the point where users may interact with the content
-        CGFloat     loadingProgress;   //Between 0.0 and 1.0, the load progress of the current page
+        NSInteger   loadingCount;       //Number of requests concurrently being handled
+        NSInteger   maxLoadCount;       //Maximum number of load requests that was reached
+        BOOL        interactive;        //Load progress has reached the point where users may interact with the content
+        CGFloat     loadingProgress;    //Between 0.0 and 1.0, the load progress of the current page
     } _loadingProgressState;
 }
 
-/* Gradient layer added to the background view */
+/* Gradient layer added to the background view for a bit of extra detail */
 @property (nonatomic,strong) CAGradientLayer *gradientLayer;
 
 /* Navigation bar shown along the top of the view */
@@ -92,6 +93,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 @property (nonatomic,strong) UIButton *backButton;
 @property (nonatomic,strong) UIButton *forwardButton;
 @property (nonatomic,strong) UIButton *reloadStopButton;
+@property (nonatomic,strong) UIButton *actionButton;
 
 /* The reload icon and stop icon will share the same icon */
 @property (nonatomic,strong) UIImage *reloadIcon;
@@ -107,6 +109,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)backButtonTapped:(id)sender;
 - (void)forwardButtonTapped:(id)sender;
 - (void)reloadStopButtonTapped:(id)sender;
+- (void)actionButtonTapped:(id)sender;
 - (void)doneButtonTapped:(id)sender;
 
 /* Methods related to tracking load progress of current page */
@@ -115,7 +118,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)incrementLoadProgress;
 - (void)finishLoadProgress;
 - (void)setLoadingProgress:(CGFloat)loadingProgress;
-- (void)handleLoadRequestCompletion; //Called each time a request successfully (or unsuccessfully) completes
+- (void)handleLoadRequestCompletion; //Called each time a request successfully (or unsuccessfully) ends
 
 /* Methods to contain all of the functionality needed to properly animate the UIWebView rotating */
 - (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
@@ -124,7 +127,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation;
 
 /* Methods to derive state information from the web view */
-- (UIView *)webViewContentView;             //pull out the actual UIView used to display the web content so we can render from it
+- (UIView *)webViewContentView;             //pull out the actual UIView used to display the web content so we can render a snapshot from it
 - (BOOL)webViewPageWidthIsDynamic;          //The page will rescale its own content if the web view frame is changed (ie DON'T play a zooming animation)
 - (UIColor *)webViewPageBackgroundColor;    //try and determine the background colour of the current page
 
@@ -222,6 +225,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self.reloadStopButton setFrame:buttonFrame];
     [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
     [self.reloadStopButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+    
+    self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.actionButton setFrame:buttonFrame];
+    [self.actionButton setImage:[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewActionIcon.png"]] forState:UIControlStateNormal];
+    [self.actionButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
 }
 
 - (void)viewDidLoad
@@ -243,7 +251,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     CGRect buttonFrame = CGRectZero; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
     
     //set up the icons for the navigation bar
-    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, (NAVIGATION_BUTTON_WIDTH*2)+NAVIGATION_BUTTON_SPACING, NAVIGATION_BUTTON_WIDTH)];
+    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, (NAVIGATION_BUTTON_WIDTH*3)+(NAVIGATION_BUTTON_SPACING*2), NAVIGATION_BUTTON_WIDTH)];
     iconsContainerView.backgroundColor = [UIColor clearColor];
     
     //add the back button
@@ -259,6 +267,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.forwardButton.frame = buttonFrame;
     self.forwardButton.hidden = YES;
     [iconsContainerView addSubview:self.forwardButton];
+    
+    //add the forward button too, but keep it hidden for now
+    buttonFrame.origin.x += NAVIGATION_BUTTON_WIDTH + NAVIGATION_BUTTON_SPACING;
+    self.actionButton.frame = buttonFrame;
+    [iconsContainerView addSubview:self.actionButton];
     
     //push the buttons on the left to this controller's navigation item
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
@@ -285,6 +298,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self.backButton addTarget:self action:@selector(backButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.forwardButton addTarget:self action:@selector(forwardButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.reloadStopButton addTarget:self action:@selector(reloadStopButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [self.actionButton addTarget:self action:@selector(actionButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -383,6 +397,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //Save the URL in the accessor property
         _url = [request URL];
         [self resetLoadProgress];
+        
+        //set the title to the URL until we load the page properly
+        NSString *url = [request.URL absoluteString];
+        url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+        url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+        self.title = url;
     }
     
     return shouldStart;
@@ -439,6 +459,17 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self refreshButtonsState];
 }
 
+- (void)actionButtonTapped:(id)sender
+{
+    TOActionListItem *testItem = [[TOActionListItem alloc] initWithTitle:@"Test" withTapAction:^{}];
+    TOActionListItem *testItem2 = [[TOActionListItem alloc] initWithTitle:@"Test" withTapAction:^{}];
+    
+    NSArray *items = @[testItem,testItem2];
+    
+    TOActionListPopoverView *popoverView = [[TOActionListPopoverView alloc] initWithItems:items];
+    [popoverView presentPopoverFromView:sender animated:YES];
+}
+
 - (void)doneButtonTapped:(id)sender
 {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
@@ -490,6 +521,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     [self refreshButtonsState];
     [self setLoadingProgress:1.0f];
+    
+    //in case it didn't succeed yet, try setting the page title
+    self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 }
 
 - (void)setLoadingProgress:(CGFloat)loadingProgress
@@ -507,7 +541,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             self.loadingBarView.frame = frame;
         } completion:^(BOOL finished) {
             //once loading is complete, fade it out
-            if (_loadingProgressState.loadingProgress >= 1.0f - FLT_EPSILON)
+            if (loadingProgress >= 1.0f - FLT_EPSILON)
             {
                 [UIView animateWithDuration:0.2f animations:^{
                     self.loadingBarView.alpha = 0.0f;
@@ -543,18 +577,16 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                                        @"}, false);", kCompleteRPCURL];
         
         [self.webView stringByEvaluatingJavaScriptFromString:waitForCompleteJS];
+        
+        //see if we can set the proper page title yet
+        self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     }
     
     BOOL isNotRedirect = self.url && [self.url isEqual:self.webView.request.mainDocumentURL];
     
     BOOL complete = [readyState isEqualToString:@"complete"];
     if (complete && isNotRedirect)
-    {
         [self finishLoadProgress];
-    }
-    
-    //set the navigation bar title
-    self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 }
 
 #pragma mark -

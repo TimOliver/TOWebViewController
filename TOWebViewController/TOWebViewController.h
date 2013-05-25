@@ -1,5 +1,5 @@
 //
-//  TOModalWebViewController.h
+//  TOWebViewController.h
 //
 //  Copyright 2013 Timothy Oliver. All rights reserved.
 //
@@ -27,7 +27,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TOModalWebViewController : UIViewController
+@interface TOWebViewController : UIViewController
 
 - (id)initWithURL: (NSURL *)url;
 
@@ -36,5 +36,8 @@
 
 /* Tint colour for the loading progress bar. Default colour is deep red. */
 @property (nonatomic,copy) UIColor *loadingBarTintColor;
+
+/* Show the 'Action' button instead of the stop/refresh button (On by default)*/
+@property (nonatomic,assign) BOOL showActionButton;
 
 @end

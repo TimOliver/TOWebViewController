@@ -1,12 +1,12 @@
-# TOModalWebViewController
-#### A modal view controller for iOS that allows users to quickly view web sites without needing to open Safari/Chrome
+# TOWebViewController
+#### A view controller for iOS that allows users to quickly view web sites without needing to open Safari/Chrome
 
-![TOModalWebViewController on iPhone 5](https://raw.github.com/TimOliver/TOModalWebViewController/master/Screenshots/TOModalWebViewController.png)
+![TOWebViewController on iPhone 5](https://raw.github.com/TimOliver/TOWebViewController/master/Screenshots/TOWebViewController.png)
 
 ## WTF is this thing?
 
-TOModalWebViewController is another entry in my "re-inventing-the-wheel" collection for my commercial iOS app, [iComics](http://icomics.co/).
-As you can see from the screenshot, TOModalWebViewController is your standard web view controller designed with the intention of being able to quickly show
+TOWebViewController is another entry in my "re-inventing-the-wheel" collection for my commercial iOS app, [iComics](http://icomics.co/).
+As you can see from the screenshot, TOWebViewController is your standard web view controller designed with the intention of being able to quickly show
 the user web content without needing to switch to another app.
 
 ## So. Why was it necessary to write a new one from scratch?
@@ -30,7 +30,7 @@ my requirements, not to mention would be properly reusable in other projects wou
 
 ## License
 
-TOModalWebViewController is licensed under the MIT License. I don't personally require attribution, but make sure 
+TOWebViewController is licensed under the MIT License. I don't personally require attribution, but make sure 
 to shower [ninjinkun](https://github.com/ninjinkun) with much love for making tracking the page load state possible.
 
 - - -

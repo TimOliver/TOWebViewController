@@ -1,5 +1,5 @@
 //
-//  TOModalWebViewController.m
+//  TOWebViewController.m
 //
 //  Copyright 2013 Timothy Oliver. All rights reserved.
 //
@@ -24,8 +24,8 @@
 //  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "TOModalWebViewController.h"
-#import "TOActionListPopoverView.h"
+#import "TOWebViewController.h"
+#import "TOWebViewControllerPopoverView.h"
 #import <QuartzCore/QuartzCore.h>
 
 /* Navigation Bar Properties */
@@ -53,7 +53,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 #pragma mark -
 #pragma mark Hidden Properties/Methods
-@interface TOModalWebViewController () <UIWebViewDelegate> {
+@interface TOWebViewController () <UIWebViewDelegate> {
     
     //Save the state of the web view before we rotate so we can properly re-align it afterwards
     struct {
@@ -73,6 +73,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         CGFloat     loadingProgress;    //Between 0.0 and 1.0, the load progress of the current page
     } _loadingProgressState;
 }
+
+/* The label for the title view along the navigation bar */
+@property (nonatomic,strong) UILabel *titleLabelView;
 
 /* Gradient layer added to the background view for a bit of extra detail */
 @property (nonatomic,strong) CAGradientLayer *gradientLayer;
@@ -112,6 +115,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)actionButtonTapped:(id)sender;
 - (void)doneButtonTapped:(id)sender;
 
+/* Event handlers for items in the 'action' popup */
+- (void)openSharingDialog;
+- (void)openInBrowser;
+
 /* Methods related to tracking load progress of current page */
 - (void)resetLoadProgress;
 - (void)startLoadProgress;
@@ -137,7 +144,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 #pragma mark -  
 #pragma mark Class Implementation
-@implementation TOModalWebViewController
+@implementation TOWebViewController
 
 - (id)initWithURL:(NSURL *)url
 {
@@ -145,6 +152,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     {
         self.url = url;
         self.loadingBarTintColor = [UIColor colorWithRed:234/255.0f green:7.0f/255.0f blue:7.0f/255.0f alpha:1.0f];
+        self.showActionButton = YES;
     }
     
     return self;
@@ -162,7 +170,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //add a gradient to the background view
     self.gradientLayer = [CAGradientLayer layer];
-    self.gradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.0f alpha:0.0f] CGColor],(id)[[UIColor colorWithWhite:0.0f alpha:0.5f] CGColor]];
+    self.gradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.0f alpha:0.0f] CGColor],(id)[[UIColor colorWithWhite:0.0f alpha:0.35f] CGColor]];
     self.gradientLayer.frame = self.view.bounds;
     [self.view.layer addSublayer:self.gradientLayer];
     
@@ -182,14 +190,18 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self.view addSubview:self.navigationBar];
     
     //Set up the custom skinning for the navigation bar
-    UIImage *navigationBarImage = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebNavigationBarBG.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
+    UIImage *navigationBarImage = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerNavigationBarBG.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
     [self.navigationBar setBackgroundImage:navigationBarImage forBarMetrics:UIBarMetricsDefault];
     
-    //set up custom styling for the navigation bar
-    self.navigationBar.titleTextAttributes = @{UITextAttributeFont:[UIFont boldSystemFontOfSize:17.0f],
-                                               UITextAttributeTextColor:[UIColor colorWithWhite:0.3f alpha:1.0f],
-                                               UITextAttributeTextShadowOffset:[NSValue valueWithCGSize:CGSizeMake(0.0f,1.0f)],
-                                               UITextAttributeTextShadowColor:[UIColor colorWithWhite:1.0f alpha:0.4f]};
+    //set up a custom label for the title
+    self.titleLabelView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.navigationBar.frame.size.width, 44.0f)];
+    self.titleLabelView.backgroundColor = [UIColor clearColor];
+    self.titleLabelView.textColor = [UIColor colorWithWhite:0.3f alpha:1.0f];
+    self.titleLabelView.font = [UIFont boldSystemFontOfSize:17.0f];
+    self.titleLabelView.shadowColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
+    self.titleLabelView.shadowOffset = CGSizeMake(0.0f,1.0f);
+    self.titleLabelView.textAlignment = UITextAlignmentCenter;
+    self.navigationItem.titleView = self.titleLabelView;
   
     //Set up the loading bar
     CGFloat maxWidth = MAX(CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
@@ -203,33 +215,38 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self.loadingBarView.layer addSublayer:loadingBarGradientLayer];
     
     //set up the buttons for the navigation bar
-    CGRect buttonFrame; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
-    UIImage *buttonPressedImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewIconPressedBG.png"]];
+    CGRect buttonFrame = CGRectZero; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
+    UIImage *buttonPressedImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerIconPressedBG.png"]];
     
-    UIImage *backButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewBackIcon.png"]];
+    UIImage *backButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerBackIcon.png"]];
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.backButton setFrame: buttonFrame];
     [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
     [self.backButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
     
-    UIImage *forwardButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewForwardIcon.png"]];
+    UIImage *forwardButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerForwardIcon.png"]];
     self.forwardButton  = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.forwardButton setFrame:buttonFrame];
     [self.forwardButton setImage:forwardButtonImage forState:UIControlStateNormal];
     [self.forwardButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
     
-    self.reloadIcon = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewRefreshIcon.png"]];
-    self.stopIcon   = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewStopIcon.png"]];
+    self.reloadIcon = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerRefreshIcon.png"]];
+    self.stopIcon   = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerStopIcon.png"]];
     
-    self.reloadStopButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.reloadStopButton setFrame:buttonFrame];
-    [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
-    [self.reloadStopButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
-    
-    self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.actionButton setFrame:buttonFrame];
-    [self.actionButton setImage:[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewActionIcon.png"]] forState:UIControlStateNormal];
-    [self.actionButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+    if (self.showActionButton == NO)
+    {
+        self.reloadStopButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.reloadStopButton setFrame:buttonFrame];
+        [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+        [self.reloadStopButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+    }
+    else
+    {
+        self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.actionButton setFrame:buttonFrame];
+        [self.actionButton setImage:[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerActionIcon.png"]] forState:UIControlStateNormal];
+        [self.actionButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+    }
 }
 
 - (void)viewDidLoad
@@ -251,34 +268,39 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     CGRect buttonFrame = CGRectZero; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
     
     //set up the icons for the navigation bar
-    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, (NAVIGATION_BUTTON_WIDTH*3)+(NAVIGATION_BUTTON_SPACING*2), NAVIGATION_BUTTON_WIDTH)];
+    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, (NAVIGATION_BUTTON_WIDTH*2)+(NAVIGATION_BUTTON_SPACING*1), NAVIGATION_BUTTON_WIDTH)];
     iconsContainerView.backgroundColor = [UIColor clearColor];
     
     //add the back button
     self.backButton.frame = buttonFrame;
     [iconsContainerView addSubview:self.backButton];
     
-    //add the reload button
-    buttonFrame.origin.x = NAVIGATION_BUTTON_WIDTH + NAVIGATION_BUTTON_SPACING;
-    self.reloadStopButton.frame = buttonFrame;
-    [iconsContainerView addSubview:self.reloadStopButton];
+    //add the reload button if the action button is hidden
+    if (self.showActionButton==NO)
+    {
+        buttonFrame.origin.x = NAVIGATION_BUTTON_WIDTH + NAVIGATION_BUTTON_SPACING;
+        self.reloadStopButton.frame = buttonFrame;
+        [iconsContainerView addSubview:self.reloadStopButton];
+    }
+    else
+    {
+        //add the action button
+        buttonFrame.origin.x += NAVIGATION_BUTTON_WIDTH + NAVIGATION_BUTTON_SPACING;
+        self.actionButton.frame = buttonFrame;
+        [iconsContainerView addSubview:self.actionButton];
+    }
     
     //add the forward button too, but keep it hidden for now
     self.forwardButton.frame = buttonFrame;
     self.forwardButton.hidden = YES;
     [iconsContainerView addSubview:self.forwardButton];
     
-    //add the forward button too, but keep it hidden for now
-    buttonFrame.origin.x += NAVIGATION_BUTTON_WIDTH + NAVIGATION_BUTTON_SPACING;
-    self.actionButton.frame = buttonFrame;
-    [iconsContainerView addSubview:self.actionButton];
-    
     //push the buttons on the left to this controller's navigation item
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
 
     //create the 'Done' button
-    UIImage *doneButtonBG           = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewButtonBG.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
-    UIImage *doneButtonBGPressed    = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"ModalWebViewButtonBGPressed.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
+    UIImage *doneButtonBG           = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerButtonBG.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
+    UIImage *doneButtonBGPressed    = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerButtonBGPressed.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Modal Web View Controller Close") style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonTapped:)];
     [self.navigationItem.rightBarButtonItem setBackgroundImage:doneButtonBG forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
@@ -366,6 +388,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.loadingBarView.backgroundColor = self.loadingBarTintColor;
 }
 
+- (void)setTitle:(NSString *)title
+{
+    [super setTitle:title];
+    self.titleLabelView.text = title;
+}
+
 #pragma mark -
 #pragma mark WebView Delegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -397,12 +425,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //Save the URL in the accessor property
         _url = [request URL];
         [self resetLoadProgress];
-        
-        //set the title to the URL until we load the page properly
-        NSString *url = [request.URL absoluteString];
-        url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
-        url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
-        self.title = url;
     }
     
     return shouldStart;
@@ -461,18 +483,103 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)actionButtonTapped:(id)sender
 {
-    TOActionListItem *testItem = [[TOActionListItem alloc] initWithTitle:@"Test" withTapAction:^{}];
-    TOActionListItem *testItem2 = [[TOActionListItem alloc] initWithTitle:@"Test" withTapAction:^{}];
+    //set up the list of actions to display
     
-    NSArray *items = @[testItem,testItem2];
+    //The 'Stop/Refresh' button
+    TOWebViewControllerPopoverViewItem *reloadStopItem = [TOWebViewControllerPopoverViewItem new];
+    reloadStopItem.title = NSLocalizedString(@"Reload", @"Reload");
+    reloadStopItem.action = ^(TOWebViewControllerPopoverViewItem *item) {
+        
+        [self reloadStopButtonTapped:nil];
+        
+    };
     
-    TOActionListPopoverView *popoverView = [[TOActionListPopoverView alloc] initWithItems:items];
+    //The share button
+    TOWebViewControllerPopoverViewItem *sharingItem = [TOWebViewControllerPopoverViewItem new];
+    sharingItem.title = NSLocalizedString(@"Share...", @"Sharing button");
+    sharingItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openSharingDialog]; };
+    
+    // Open in button
+    BOOL chromeIsInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]];
+    TOWebViewControllerPopoverViewItem *openItem = [TOWebViewControllerPopoverViewItem new];
+    openItem.title = chromeIsInstalled ? NSLocalizedString(@"Open in Chrome", @"Open page in Chrome") : NSLocalizedString(@"Open in Safari", @"Open page in Safari");
+    openItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openInBrowser]; };
+    
+    //Copy Link button
+    TOWebViewControllerPopoverViewItem *copyLinkItem = [TOWebViewControllerPopoverViewItem new];
+    copyLinkItem.title = NSLocalizedString(@"Copy Link", @"Copy Link to Pasteboard");
+    copyLinkItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [[UIPasteboard generalPasteboard] setString:[self.webView.request.URL absoluteString]]; };
+    
+    TOWebViewControllerPopoverView *popoverView = [TOWebViewControllerPopoverView new];
+    popoverView.leftHeaderItem = reloadStopItem;
+    popoverView.rightHeaderItem = sharingItem;
+    popoverView.items = @[openItem,copyLinkItem];
+    
     [popoverView presentPopoverFromView:sender animated:YES];
 }
 
 - (void)doneButtonTapped:(id)sender
 {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark -
+#pragma mark Action Item Event Handlers
+- (void)openSharingDialog
+{
+    if (NSClassFromString(@"UIActivityViewController"))
+    {
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.url] applicationActivities:nil];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        {
+            [self presentModalViewController:activityViewController animated:YES];
+        }
+        else
+        {
+            UIPopoverController *popOverController = [[UIPopoverController alloc] initWithContentViewController:activityViewController];
+            [popOverController presentPopoverFromRect:self.actionButton.frame inView:self.actionButton.superview permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        }
+    }
+}
+
+- (void)openInBrowser
+{
+    BOOL chromeIsInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]];
+    NSURL *inputURL = self.webView.request.URL;
+
+    if (chromeIsInstalled)
+    {
+        NSString *scheme = inputURL.scheme;
+        
+        // Replace the URL Scheme with the Chrome equivalent.
+        NSString *chromeScheme = nil;
+        if ([scheme isEqualToString:@"http"])
+        {
+            chromeScheme = @"googlechrome";
+        }
+        else if ([scheme isEqualToString:@"https"])
+        {
+            chromeScheme = @"googlechromes";
+        }
+        
+        // Proceed only if a valid Google Chrome URI Scheme is available.
+        if (chromeScheme)
+        {
+            NSString *absoluteString    = [inputURL absoluteString];
+            NSRange rangeForScheme      = [absoluteString rangeOfString:@":"];
+            NSString *urlNoScheme       = [absoluteString substringFromIndex:rangeForScheme.location];
+            NSString *chromeURLString   = [chromeScheme stringByAppendingString:urlNoScheme];
+            NSURL *chromeURL            = [NSURL URLWithString:chromeURLString];
+            
+            // Open the URL with Chrome.
+            [[UIApplication sharedApplication] openURL:chromeURL];
+            
+            return;
+        }
+    }
+    
+    //If all else fails (Or Chrome is simply not installed), open as per usual
+    [[UIApplication sharedApplication] openURL:inputURL];
 }
 
 #pragma mark -
@@ -502,6 +609,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         
         //show that loading started in the status bar
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        
+        //set the title to the URL until we load the page properly
+        NSString *url = [self.url absoluteString];
+        url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+        url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+        self.title = url;
     }
 }
 
@@ -593,49 +706,52 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark Button State Handling
 - (void)refreshButtonsState
 {
-  //Toggle the stop/reload button
-  if (self.webView.isLoading == NO)
-      [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
-  else
-      [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
-  
-  //update the state for the back button
-  if (self.webView.canGoBack)
-      [self.backButton setEnabled:YES];
-  else
-      [self.backButton setEnabled:NO];
-  
-  //update the state for the forward button
-  if (self.webView.canGoForward && self.forwardButton.hidden)
-  {
-      UIView *containerView = self.forwardButton.superview;
+    //Toggle the stop/reload button
+    if (self.webView.isLoading == NO)
+        [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+    else
+        [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
+
+    //update the state for the back button
+    if (self.webView.canGoBack)
+        [self.backButton setEnabled:YES];
+    else
+        [self.backButton setEnabled:NO];
+
+    __block UIButton *endButton = self.showActionButton ? self.actionButton : self.reloadStopButton;
     
-      self.forwardButton.alpha = 0.0f;
-      self.forwardButton.hidden = NO;
-    
-      [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
-          //make the forward button visible
-          self.forwardButton.alpha = 1.0f;
-      
-          //animate the container to accomodate
-          CGRect frame = containerView.frame;
-          frame.size.width = (NAVIGATION_BUTTON_WIDTH*3) + (NAVIGATION_BUTTON_SPACING*2);
-          containerView.frame = frame;
-      
-          //move the reload buttons
-          frame = self.reloadStopButton.frame;
-          frame.origin.x = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING*2);
-          self.reloadStopButton.frame = frame;
-      }];
-  }
-  
+    //update the state for the forward button
+    if (self.webView.canGoForward && self.forwardButton.hidden)
+    {
+          UIView *containerView = self.forwardButton.superview;
+
+          self.forwardButton.alpha = 0.0f;
+          self.forwardButton.hidden = NO;
+
+          [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
+              
+              //make the forward button visible
+              self.forwardButton.alpha = 1.0f;
+          
+              //animate the container to accomodate
+              CGRect frame = containerView.frame;
+              frame.size.width = (NAVIGATION_BUTTON_WIDTH*3) + (NAVIGATION_BUTTON_SPACING*2);
+              containerView.frame = frame;
+          
+              //move the reload buttons
+              frame = endButton.frame;
+              frame.origin.x = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING*2);
+              endButton.frame = frame;
+          }];
+    }
+
     if (self.webView.canGoForward == NO && self.forwardButton.hidden == NO)
     {
         UIView *containerView = self.forwardButton.superview;
         self.forwardButton.alpha = 1.0f;
-    
-        [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:
-         ^{
+
+        [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
+            
              //make the forward button invisible
              self.forwardButton.alpha = 0.0f;
        
@@ -645,12 +761,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
              containerView.frame = frame;
        
              //move the reload buttons
-             frame = self.reloadStopButton.frame;
+             frame = endButton.frame;
              frame.origin.x = (NAVIGATION_BUTTON_WIDTH) + (NAVIGATION_BUTTON_SPACING);
-             self.reloadStopButton.frame = frame;
-       }
-        completion:^(BOOL completion)
-       {
+             endButton.frame = frame;
+       } completion:^(BOOL completion) {
            self.forwardButton.hidden = YES;
        }];
     }

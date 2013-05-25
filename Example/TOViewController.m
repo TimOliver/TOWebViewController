@@ -7,7 +7,7 @@
 //
 
 #import "TOViewController.h"
-#import "TOModalWebViewController.h"
+#import "TOWebViewController.h"
 
 @interface TOViewController ()
 
@@ -15,9 +15,14 @@
 
 @implementation TOViewController
 
+- (void)viewDidLoad
+{
+    
+}
+
 - (IBAction)openButtonTapped:(id)sender
 {
-    TOModalWebViewController *webViewController = [[TOModalWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://icomics.co/"]];
+    TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://apple.com/"]];
     webViewController.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:webViewController animated:YES completion:nil];
 }

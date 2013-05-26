@@ -21,10 +21,10 @@ my requirements, not to mention would be properly reusable in other projects wou
   * Back refresh buttons, with a forward button that only appears when necessary.
   * PROPER, ACTUAL orientation animations when rotating the device (Check out iOS Chrome, then check out Safari. You'll see what I mean.)
   * A loading bar to indicate current page load progress (using [ninjinkun's amazing algorithm](https://github.com/ninjinkun/NJKWebViewProgress) )
+  * An optional action button to allow the user to open the page in Safari (or Chrome) as well as share the URL socially.
   * (TODO) Implement a confirmation dialog when the web view tries to switch to another app.
   * (TODO) Re-implement the popup that appears when users tap and hold a link for added flexibility.  
   * (TODO) An optional text field for which users may manually enter in a URL
-  * (TODO) An optional action button to allow the user to open the page in Safari (or Chrome) as well as share the URL socially.
   * (TODO) A proper delegate system to allow external classes to interact with this controller.
   * (TODO) A rudimentary bookmark system.
 

@@ -11,38 +11,40 @@
 		225014FA1737B89100DF6D7E /* TOViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 225014F71737B89100DF6D7E /* TOViewController_iPhone.xib */; };
 		225015031737B8B000DF6D7E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 225015011737B8B000DF6D7E /* InfoPlist.strings */; };
 		225A033D1737E9790086E75F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225A033C1737E9790086E75F /* QuartzCore.framework */; };
+		225F48C817524EF900A3558A /* TOWebViewControllerActionIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48AA17524EF900A3558A /* TOWebViewControllerActionIcon.png */; };
+		225F48C917524EF900A3558A /* TOWebViewControllerActionIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48AB17524EF900A3558A /* TOWebViewControllerActionIcon@2x.png */; };
+		225F48CA17524EF900A3558A /* TOWebViewControllerBackIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48AC17524EF900A3558A /* TOWebViewControllerBackIcon.png */; };
+		225F48CB17524EF900A3558A /* TOWebViewControllerBackIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48AD17524EF900A3558A /* TOWebViewControllerBackIcon@2x.png */; };
+		225F48CC17524EF900A3558A /* TOWebViewControllerButtonBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48AE17524EF900A3558A /* TOWebViewControllerButtonBG.png */; };
+		225F48CD17524EF900A3558A /* TOWebViewControllerButtonBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48AF17524EF900A3558A /* TOWebViewControllerButtonBG@2x.png */; };
+		225F48CE17524EF900A3558A /* TOWebViewControllerButtonBGPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48B017524EF900A3558A /* TOWebViewControllerButtonBGPressed.png */; };
+		225F48CF17524EF900A3558A /* TOWebViewControllerButtonBGPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48B117524EF900A3558A /* TOWebViewControllerButtonBGPressed@2x.png */; };
+		225F48D017524EF900A3558A /* TOWebViewControllerForwardIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48B217524EF900A3558A /* TOWebViewControllerForwardIcon.png */; };
+		225F48D117524EF900A3558A /* TOWebViewControllerForwardIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48B317524EF900A3558A /* TOWebViewControllerForwardIcon@2x.png */; };
+		225F48D217524EF900A3558A /* TOWebViewControllerIconPressedBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48B417524EF900A3558A /* TOWebViewControllerIconPressedBG.png */; };
+		225F48D317524EF900A3558A /* TOWebViewControllerIconPressedBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48B517524EF900A3558A /* TOWebViewControllerIconPressedBG@2x.png */; };
+		225F48D417524EF900A3558A /* TOWebViewControllerNavigationBarBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48B617524EF900A3558A /* TOWebViewControllerNavigationBarBG.png */; };
+		225F48D517524EF900A3558A /* TOWebViewControllerNavigationBarBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48B717524EF900A3558A /* TOWebViewControllerNavigationBarBG@2x.png */; };
+		225F48DA17524EF900A3558A /* TOWebViewControllerPopupArrowTop.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48BC17524EF900A3558A /* TOWebViewControllerPopupArrowTop.png */; };
+		225F48DB17524EF900A3558A /* TOWebViewControllerPopupArrowTop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48BD17524EF900A3558A /* TOWebViewControllerPopupArrowTop@2x.png */; };
+		225F48DC17524EF900A3558A /* TOWebViewControllerPopupButtonBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48BE17524EF900A3558A /* TOWebViewControllerPopupButtonBG.png */; };
+		225F48DD17524EF900A3558A /* TOWebViewControllerPopupButtonBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48BF17524EF900A3558A /* TOWebViewControllerPopupButtonBG@2x.png */; };
+		225F48DE17524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48C017524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG.png */; };
+		225F48DF17524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48C117524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG@2x.png */; };
+		225F48E017524EF900A3558A /* TOWebViewControllerPopupViewBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48C217524EF900A3558A /* TOWebViewControllerPopupViewBG.png */; };
+		225F48E117524EF900A3558A /* TOWebViewControllerPopupViewBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48C317524EF900A3558A /* TOWebViewControllerPopupViewBG@2x.png */; };
+		225F48E217524EF900A3558A /* TOWebViewControllerRefreshIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48C417524EF900A3558A /* TOWebViewControllerRefreshIcon.png */; };
+		225F48E317524EF900A3558A /* TOWebViewControllerRefreshIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48C517524EF900A3558A /* TOWebViewControllerRefreshIcon@2x.png */; };
+		225F48E417524EF900A3558A /* TOWebViewControllerStopIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48C617524EF900A3558A /* TOWebViewControllerStopIcon.png */; };
+		225F48E517524EF900A3558A /* TOWebViewControllerStopIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 225F48C717524EF900A3558A /* TOWebViewControllerStopIcon@2x.png */; };
+		225F48E717525CC100A3558A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225F48E617525CC100A3558A /* MessageUI.framework */; };
+		225F48E917525E8600A3558A /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225F48E817525E8600A3558A /* Twitter.framework */; };
 		2265F357173FF4CD00A68010 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2265F356173FF4CD00A68010 /* Default-568h@2x.png */; };
 		227C55F71750F1F500FC3411 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 228456D41750DE9100468FF4 /* TOWebViewController.m */; };
 		227C55F81750F1F700FC3411 /* TOWebViewControllerPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 228456D61750DE9100468FF4 /* TOWebViewControllerPopoverView.m */; };
 		227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F21737B87600DF6D7E /* TOAppDelegate.m */; };
 		227C55FA1750F1F900FC3411 /* TOViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F41737B87600DF6D7E /* TOViewController.m */; };
 		227C55FB1750F20700FC3411 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014FE1737B8A200DF6D7E /* main.m */; };
-		227C55FC1750F26600FC3411 /* TOWebViewControllerActionIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456B91750DE9100468FF4 /* TOWebViewControllerActionIcon.png */; };
-		227C55FD1750F26600FC3411 /* TOWebViewControllerActionIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456BA1750DE9100468FF4 /* TOWebViewControllerActionIcon@2x.png */; };
-		227C55FE1750F26600FC3411 /* TOWebViewControllerBackIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456BB1750DE9100468FF4 /* TOWebViewControllerBackIcon.png */; };
-		227C55FF1750F26600FC3411 /* TOWebViewControllerBackIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456BC1750DE9100468FF4 /* TOWebViewControllerBackIcon@2x.png */; };
-		227C56001750F26600FC3411 /* TOWebViewControllerButtonBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456BD1750DE9100468FF4 /* TOWebViewControllerButtonBG.png */; };
-		227C56011750F26600FC3411 /* TOWebViewControllerButtonBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456BE1750DE9100468FF4 /* TOWebViewControllerButtonBG@2x.png */; };
-		227C56021750F26600FC3411 /* TOWebViewControllerButtonBGPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456BF1750DE9100468FF4 /* TOWebViewControllerButtonBGPressed.png */; };
-		227C56031750F26600FC3411 /* TOWebViewControllerButtonBGPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C01750DE9100468FF4 /* TOWebViewControllerButtonBGPressed@2x.png */; };
-		227C56041750F26600FC3411 /* TOWebViewControllerForwardIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C11750DE9100468FF4 /* TOWebViewControllerForwardIcon.png */; };
-		227C56051750F26600FC3411 /* TOWebViewControllerForwardIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C21750DE9100468FF4 /* TOWebViewControllerForwardIcon@2x.png */; };
-		227C56061750F26600FC3411 /* TOWebViewControllerIconPressedBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C31750DE9100468FF4 /* TOWebViewControllerIconPressedBG.png */; };
-		227C56071750F26600FC3411 /* TOWebViewControllerIconPressedBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C41750DE9100468FF4 /* TOWebViewControllerIconPressedBG@2x.png */; };
-		227C56081750F26600FC3411 /* TOWebViewControllerNavigationBarBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C51750DE9100468FF4 /* TOWebViewControllerNavigationBarBG.png */; };
-		227C56091750F26600FC3411 /* TOWebViewControllerNavigationBarBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C61750DE9100468FF4 /* TOWebViewControllerNavigationBarBG@2x.png */; };
-		227C560A1750F26600FC3411 /* TOWebViewControllerPopupArrowTop.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C71750DE9100468FF4 /* TOWebViewControllerPopupArrowTop.png */; };
-		227C560B1750F26600FC3411 /* TOWebViewControllerPopupArrowTop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C81750DE9100468FF4 /* TOWebViewControllerPopupArrowTop@2x.png */; };
-		227C560C1750F26600FC3411 /* TOWebViewControllerPopupButtonBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456C91750DE9100468FF4 /* TOWebViewControllerPopupButtonBG.png */; };
-		227C560D1750F26600FC3411 /* TOWebViewControllerPopupButtonBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456CA1750DE9100468FF4 /* TOWebViewControllerPopupButtonBG@2x.png */; };
-		227C560E1750F26600FC3411 /* TOWebViewControllerPopupButtonPressedBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456CB1750DE9100468FF4 /* TOWebViewControllerPopupButtonPressedBG.png */; };
-		227C560F1750F26600FC3411 /* TOWebViewControllerPopupButtonPressedBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456CC1750DE9100468FF4 /* TOWebViewControllerPopupButtonPressedBG@2x.png */; };
-		227C56101750F26600FC3411 /* TOWebViewControllerPopupViewBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456CD1750DE9100468FF4 /* TOWebViewControllerPopupViewBG.png */; };
-		227C56111750F26600FC3411 /* TOWebViewControllerPopupViewBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456CE1750DE9100468FF4 /* TOWebViewControllerPopupViewBG@2x.png */; };
-		227C56121750F26600FC3411 /* TOWebViewControllerRefreshIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456CF1750DE9100468FF4 /* TOWebViewControllerRefreshIcon.png */; };
-		227C56131750F26600FC3411 /* TOWebViewControllerRefreshIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456D01750DE9100468FF4 /* TOWebViewControllerRefreshIcon@2x.png */; };
-		227C56141750F26600FC3411 /* TOWebViewControllerStopIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456D11750DE9100468FF4 /* TOWebViewControllerStopIcon.png */; };
-		227C56151750F26600FC3411 /* TOWebViewControllerStopIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 228456D21750DE9100468FF4 /* TOWebViewControllerStopIcon@2x.png */; };
 		22834A411737B5A50043F7DF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A401737B5A50043F7DF /* UIKit.framework */; };
 		22834A431737B5A50043F7DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A421737B5A50043F7DF /* Foundation.framework */; };
 		22834A451737B5A50043F7DF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A441737B5A50043F7DF /* CoreGraphics.framework */; };
@@ -62,37 +64,39 @@
 		225015001737B8A200DF6D7E /* TOWebViewControllerExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TOWebViewControllerExample-Prefix.pch"; path = "Example/TOWebViewControllerExample-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		225015021737B8B000DF6D7E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Example/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
 		225A033C1737E9790086E75F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		225F48AA17524EF900A3558A /* TOWebViewControllerActionIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerActionIcon.png; sourceTree = "<group>"; };
+		225F48AB17524EF900A3558A /* TOWebViewControllerActionIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerActionIcon@2x.png"; sourceTree = "<group>"; };
+		225F48AC17524EF900A3558A /* TOWebViewControllerBackIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerBackIcon.png; sourceTree = "<group>"; };
+		225F48AD17524EF900A3558A /* TOWebViewControllerBackIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerBackIcon@2x.png"; sourceTree = "<group>"; };
+		225F48AE17524EF900A3558A /* TOWebViewControllerButtonBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerButtonBG.png; sourceTree = "<group>"; };
+		225F48AF17524EF900A3558A /* TOWebViewControllerButtonBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerButtonBG@2x.png"; sourceTree = "<group>"; };
+		225F48B017524EF900A3558A /* TOWebViewControllerButtonBGPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerButtonBGPressed.png; sourceTree = "<group>"; };
+		225F48B117524EF900A3558A /* TOWebViewControllerButtonBGPressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerButtonBGPressed@2x.png"; sourceTree = "<group>"; };
+		225F48B217524EF900A3558A /* TOWebViewControllerForwardIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerForwardIcon.png; sourceTree = "<group>"; };
+		225F48B317524EF900A3558A /* TOWebViewControllerForwardIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerForwardIcon@2x.png"; sourceTree = "<group>"; };
+		225F48B417524EF900A3558A /* TOWebViewControllerIconPressedBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerIconPressedBG.png; sourceTree = "<group>"; };
+		225F48B517524EF900A3558A /* TOWebViewControllerIconPressedBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerIconPressedBG@2x.png"; sourceTree = "<group>"; };
+		225F48B617524EF900A3558A /* TOWebViewControllerNavigationBarBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerNavigationBarBG.png; sourceTree = "<group>"; };
+		225F48B717524EF900A3558A /* TOWebViewControllerNavigationBarBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerNavigationBarBG@2x.png"; sourceTree = "<group>"; };
+		225F48BC17524EF900A3558A /* TOWebViewControllerPopupArrowTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupArrowTop.png; sourceTree = "<group>"; };
+		225F48BD17524EF900A3558A /* TOWebViewControllerPopupArrowTop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupArrowTop@2x.png"; sourceTree = "<group>"; };
+		225F48BE17524EF900A3558A /* TOWebViewControllerPopupButtonBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupButtonBG.png; sourceTree = "<group>"; };
+		225F48BF17524EF900A3558A /* TOWebViewControllerPopupButtonBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupButtonBG@2x.png"; sourceTree = "<group>"; };
+		225F48C017524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupButtonPressedBG.png; sourceTree = "<group>"; };
+		225F48C117524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupButtonPressedBG@2x.png"; sourceTree = "<group>"; };
+		225F48C217524EF900A3558A /* TOWebViewControllerPopupViewBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupViewBG.png; sourceTree = "<group>"; };
+		225F48C317524EF900A3558A /* TOWebViewControllerPopupViewBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupViewBG@2x.png"; sourceTree = "<group>"; };
+		225F48C417524EF900A3558A /* TOWebViewControllerRefreshIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerRefreshIcon.png; sourceTree = "<group>"; };
+		225F48C517524EF900A3558A /* TOWebViewControllerRefreshIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerRefreshIcon@2x.png"; sourceTree = "<group>"; };
+		225F48C617524EF900A3558A /* TOWebViewControllerStopIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerStopIcon.png; sourceTree = "<group>"; };
+		225F48C717524EF900A3558A /* TOWebViewControllerStopIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerStopIcon@2x.png"; sourceTree = "<group>"; };
+		225F48E617525CC100A3558A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		225F48E817525E8600A3558A /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		2265F356173FF4CD00A68010 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Example/Default-568h@2x.png"; sourceTree = SOURCE_ROOT; };
 		22834A3D1737B5A50043F7DF /* TOWebViewControllerExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TOWebViewControllerExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22834A401737B5A50043F7DF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		22834A421737B5A50043F7DF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		22834A441737B5A50043F7DF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		228456B91750DE9100468FF4 /* TOWebViewControllerActionIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerActionIcon.png; sourceTree = "<group>"; };
-		228456BA1750DE9100468FF4 /* TOWebViewControllerActionIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerActionIcon@2x.png"; sourceTree = "<group>"; };
-		228456BB1750DE9100468FF4 /* TOWebViewControllerBackIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerBackIcon.png; sourceTree = "<group>"; };
-		228456BC1750DE9100468FF4 /* TOWebViewControllerBackIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerBackIcon@2x.png"; sourceTree = "<group>"; };
-		228456BD1750DE9100468FF4 /* TOWebViewControllerButtonBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerButtonBG.png; sourceTree = "<group>"; };
-		228456BE1750DE9100468FF4 /* TOWebViewControllerButtonBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerButtonBG@2x.png"; sourceTree = "<group>"; };
-		228456BF1750DE9100468FF4 /* TOWebViewControllerButtonBGPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerButtonBGPressed.png; sourceTree = "<group>"; };
-		228456C01750DE9100468FF4 /* TOWebViewControllerButtonBGPressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerButtonBGPressed@2x.png"; sourceTree = "<group>"; };
-		228456C11750DE9100468FF4 /* TOWebViewControllerForwardIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerForwardIcon.png; sourceTree = "<group>"; };
-		228456C21750DE9100468FF4 /* TOWebViewControllerForwardIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerForwardIcon@2x.png"; sourceTree = "<group>"; };
-		228456C31750DE9100468FF4 /* TOWebViewControllerIconPressedBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerIconPressedBG.png; sourceTree = "<group>"; };
-		228456C41750DE9100468FF4 /* TOWebViewControllerIconPressedBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerIconPressedBG@2x.png"; sourceTree = "<group>"; };
-		228456C51750DE9100468FF4 /* TOWebViewControllerNavigationBarBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerNavigationBarBG.png; sourceTree = "<group>"; };
-		228456C61750DE9100468FF4 /* TOWebViewControllerNavigationBarBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerNavigationBarBG@2x.png"; sourceTree = "<group>"; };
-		228456C71750DE9100468FF4 /* TOWebViewControllerPopupArrowTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupArrowTop.png; sourceTree = "<group>"; };
-		228456C81750DE9100468FF4 /* TOWebViewControllerPopupArrowTop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupArrowTop@2x.png"; sourceTree = "<group>"; };
-		228456C91750DE9100468FF4 /* TOWebViewControllerPopupButtonBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupButtonBG.png; sourceTree = "<group>"; };
-		228456CA1750DE9100468FF4 /* TOWebViewControllerPopupButtonBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupButtonBG@2x.png"; sourceTree = "<group>"; };
-		228456CB1750DE9100468FF4 /* TOWebViewControllerPopupButtonPressedBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupButtonPressedBG.png; sourceTree = "<group>"; };
-		228456CC1750DE9100468FF4 /* TOWebViewControllerPopupButtonPressedBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupButtonPressedBG@2x.png"; sourceTree = "<group>"; };
-		228456CD1750DE9100468FF4 /* TOWebViewControllerPopupViewBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupViewBG.png; sourceTree = "<group>"; };
-		228456CE1750DE9100468FF4 /* TOWebViewControllerPopupViewBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupViewBG@2x.png"; sourceTree = "<group>"; };
-		228456CF1750DE9100468FF4 /* TOWebViewControllerRefreshIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerRefreshIcon.png; sourceTree = "<group>"; };
-		228456D01750DE9100468FF4 /* TOWebViewControllerRefreshIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerRefreshIcon@2x.png"; sourceTree = "<group>"; };
-		228456D11750DE9100468FF4 /* TOWebViewControllerStopIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerStopIcon.png; sourceTree = "<group>"; };
-		228456D21750DE9100468FF4 /* TOWebViewControllerStopIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerStopIcon@2x.png"; sourceTree = "<group>"; };
 		228456D31750DE9100468FF4 /* TOWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TOWebViewController.h; path = TOWebViewController/TOWebViewController.h; sourceTree = SOURCE_ROOT; };
 		228456D41750DE9100468FF4 /* TOWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TOWebViewController.m; path = TOWebViewController/TOWebViewController.m; sourceTree = SOURCE_ROOT; };
 		228456D51750DE9100468FF4 /* TOWebViewControllerPopoverView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TOWebViewControllerPopoverView.h; path = TOWebViewController/TOWebViewControllerPopoverView.h; sourceTree = SOURCE_ROOT; };
@@ -104,6 +108,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				225F48E917525E8600A3558A /* Twitter.framework in Frameworks */,
+				225F48E717525CC100A3558A /* MessageUI.framework in Frameworks */,
 				225A033D1737E9790086E75F /* QuartzCore.framework in Frameworks */,
 				22834A411737B5A50043F7DF /* UIKit.framework in Frameworks */,
 				22834A431737B5A50043F7DF /* Foundation.framework in Frameworks */,
@@ -134,6 +140,8 @@
 		22834A3F1737B5A50043F7DF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				225F48E817525E8600A3558A /* Twitter.framework */,
+				225F48E617525CC100A3558A /* MessageUI.framework */,
 				225A033C1737E9790086E75F /* QuartzCore.framework */,
 				22834A401737B5A50043F7DF /* UIKit.framework */,
 				22834A421737B5A50043F7DF /* Foundation.framework */,
@@ -174,32 +182,32 @@
 		228456B81750DE9100468FF4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				228456B91750DE9100468FF4 /* TOWebViewControllerActionIcon.png */,
-				228456BA1750DE9100468FF4 /* TOWebViewControllerActionIcon@2x.png */,
-				228456BB1750DE9100468FF4 /* TOWebViewControllerBackIcon.png */,
-				228456BC1750DE9100468FF4 /* TOWebViewControllerBackIcon@2x.png */,
-				228456BD1750DE9100468FF4 /* TOWebViewControllerButtonBG.png */,
-				228456BE1750DE9100468FF4 /* TOWebViewControllerButtonBG@2x.png */,
-				228456BF1750DE9100468FF4 /* TOWebViewControllerButtonBGPressed.png */,
-				228456C01750DE9100468FF4 /* TOWebViewControllerButtonBGPressed@2x.png */,
-				228456C11750DE9100468FF4 /* TOWebViewControllerForwardIcon.png */,
-				228456C21750DE9100468FF4 /* TOWebViewControllerForwardIcon@2x.png */,
-				228456C31750DE9100468FF4 /* TOWebViewControllerIconPressedBG.png */,
-				228456C41750DE9100468FF4 /* TOWebViewControllerIconPressedBG@2x.png */,
-				228456C51750DE9100468FF4 /* TOWebViewControllerNavigationBarBG.png */,
-				228456C61750DE9100468FF4 /* TOWebViewControllerNavigationBarBG@2x.png */,
-				228456C71750DE9100468FF4 /* TOWebViewControllerPopupArrowTop.png */,
-				228456C81750DE9100468FF4 /* TOWebViewControllerPopupArrowTop@2x.png */,
-				228456C91750DE9100468FF4 /* TOWebViewControllerPopupButtonBG.png */,
-				228456CA1750DE9100468FF4 /* TOWebViewControllerPopupButtonBG@2x.png */,
-				228456CB1750DE9100468FF4 /* TOWebViewControllerPopupButtonPressedBG.png */,
-				228456CC1750DE9100468FF4 /* TOWebViewControllerPopupButtonPressedBG@2x.png */,
-				228456CD1750DE9100468FF4 /* TOWebViewControllerPopupViewBG.png */,
-				228456CE1750DE9100468FF4 /* TOWebViewControllerPopupViewBG@2x.png */,
-				228456CF1750DE9100468FF4 /* TOWebViewControllerRefreshIcon.png */,
-				228456D01750DE9100468FF4 /* TOWebViewControllerRefreshIcon@2x.png */,
-				228456D11750DE9100468FF4 /* TOWebViewControllerStopIcon.png */,
-				228456D21750DE9100468FF4 /* TOWebViewControllerStopIcon@2x.png */,
+				225F48AA17524EF900A3558A /* TOWebViewControllerActionIcon.png */,
+				225F48AB17524EF900A3558A /* TOWebViewControllerActionIcon@2x.png */,
+				225F48AC17524EF900A3558A /* TOWebViewControllerBackIcon.png */,
+				225F48AD17524EF900A3558A /* TOWebViewControllerBackIcon@2x.png */,
+				225F48AE17524EF900A3558A /* TOWebViewControllerButtonBG.png */,
+				225F48AF17524EF900A3558A /* TOWebViewControllerButtonBG@2x.png */,
+				225F48B017524EF900A3558A /* TOWebViewControllerButtonBGPressed.png */,
+				225F48B117524EF900A3558A /* TOWebViewControllerButtonBGPressed@2x.png */,
+				225F48B217524EF900A3558A /* TOWebViewControllerForwardIcon.png */,
+				225F48B317524EF900A3558A /* TOWebViewControllerForwardIcon@2x.png */,
+				225F48B417524EF900A3558A /* TOWebViewControllerIconPressedBG.png */,
+				225F48B517524EF900A3558A /* TOWebViewControllerIconPressedBG@2x.png */,
+				225F48B617524EF900A3558A /* TOWebViewControllerNavigationBarBG.png */,
+				225F48B717524EF900A3558A /* TOWebViewControllerNavigationBarBG@2x.png */,
+				225F48BC17524EF900A3558A /* TOWebViewControllerPopupArrowTop.png */,
+				225F48BD17524EF900A3558A /* TOWebViewControllerPopupArrowTop@2x.png */,
+				225F48BE17524EF900A3558A /* TOWebViewControllerPopupButtonBG.png */,
+				225F48BF17524EF900A3558A /* TOWebViewControllerPopupButtonBG@2x.png */,
+				225F48C017524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG.png */,
+				225F48C117524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG@2x.png */,
+				225F48C217524EF900A3558A /* TOWebViewControllerPopupViewBG.png */,
+				225F48C317524EF900A3558A /* TOWebViewControllerPopupViewBG@2x.png */,
+				225F48C417524EF900A3558A /* TOWebViewControllerRefreshIcon.png */,
+				225F48C517524EF900A3558A /* TOWebViewControllerRefreshIcon@2x.png */,
+				225F48C617524EF900A3558A /* TOWebViewControllerStopIcon.png */,
+				225F48C717524EF900A3558A /* TOWebViewControllerStopIcon@2x.png */,
 			);
 			name = Resources;
 			path = TOWebViewController/Resources;
@@ -269,36 +277,36 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				227C55FC1750F26600FC3411 /* TOWebViewControllerActionIcon.png in Resources */,
-				227C55FD1750F26600FC3411 /* TOWebViewControllerActionIcon@2x.png in Resources */,
-				227C55FE1750F26600FC3411 /* TOWebViewControllerBackIcon.png in Resources */,
-				227C55FF1750F26600FC3411 /* TOWebViewControllerBackIcon@2x.png in Resources */,
-				227C56001750F26600FC3411 /* TOWebViewControllerButtonBG.png in Resources */,
-				227C56011750F26600FC3411 /* TOWebViewControllerButtonBG@2x.png in Resources */,
-				227C56021750F26600FC3411 /* TOWebViewControllerButtonBGPressed.png in Resources */,
-				227C56031750F26600FC3411 /* TOWebViewControllerButtonBGPressed@2x.png in Resources */,
-				227C56041750F26600FC3411 /* TOWebViewControllerForwardIcon.png in Resources */,
-				227C56051750F26600FC3411 /* TOWebViewControllerForwardIcon@2x.png in Resources */,
-				227C56061750F26600FC3411 /* TOWebViewControllerIconPressedBG.png in Resources */,
-				227C56071750F26600FC3411 /* TOWebViewControllerIconPressedBG@2x.png in Resources */,
-				227C56081750F26600FC3411 /* TOWebViewControllerNavigationBarBG.png in Resources */,
-				227C56091750F26600FC3411 /* TOWebViewControllerNavigationBarBG@2x.png in Resources */,
-				227C560A1750F26600FC3411 /* TOWebViewControllerPopupArrowTop.png in Resources */,
-				227C560B1750F26600FC3411 /* TOWebViewControllerPopupArrowTop@2x.png in Resources */,
-				227C560C1750F26600FC3411 /* TOWebViewControllerPopupButtonBG.png in Resources */,
-				227C560D1750F26600FC3411 /* TOWebViewControllerPopupButtonBG@2x.png in Resources */,
-				227C560E1750F26600FC3411 /* TOWebViewControllerPopupButtonPressedBG.png in Resources */,
-				227C560F1750F26600FC3411 /* TOWebViewControllerPopupButtonPressedBG@2x.png in Resources */,
-				227C56101750F26600FC3411 /* TOWebViewControllerPopupViewBG.png in Resources */,
-				227C56111750F26600FC3411 /* TOWebViewControllerPopupViewBG@2x.png in Resources */,
-				227C56121750F26600FC3411 /* TOWebViewControllerRefreshIcon.png in Resources */,
-				227C56131750F26600FC3411 /* TOWebViewControllerRefreshIcon@2x.png in Resources */,
-				227C56141750F26600FC3411 /* TOWebViewControllerStopIcon.png in Resources */,
-				227C56151750F26600FC3411 /* TOWebViewControllerStopIcon@2x.png in Resources */,
 				225014F91737B89100DF6D7E /* TOViewController_iPad.xib in Resources */,
 				225014FA1737B89100DF6D7E /* TOViewController_iPhone.xib in Resources */,
 				225015031737B8B000DF6D7E /* InfoPlist.strings in Resources */,
 				2265F357173FF4CD00A68010 /* Default-568h@2x.png in Resources */,
+				225F48C817524EF900A3558A /* TOWebViewControllerActionIcon.png in Resources */,
+				225F48C917524EF900A3558A /* TOWebViewControllerActionIcon@2x.png in Resources */,
+				225F48CA17524EF900A3558A /* TOWebViewControllerBackIcon.png in Resources */,
+				225F48CB17524EF900A3558A /* TOWebViewControllerBackIcon@2x.png in Resources */,
+				225F48CC17524EF900A3558A /* TOWebViewControllerButtonBG.png in Resources */,
+				225F48CD17524EF900A3558A /* TOWebViewControllerButtonBG@2x.png in Resources */,
+				225F48CE17524EF900A3558A /* TOWebViewControllerButtonBGPressed.png in Resources */,
+				225F48CF17524EF900A3558A /* TOWebViewControllerButtonBGPressed@2x.png in Resources */,
+				225F48D017524EF900A3558A /* TOWebViewControllerForwardIcon.png in Resources */,
+				225F48D117524EF900A3558A /* TOWebViewControllerForwardIcon@2x.png in Resources */,
+				225F48D217524EF900A3558A /* TOWebViewControllerIconPressedBG.png in Resources */,
+				225F48D317524EF900A3558A /* TOWebViewControllerIconPressedBG@2x.png in Resources */,
+				225F48D417524EF900A3558A /* TOWebViewControllerNavigationBarBG.png in Resources */,
+				225F48D517524EF900A3558A /* TOWebViewControllerNavigationBarBG@2x.png in Resources */,
+				225F48DA17524EF900A3558A /* TOWebViewControllerPopupArrowTop.png in Resources */,
+				225F48DB17524EF900A3558A /* TOWebViewControllerPopupArrowTop@2x.png in Resources */,
+				225F48DC17524EF900A3558A /* TOWebViewControllerPopupButtonBG.png in Resources */,
+				225F48DD17524EF900A3558A /* TOWebViewControllerPopupButtonBG@2x.png in Resources */,
+				225F48DE17524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG.png in Resources */,
+				225F48DF17524EF900A3558A /* TOWebViewControllerPopupButtonPressedBG@2x.png in Resources */,
+				225F48E017524EF900A3558A /* TOWebViewControllerPopupViewBG.png in Resources */,
+				225F48E117524EF900A3558A /* TOWebViewControllerPopupViewBG@2x.png in Resources */,
+				225F48E217524EF900A3558A /* TOWebViewControllerRefreshIcon.png in Resources */,
+				225F48E317524EF900A3558A /* TOWebViewControllerRefreshIcon@2x.png in Resources */,
+				225F48E417524EF900A3558A /* TOWebViewControllerStopIcon.png in Resources */,
+				225F48E517524EF900A3558A /* TOWebViewControllerStopIcon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

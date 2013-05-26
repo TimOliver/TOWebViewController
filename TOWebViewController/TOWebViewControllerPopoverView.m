@@ -27,7 +27,9 @@
 #import "TOWebViewControllerPopoverView.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define ARROW_SIZE      CGSizeMake(19,10)
+#define ARROW_SIZE              CGSizeMake(19,8)
+#define ARROW_SIZE_RETINA       CGSizeMake(19,9)
+
 #define POPUP_WIDTH     235
 #define BUTTON_PADDING  8
 #define BUTTON_HEIGHT   45
@@ -69,7 +71,6 @@
 - (void)itemButtonTapped:(id)sender;
 - (void)backgroundViewTapped:(id)sender;
 - (void)deviceOrientationChange:(id)sender;
-- (void)dismissAnimated:(BOOL)animated;
 
 @end
 
@@ -90,15 +91,15 @@
         self.backgroundColor        = [UIColor clearColor];
         self.opaque                 = NO;
         
-        self.arrowSize              = ARROW_SIZE;
+        self.arrowSize              = ([[UIScreen mainScreen] scale] > 1.0f) ? ARROW_SIZE_RETINA : ARROW_SIZE;
         self.buttonPadding          = BUTTON_PADDING;
         self.buttonHeight           = BUTTON_HEIGHT;
         self.screenInset            = SCREEN_INSET;
         
-        self.arrowImage             = [UIImage imageNamed:@"ModalWebViewPopupArrowTop.png"];
-        self.backgroundImage        = [[UIImage imageNamed:@"ModalWebViewPopupViewBG.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(80, 15, 13, 15)];
-        self.buttonBGImage          = [[UIImage imageNamed:@"ModalWebViewPopupButtonBG.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
-        self.buttonBGPressedImage   = [[UIImage imageNamed:@"ModalWebViewPopupButtonPressedBG.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
+        self.arrowImage             = [UIImage imageNamed:@"TOWebViewControllerPopupArrowTop.png"];
+        self.backgroundImage        = [[UIImage imageNamed:@"TOWebViewControllerPopupViewBG.png"]   resizableImageWithCapInsets:UIEdgeInsetsMake(80, 15, 13, 15)];
+        self.buttonBGImage          = [[UIImage imageNamed:@"TOWebViewControllerPopupButtonBG.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
+        self.buttonBGPressedImage   = [[UIImage imageNamed:@"TOWebViewControllerPopupButtonPressedBG.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
         
         //attach a listener to let us know when the device is rotated
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
@@ -121,17 +122,16 @@
     
     //draw the background graphic
     drawRect.origin.x = 0.0f;
-    drawRect.origin.y = self.arrowSize.height - 1;
+    drawRect.origin.y = self.arrowSize.height;
     drawRect.size.width = CGRectGetWidth(self.frame);
     drawRect.size.height = CGRectGetHeight(self.frame) - drawRect.origin.y;
     [self.backgroundImage drawInRect:drawRect];
     
     //draw the arrow
-    drawRect.size       = self.arrowSize;
     drawRect.origin.y   = 0.0f;
     drawRect.origin.x   = floorf(((CGRectGetWidth(self.frame)*0.5f) + self.arrowOffset) - (self.arrowSize.width*0.5f));
     CGContextSetBlendMode(UIGraphicsGetCurrentContext(), kCGBlendModeCopy); //set to copy to completely override any visible arrow elements
-    [self.arrowImage drawInRect:drawRect];
+    [self.arrowImage drawAtPoint:drawRect.origin];
 }
 
 #pragma mark -
@@ -147,7 +147,7 @@
     //work out the size of the popoverview
     frame.size.width    = POPUP_WIDTH;
     
-    frame.size.height   += (self.arrowSize.height-1);
+    frame.size.height   += (self.arrowSize.height);
     frame.size.height   += self.buttonPadding;
     frame.size.height   += (self.buttonHeight+self.buttonPadding) * numberOfButtons;
     
@@ -192,7 +192,7 @@
         {
             buttonFrame.size.width = floorf((CGRectGetWidth(self.frame) - (self.buttonPadding*3)) * 0.5f);
             buttonFrame.size.height = self.buttonHeight;
-            buttonFrame.origin.y = (self.arrowSize.height-1) + self.buttonPadding;
+            buttonFrame.origin.y = (self.arrowSize.height) + self.buttonPadding;
             
             if (item == self.leftHeaderItem)
                 buttonFrame.origin.x = self.buttonPadding;
@@ -209,7 +209,7 @@
             buttonFrame.size.width = CGRectGetWidth(self.frame) - (self.buttonPadding*2);
             buttonFrame.size.height = self.buttonHeight;
             buttonFrame.origin.x = self.buttonPadding;
-            buttonFrame.origin.y = (self.arrowSize.height-1) + self.buttonPadding + ((self.buttonPadding+self.buttonHeight)*(i+offset));
+            buttonFrame.origin.y = (self.arrowSize.height) + self.buttonPadding + ((self.buttonPadding+self.buttonHeight)*(i+offset));
         }
         
         //set up the button view
@@ -243,6 +243,7 @@
         
         //set ourselves back into the items, so they can pass update events to us
         item.popoverView = self;
+        item.button = button;
         
         i++;
     }
@@ -298,6 +299,9 @@
     } completion:^(BOOL complete) {
         [self removeFromSuperview];
     }];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(webViewControllerPopoverView:didDismissAnimated:)])
+        [self.delegate webViewControllerPopoverView:self didDismissAnimated:animated];
 }
 
 #pragma mark -
@@ -362,6 +366,28 @@
     }
     
     return self;
+}
+
+- (void)setTitle:(NSString *)title
+{
+    if (title == _title)
+        return;
+    
+    _title = [title copy];
+    
+    if (self.button)
+        [self.button setTitle:_title forState:UIControlStateNormal];
+}
+
+- (void)setImage:(UIImage *)image
+{
+    if (image == _image)
+        return;
+    
+    _image = image;
+    
+    if (self.button)
+        [self.button setImage:_image forState:UIControlStateNormal];
 }
 
 @end

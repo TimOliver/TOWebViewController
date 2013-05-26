@@ -27,13 +27,18 @@
 #import "TOWebViewController.h"
 #import "TOWebViewControllerPopoverView.h"
 #import <QuartzCore/QuartzCore.h>
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
+#import <MessageUI/MFMessageComposeViewController.h>
+#import <Twitter/Twitter.h>
 
 /* Navigation Bar Properties */
-#define NAVIGATION_BUTTON_WIDTH         31
-#define NAVIGATION_BUTTON_SIZE          CGSizeMake(31,31)
-#define NAVIGATION_BUTTON_SPACING       5
-#define NAVIGATION_BAR_HEIGHT           44.0f
-#define NAVIGATION_TOGGLE_ANIM_TIME     0.3
+#define NAVIGATION_BUTTON_WIDTH             31
+#define NAVIGATION_BUTTON_SIZE              CGSizeMake(31,31)
+#define NAVIGATION_BUTTON_SPACING           5
+#define NAVIGATION_BUTTON_SPACING_IPAD      12
+#define NAVIGATION_BAR_HEIGHT               44.0f
+#define NAVIGATION_TOGGLE_ANIM_TIME         0.3
 
 /* The distance down from the top of the scrollview,
     that must be scrolled before the rotation animation
@@ -53,7 +58,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 #pragma mark -
 #pragma mark Hidden Properties/Methods
-@interface TOWebViewController () <UIWebViewDelegate> {
+@interface TOWebViewController () <UIWebViewDelegate,
+                                    TOWebViewControllerPopoverViewDelegate,
+                                    UIPopoverControllerDelegate,
+                                    MFMailComposeViewControllerDelegate,
+                                    MFMessageComposeViewControllerDelegate>
+{
     
     //Save the state of the web view before we rotate so we can properly re-align it afterwards
     struct {
@@ -92,6 +102,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 /* A snapshot of the web view, shown when rotating */
 @property (nonatomic,strong) UIImageView *webViewRotationSnapshot;
 
+/* Metrics for sizing + placing control buttons in the navigation bar */
+@property (nonatomic,assign) CGFloat buttonWidth;
+@property (nonatomic,assign) CGFloat buttonSpacing;
+
 /* Buttons to be displayed on the left in the navigation bar*/
 @property (nonatomic,strong) UIButton *backButton;
 @property (nonatomic,strong) UIButton *forwardButton;
@@ -104,6 +118,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 /* The dismissal button displayed on the right of the nav bar. */
 @property (nonatomic,strong) UIButton *doneButton;
+
+/* Popover View Handlers */
+@property (nonatomic,strong) TOWebViewControllerPopoverView *actionPopoverView;
+@property (nonatomic,strong) UIPopoverController *sharingPopoverController;
 
 /* Review the current state of the web view and update the UI controls in the nav bar to match it */
 - (void)refreshButtonsState;
@@ -118,6 +136,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 /* Event handlers for items in the 'action' popup */
 - (void)openSharingDialog;
 - (void)openInBrowser;
+- (void)openMailDialog;
+- (void)openMessageDialog;
+- (void)openTwitterDialog;
 
 /* Methods related to tracking load progress of current page */
 - (void)resetLoadProgress;
@@ -153,6 +174,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         self.url = url;
         self.loadingBarTintColor = [UIColor colorWithRed:234/255.0f green:7.0f/255.0f blue:7.0f/255.0f alpha:1.0f];
         self.showActionButton = YES;
+        self.buttonSpacing = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ? NAVIGATION_BUTTON_SPACING : NAVIGATION_BUTTON_SPACING_IPAD;
+        self.buttonWidth = NAVIGATION_BUTTON_WIDTH;
     }
     
     return self;
@@ -233,19 +256,22 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.reloadIcon = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerRefreshIcon.png"]];
     self.stopIcon   = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerStopIcon.png"]];
     
-    if (self.showActionButton == NO)
-    {
-        self.reloadStopButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [self.reloadStopButton setFrame:buttonFrame];
-        [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
-        [self.reloadStopButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
-    }
-    else
+    if (self.showActionButton)
     {
         self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.actionButton setFrame:buttonFrame];
         [self.actionButton setImage:[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerActionIcon.png"]] forState:UIControlStateNormal];
         [self.actionButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+
+    }
+
+    //show the 'reload' button only if on iPad
+    if (self.showActionButton == NO || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        self.reloadStopButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.reloadStopButton setFrame:buttonFrame];
+        [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+        [self.reloadStopButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
     }
 }
 
@@ -267,33 +293,39 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     CGRect buttonFrame = CGRectZero; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
     
+    CGFloat width = (self.buttonWidth*2)+(self.buttonSpacing*1);
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || self.showActionButton)
+        width = (self.buttonWidth*3)+(self.buttonSpacing*1);
+    
     //set up the icons for the navigation bar
-    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, (NAVIGATION_BUTTON_WIDTH*2)+(NAVIGATION_BUTTON_SPACING*1), NAVIGATION_BUTTON_WIDTH)];
+    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, self.buttonWidth)];
     iconsContainerView.backgroundColor = [UIColor clearColor];
     
     //add the back button
     self.backButton.frame = buttonFrame;
     [iconsContainerView addSubview:self.backButton];
     
-    //add the reload button if the action button is hidden
-    if (self.showActionButton==NO)
-    {
-        buttonFrame.origin.x = NAVIGATION_BUTTON_WIDTH + NAVIGATION_BUTTON_SPACING;
-        self.reloadStopButton.frame = buttonFrame;
-        [iconsContainerView addSubview:self.reloadStopButton];
-    }
-    else
-    {
-        //add the action button
-        buttonFrame.origin.x += NAVIGATION_BUTTON_WIDTH + NAVIGATION_BUTTON_SPACING;
-        self.actionButton.frame = buttonFrame;
-        [iconsContainerView addSubview:self.actionButton];
-    }
-    
     //add the forward button too, but keep it hidden for now
+    buttonFrame.origin.x = self.buttonWidth + self.buttonSpacing;
     self.forwardButton.frame = buttonFrame;
     self.forwardButton.hidden = YES;
     [iconsContainerView addSubview:self.forwardButton];
+    
+    //add the reload button if the action button is hidden
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || self.showActionButton==NO)
+    {
+        self.reloadStopButton.frame = buttonFrame;
+        [iconsContainerView addSubview:self.reloadStopButton];
+        buttonFrame.origin.x += (self.buttonWidth + self.buttonSpacing);
+    }
+    
+    //add the action button
+    if (self.showActionButton)
+    {
+        //if we're on iPad, we need to account for the 'reload' button
+        self.actionButton.frame = buttonFrame;
+        [iconsContainerView addSubview:self.actionButton];
+    }
     
     //push the buttons on the left to this controller's navigation item
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
@@ -484,16 +516,25 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)actionButtonTapped:(id)sender
 {
     //set up the list of actions to display
+    if (self.actionPopoverView)
+    {
+        [self.actionPopoverView dismissAnimated:NO];
+        self.actionPopoverView = nil;
+    }
+    
+    //create the popover view
+    self.actionPopoverView = [TOWebViewControllerPopoverView new];
+    self.actionPopoverView.delegate = self;
     
     //The 'Stop/Refresh' button
-    TOWebViewControllerPopoverViewItem *reloadStopItem = [TOWebViewControllerPopoverViewItem new];
-    reloadStopItem.title = NSLocalizedString(@"Reload", @"Reload");
-    reloadStopItem.action = ^(TOWebViewControllerPopoverViewItem *item) {
+    TOWebViewControllerPopoverViewItem *reloadStopItem = nil;
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad)
+    {
+        reloadStopItem = [TOWebViewControllerPopoverViewItem new];
+        reloadStopItem.image = self.webView.loading ? self.stopIcon : self.reloadIcon;
+        reloadStopItem.action = ^(TOWebViewControllerPopoverViewItem *item) { [self reloadStopButtonTapped:nil]; };
+    }
         
-        [self reloadStopButtonTapped:nil];
-        
-    };
-    
     //The share button
     TOWebViewControllerPopoverViewItem *sharingItem = [TOWebViewControllerPopoverViewItem new];
     sharingItem.title = NSLocalizedString(@"Share...", @"Sharing button");
@@ -510,12 +551,23 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     copyLinkItem.title = NSLocalizedString(@"Copy Link", @"Copy Link to Pasteboard");
     copyLinkItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [[UIPasteboard generalPasteboard] setString:[self.webView.request.URL absoluteString]]; };
     
-    TOWebViewControllerPopoverView *popoverView = [TOWebViewControllerPopoverView new];
-    popoverView.leftHeaderItem = reloadStopItem;
-    popoverView.rightHeaderItem = sharingItem;
-    popoverView.items = @[openItem,copyLinkItem];
+    if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        self.actionPopoverView.leftHeaderItem = reloadStopItem;
+        self.actionPopoverView.rightHeaderItem = sharingItem;
+        self.actionPopoverView.items = @[openItem,copyLinkItem];
+    }
+    else
+    {
+        self.actionPopoverView.items = @[openItem,copyLinkItem,sharingItem];
+    }
     
-    [popoverView presentPopoverFromView:sender animated:YES];
+    [self.actionPopoverView presentPopoverFromView:sender animated:YES];
+}
+
+- (void)webViewControllerPopoverView:(TOWebViewControllerPopoverView *)popoverView didDismissAnimated:(BOOL)animated
+{
+    self.actionPopoverView = nil;
 }
 
 - (void)doneButtonTapped:(id)sender
@@ -527,19 +579,78 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark Action Item Event Handlers
 - (void)openSharingDialog
 {
+    //dismiss the present popover view
+    [self.actionPopoverView dismissAnimated:NO];
+    
+    // If we're on iOS 6, we can use the new, super-duper activity view controller :)
     if (NSClassFromString(@"UIActivityViewController"))
     {
         UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.url] applicationActivities:nil];
+        activityViewController.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard]; //we've already provided 'Copy' functionality. This is a bit redundant.
+        
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         {
             [self presentModalViewController:activityViewController animated:YES];
         }
         else
         {
-            UIPopoverController *popOverController = [[UIPopoverController alloc] initWithContentViewController:activityViewController];
-            [popOverController presentPopoverFromRect:self.actionButton.frame inView:self.actionButton.superview permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+            //UIPopoverController requires we retain our own instance of it.
+            //So if we somehow have a prior instance, clean it out
+            if (self.sharingPopoverController)
+            {
+                [self.sharingPopoverController dismissPopoverAnimated:NO];
+                self.sharingPopoverController = nil;
+            }
+            
+            //Create the sharing popover controller
+            self.sharingPopoverController = [[UIPopoverController alloc] initWithContentViewController:activityViewController];
+            self.sharingPopoverController.delegate = self;
+            [self.sharingPopoverController presentPopoverFromRect:self.actionButton.frame inView:self.actionButton.superview permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
         }
     }
+    else //We must be on iOS 5
+    {
+        //Email button
+        TOWebViewControllerPopoverViewItem *mailItem = [TOWebViewControllerPopoverViewItem new];
+        mailItem.title  = NSLocalizedString(@"Mail", @"Send Email");
+        mailItem.action = ^(TOWebViewControllerPopoverViewItem *item) { [self openMailDialog]; };
+        
+        //The share button
+        TOWebViewControllerPopoverViewItem *messageItem = nil;
+        if ([MFMessageComposeViewController canSendText])
+        {
+            messageItem = [TOWebViewControllerPopoverViewItem new];
+            messageItem.title = NSLocalizedString(@"Message", @"Send Message");
+            messageItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openMessageDialog]; };
+        }
+            
+        TOWebViewControllerPopoverViewItem *twitterItem = nil;
+        if ([TWTweetComposeViewController canSendTweet])
+        {
+            twitterItem = [TOWebViewControllerPopoverViewItem new];
+            twitterItem.title = NSLocalizedString(@"Tweet", @"Send a Tweet");
+            twitterItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openTwitterDialog]; };
+        }
+        
+        NSMutableArray *items = [NSMutableArray array];
+        [items addObject:mailItem];
+        
+        if (messageItem)
+            [items addObject:messageItem];
+        
+        if (twitterItem)
+            [items addObject:twitterItem];
+        
+        TOWebViewControllerPopoverView *sharePopoverView = [TOWebViewControllerPopoverView new];
+        sharePopoverView.items = items;
+        [sharePopoverView presentPopoverFromView:self.actionButton animated:YES];
+    }
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    //Once the popover controller is dismissed, we can release our own reference to it
+    self.sharingPopoverController = nil;
 }
 
 - (void)openInBrowser
@@ -582,6 +693,40 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [[UIApplication sharedApplication] openURL:inputURL];
 }
 
+- (void)openMailDialog
+{
+    MFMailComposeViewController *mailViewController = [[MFMailComposeViewController alloc] init];
+    mailViewController.mailComposeDelegate = self;
+    [mailViewController setMessageBody:[self.url absoluteString] isHTML:NO];
+    [self presentModalViewController:mailViewController animated:YES];
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)openMessageDialog
+{
+    MFMessageComposeViewController *messageViewController = [[MFMessageComposeViewController alloc] init];
+    messageViewController.messageComposeDelegate = self;
+    [messageViewController setBody:[self.url absoluteString]];
+    [self presentModalViewController:messageViewController animated:YES];
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)openTwitterDialog
+{
+    TWTweetComposeViewController *tweetComposer = [[TWTweetComposeViewController alloc] init];
+    [tweetComposer addURL:self.url];
+    [self presentModalViewController:tweetComposer animated:YES];
+}
+
+
 #pragma mark -
 #pragma mark Page Load Progress Tracking Handlers
 - (void)resetLoadProgress
@@ -615,6 +760,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
         url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
         self.title = url;
+        
+        if (self.actionPopoverView)
+            [self.actionPopoverView.leftHeaderItem setImage:self.stopIcon];
     }
 }
 
@@ -631,12 +779,19 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)finishLoadProgress
 {
+    //hide the activity indicator in the status bar
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    
+    //reset the load progress
     [self refreshButtonsState];
     [self setLoadingProgress:1.0f];
     
-    //in case it didn't succeed yet, try setting the page title
+    //in case it didn't succeed yet, try setting the page title again
     self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    
+    //if the popover is visible, update the 'stop' button to 'refresh'
+    if (self.actionPopoverView)
+        [self.actionPopoverView.leftHeaderItem setImage:self.reloadIcon];
 }
 
 - (void)setLoadingProgress:(CGFloat)loadingProgress
@@ -717,8 +872,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         [self.backButton setEnabled:YES];
     else
         [self.backButton setEnabled:NO];
-
-    __block UIButton *endButton = self.showActionButton ? self.actionButton : self.reloadStopButton;
     
     //update the state for the forward button
     if (self.webView.canGoForward && self.forwardButton.hidden)
@@ -735,13 +888,38 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
           
               //animate the container to accomodate
               CGRect frame = containerView.frame;
-              frame.size.width = (NAVIGATION_BUTTON_WIDTH*3) + (NAVIGATION_BUTTON_SPACING*2);
+              if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || self.showActionButton == NO)
+                  frame.size.width = (self.buttonWidth*3) + (self.buttonSpacing*2);
+              else
+                  frame.size.width = (self.buttonWidth*4) + (self.buttonSpacing*3);
               containerView.frame = frame;
           
-              //move the reload buttons
-              frame = endButton.frame;
-              frame.origin.x = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING*2);
-              endButton.frame = frame;
+              //move the reload (and maybe also the action button)
+              if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+              {
+                  UIButton *button = nil;
+                  if (self.showActionButton)
+                      button = self.actionButton;
+                  else
+                      button = self.reloadStopButton;
+                  
+                  frame = button.frame;
+                  frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
+                  button.frame = frame;
+              }
+              else
+              {
+                  frame = self.reloadStopButton.frame;
+                  frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
+                  self.reloadStopButton.frame = frame;
+                  
+                  if (self.showActionButton)
+                  {
+                      frame = self.actionButton.frame;
+                      frame.origin.x = (self.buttonWidth*3) + (self.buttonSpacing*3);
+                      self.actionButton.frame = frame;
+                  }
+              }
           }];
     }
 
@@ -757,13 +935,39 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
        
              //animate the container to accomodate
              CGRect frame = containerView.frame;
-             frame.size.width = (NAVIGATION_BUTTON_WIDTH*2) + (NAVIGATION_BUTTON_SPACING);
+             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || self.showActionButton == NO)
+                 frame.size.width = (self.buttonWidth*2) + (self.buttonSpacing);
+             else
+                 frame.size.width = (self.buttonWidth*3) + (self.buttonSpacing*2);
              containerView.frame = frame;
        
              //move the reload buttons
-             frame = endButton.frame;
-             frame.origin.x = (NAVIGATION_BUTTON_WIDTH) + (NAVIGATION_BUTTON_SPACING);
-             endButton.frame = frame;
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+            {
+                UIButton *button = nil;
+                if (self.showActionButton)
+                    button = self.actionButton;
+                else
+                    button = self.reloadStopButton;
+                
+                frame = button.frame;
+                frame.origin.x = (self.buttonWidth) + (self.buttonSpacing);
+                button.frame = frame;
+            }
+            else
+            {
+                frame = self.reloadStopButton.frame;
+                frame.origin.x = (self.buttonWidth) + (self.buttonSpacing);
+                self.reloadStopButton.frame = frame;
+                
+                if (self.showActionButton)
+                {
+                    frame = self.actionButton.frame;
+                    frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
+                    self.actionButton.frame = frame;
+                }
+            }
+
        } completion:^(BOOL completion) {
            self.forwardButton.hidden = YES;
        }];

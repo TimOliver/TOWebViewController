@@ -27,20 +27,29 @@
 #import <UIKit/UIKit.h>
 
 @class TOWebViewControllerPopoverViewItem;
+@class TOWebViewControllerPopoverView;
+
+@protocol TOWebViewControllerPopoverViewDelegate <NSObject>
+
+- (void)webViewControllerPopoverView:(TOWebViewControllerPopoverView *)popoverView didDismissAnimated:(BOOL)animated;
+
+@end
 
 typedef enum {
-  TOActionListPopoverViewArrowDirectionUp,
-  TOActionListPopoverViewArrowDirectionDown
-} TOActionListPopoverViewArrowDirection;
+  TOWebViewControllerPopoverViewViewArrowDirectionUp,
+  TOWebViewControllerPopoverViewArrowDirectionDown
+} TOWebViewControllerPopoverViewArrowDirection;
 
 @interface TOWebViewControllerPopoverView : UIView
 
-@property (nonatomic,strong)    TOWebViewControllerPopoverViewItem *leftHeaderItem;
-@property (nonatomic,strong)    TOWebViewControllerPopoverViewItem *rightHeaderItem;
-@property (nonatomic,copy)      NSArray          *items;
+@property (nonatomic,weak)      id<TOWebViewControllerPopoverViewDelegate>  delegate;
+@property (nonatomic,strong)    TOWebViewControllerPopoverViewItem          *leftHeaderItem;
+@property (nonatomic,strong)    TOWebViewControllerPopoverViewItem          *rightHeaderItem;
+@property (nonatomic,copy)      NSArray                                     *items;
 
 - (id)init;
 - (void)presentPopoverFromView:(UIView *)view animated:(BOOL)animated;
+- (void)dismissAnimated:(BOOL)animated;
 
 @end
 
@@ -55,10 +64,11 @@ typedef void (^TapAction)(TOWebViewControllerPopoverViewItem *item);
 - (id)initWithTitle:(NSString *)title withTapAction:(TapAction)action;
 - (id)initWithImage:(UIImage *)image withTapAction:(TapAction)action;
 
-@property (nonatomic,copy)      NSString                *title;
-@property (nonatomic,strong)    UIImage                 *image;
-@property (nonatomic,copy)      TapAction               action;
+@property (nonatomic,copy)      NSString    *title;
+@property (nonatomic,strong)    UIImage     *image;
+@property (nonatomic,copy)      TapAction   action;
 
 @property (nonatomic,weak)      TOWebViewControllerPopoverView *popoverView;
+@property (nonatomic,weak)      UIButton *button;
 
 @end

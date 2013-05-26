@@ -294,7 +294,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     CGRect buttonFrame = CGRectZero; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
     
     CGFloat width = (self.buttonWidth*2)+(self.buttonSpacing*1);
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || self.showActionButton)
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.showActionButton)
         width = (self.buttonWidth*3)+(self.buttonSpacing*1);
     
     //set up the icons for the navigation bar

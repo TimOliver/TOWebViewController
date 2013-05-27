@@ -548,7 +548,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //Copy Link button
     TOWebViewControllerPopoverViewItem *copyLinkItem = [TOWebViewControllerPopoverViewItem new];
-    copyLinkItem.title = NSLocalizedString(@"Copy Link", @"Copy Link to Pasteboard");
+    copyLinkItem.title = NSLocalizedString(@"Copy URL", @"Copy Link to Pasteboard");
     copyLinkItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [[UIPasteboard generalPasteboard] setString:[self.webView.request.URL absoluteString]]; };
     
     if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)

@@ -275,18 +275,18 @@
     CGFloat duration = animated ? 0.3f : 0.0f;
     [UIView animateWithDuration:duration animations:^{
         self.alpha = 1.0f;
-    }completion:^(BOOL finished){
-        //set up an invisible background view to detect taps outside the popup
-        self.backgroundView = [[UIControl alloc] initWithFrame:topLevelView.bounds];
-        self.backgroundView.backgroundColor = [UIColor clearColor];
-        self.backgroundView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        
-        //attach an event callback to detect if the user 'touches up' inside the background view
-        [self.backgroundView addTarget:self action:@selector(backgroundViewTapped:) forControlEvents:UIControlEventTouchUpInside];
-        
-        //insert the background below the popup
-        [topLevelView insertSubview:self.backgroundView belowSubview:self];
-    }];
+    }completion:nil];
+  
+    //set up an invisible background view to detect taps outside the popup
+    self.backgroundView = [[UIControl alloc] initWithFrame:topLevelView.bounds];
+    self.backgroundView.backgroundColor = [UIColor clearColor];
+    self.backgroundView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    
+    //attach an event callback to detect if the user 'touches up' inside the background view
+    [self.backgroundView addTarget:self action:@selector(backgroundViewTapped:) forControlEvents:UIControlEventTouchUpInside];
+    
+    //insert the background below the popup
+    [topLevelView insertSubview:self.backgroundView belowSubview:self];
 }
 
 - (void)dismissAnimated:(BOOL)animated

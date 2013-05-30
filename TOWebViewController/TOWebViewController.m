@@ -41,8 +41,8 @@
 #define NAVIGATION_TOGGLE_ANIM_TIME         0.3
 
 /* The distance down from the top of the scrollview,
-    that must be scrolled before the rotation animation
-    aligns to the middle, and not along the top */
+ that must be scrolled before the rotation animation
+ aligns to the middle, and not along the top */
 #define CONTENT_OFFSET_THRESHOLD    20
 
 /* Hieght of the loading progress bar view */
@@ -59,10 +59,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark -
 #pragma mark Hidden Properties/Methods
 @interface TOWebViewController () <UIWebViewDelegate,
-                                    TOWebViewControllerPopoverViewDelegate,
-                                    UIPopoverControllerDelegate,
-                                    MFMailComposeViewControllerDelegate,
-                                    MFMessageComposeViewControllerDelegate>
+TOWebViewControllerPopoverViewDelegate,
+UIPopoverControllerDelegate,
+MFMailComposeViewControllerDelegate,
+MFMessageComposeViewControllerDelegate>
 {
     
     //Save the state of the web view before we rotate so we can properly re-align it afterwards
@@ -163,7 +163,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 // -------------------------------------------------------
 
-#pragma mark -  
+#pragma mark -
 #pragma mark Class Implementation
 @implementation TOWebViewController
 
@@ -206,7 +206,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.webView.contentMode = UIViewContentModeRedraw;
     self.webView.opaque = YES;
     [self.view addSubview:self.webView];
-  
+    
     //Create the navigation bar
     self.navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(self.view.frame),NAVIGATION_BAR_HEIGHT)];
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -225,7 +225,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.titleLabelView.shadowOffset = CGSizeMake(0.0f,1.0f);
     self.titleLabelView.textAlignment = UITextAlignmentCenter;
     self.navigationItem.titleView = self.titleLabelView;
-  
+    
     //Set up the loading bar
     CGFloat maxWidth = MAX(CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
     self.loadingBarView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navigationBar.frame), maxWidth, LOADING_BAR_HEIGHT)];
@@ -262,9 +262,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         [self.actionButton setFrame:buttonFrame];
         [self.actionButton setImage:[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerActionIcon.png"]] forState:UIControlStateNormal];
         [self.actionButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
-
+        
     }
-
+    
     //show the 'reload' button only if on iPad
     if (self.showActionButton == NO || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
@@ -278,7 +278,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
     
     //remove the top and bottom shadows from the webview
@@ -329,7 +329,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //push the buttons on the left to this controller's navigation item
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
-
+    
     //create the 'Done' button
     UIImage *doneButtonBG           = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerButtonBG.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
     UIImage *doneButtonBGPressed    = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerButtonBGPressed.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
@@ -373,7 +373,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{ 
+{
     //get the web view ready for rotation
     [self setUpWebViewForRotationToOrientation:toInterfaceOrientation withDuration:duration];
 }
@@ -534,21 +534,21 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         reloadStopItem.image = self.webView.loading ? self.stopIcon : self.reloadIcon;
         reloadStopItem.action = ^(TOWebViewControllerPopoverViewItem *item) { [self reloadStopButtonTapped:nil]; };
     }
-        
+    
     //The share button
     TOWebViewControllerPopoverViewItem *sharingItem = [TOWebViewControllerPopoverViewItem new];
-    sharingItem.title = NSLocalizedString(@"Share...", @"Sharing button");
+    sharingItem.title = NSLocalizedStringFromTable(@"Share...", @"TOWebViewControllerLocalizable", @"Sharing button");
     sharingItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openSharingDialog]; };
     
     // Open in button
     BOOL chromeIsInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]];
     TOWebViewControllerPopoverViewItem *openItem = [TOWebViewControllerPopoverViewItem new];
-    openItem.title = chromeIsInstalled ? NSLocalizedString(@"Open in Chrome", @"Open page in Chrome") : NSLocalizedString(@"Open in Safari", @"Open page in Safari");
+    openItem.title = chromeIsInstalled ? NSLocalizedStringFromTable(@"Open in Chrome", @"TOWebViewControllerLocalizable", @"Open page in Chrome") : NSLocalizedStringFromTable(@"Open in Safari", @"TOWebViewControllerLocalizable", @"Open page in Safari");
     openItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openInBrowser]; };
     
     //Copy Link button
     TOWebViewControllerPopoverViewItem *copyLinkItem = [TOWebViewControllerPopoverViewItem new];
-    copyLinkItem.title = NSLocalizedString(@"Copy URL", @"Copy Link to Pasteboard");
+    copyLinkItem.title = NSLocalizedStringFromTable(@"Copy URL", @"TOWebViewControllerLocalizable", @"Copy Link to Pasteboard");
     copyLinkItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [[UIPasteboard generalPasteboard] setString:[self.webView.request.URL absoluteString]]; };
     
     if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
@@ -623,7 +623,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             messageItem.title = NSLocalizedString(@"Message", @"Send Message");
             messageItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openMessageDialog]; };
         }
-            
+        
         TOWebViewControllerPopoverViewItem *twitterItem = nil;
         if ([TWTweetComposeViewController canSendTweet])
         {
@@ -657,7 +657,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     BOOL chromeIsInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]];
     NSURL *inputURL = self.webView.request.URL;
-
+    
     if (chromeIsInstalled)
     {
         NSString *scheme = inputURL.scheme;
@@ -866,7 +866,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
     else
         [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
-
+    
     //update the state for the back button
     if (self.webView.canGoBack)
         [self.backButton setEnabled:YES];
@@ -876,72 +876,72 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //update the state for the forward button
     if (self.webView.canGoForward && self.forwardButton.hidden)
     {
-          UIView *containerView = self.forwardButton.superview;
-
-          self.forwardButton.alpha = 0.0f;
-          self.forwardButton.hidden = NO;
-
-          [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
-              
-              //make the forward button visible
-              self.forwardButton.alpha = 1.0f;
-          
-              //animate the container to accomodate
-              CGRect frame = containerView.frame;
-              if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || self.showActionButton == NO)
-                  frame.size.width = (self.buttonWidth*3) + (self.buttonSpacing*2);
-              else
-                  frame.size.width = (self.buttonWidth*4) + (self.buttonSpacing*3);
-              containerView.frame = frame;
-          
-              //move the reload (and maybe also the action button)
-              if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-              {
-                  UIButton *button = nil;
-                  if (self.showActionButton)
-                      button = self.actionButton;
-                  else
-                      button = self.reloadStopButton;
-                  
-                  frame = button.frame;
-                  frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
-                  button.frame = frame;
-              }
-              else
-              {
-                  frame = self.reloadStopButton.frame;
-                  frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
-                  self.reloadStopButton.frame = frame;
-                  
-                  if (self.showActionButton)
-                  {
-                      frame = self.actionButton.frame;
-                      frame.origin.x = (self.buttonWidth*3) + (self.buttonSpacing*3);
-                      self.actionButton.frame = frame;
-                  }
-              }
-          }];
+        UIView *containerView = self.forwardButton.superview;
+        
+        self.forwardButton.alpha = 0.0f;
+        self.forwardButton.hidden = NO;
+        
+        [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
+            
+            //make the forward button visible
+            self.forwardButton.alpha = 1.0f;
+            
+            //animate the container to accomodate
+            CGRect frame = containerView.frame;
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || self.showActionButton == NO)
+                frame.size.width = (self.buttonWidth*3) + (self.buttonSpacing*2);
+            else
+                frame.size.width = (self.buttonWidth*4) + (self.buttonSpacing*3);
+            containerView.frame = frame;
+            
+            //move the reload (and maybe also the action button)
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+            {
+                UIButton *button = nil;
+                if (self.showActionButton)
+                    button = self.actionButton;
+                else
+                    button = self.reloadStopButton;
+                
+                frame = button.frame;
+                frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
+                button.frame = frame;
+            }
+            else
+            {
+                frame = self.reloadStopButton.frame;
+                frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
+                self.reloadStopButton.frame = frame;
+                
+                if (self.showActionButton)
+                {
+                    frame = self.actionButton.frame;
+                    frame.origin.x = (self.buttonWidth*3) + (self.buttonSpacing*3);
+                    self.actionButton.frame = frame;
+                }
+            }
+        }];
     }
-
+    
     if (self.webView.canGoForward == NO && self.forwardButton.hidden == NO)
     {
         UIView *containerView = self.forwardButton.superview;
         self.forwardButton.alpha = 1.0f;
-
+        
         [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
             
-             //make the forward button invisible
-             self.forwardButton.alpha = 0.0f;
-       
-             //animate the container to accomodate
-             CGRect frame = containerView.frame;
-             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || self.showActionButton == NO)
-                 frame.size.width = (self.buttonWidth*2) + (self.buttonSpacing);
-             else
-                 frame.size.width = (self.buttonWidth*3) + (self.buttonSpacing*2);
-             containerView.frame = frame;
-       
-             //move the reload buttons
+            //make the forward button invisible
+            self.forwardButton.alpha = 0.0f;
+            
+            //animate the container to accomodate
+            CGRect frame = containerView.frame;
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || self.showActionButton == NO)
+                frame.size.width = (self.buttonWidth*2) + (self.buttonSpacing);
+            else
+                frame.size.width = (self.buttonWidth*3) + (self.buttonSpacing*2);
+            containerView.frame = frame;
+            
+            //move the reload buttons
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
             {
                 UIButton *button = nil;
@@ -967,10 +967,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                     self.actionButton.frame = frame;
                 }
             }
-
-       } completion:^(BOOL completion) {
-           self.forwardButton.hidden = YES;
-       }];
+            
+        } completion:^(BOOL completion) {
+            self.forwardButton.hidden = YES;
+        }];
     }
 }
 
@@ -992,13 +992,13 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     //A bit of a crazy JavaScript that scans the HTML for a <meta name="viewport"> tag and dumps its contents
     NSString *metaDataQuery =   @"(function() {"
-                                    @"var metaTags = document.getElementsByTagName('meta');"
-                                    @"for (i=0; i<metaTags.length; i++) {"
-                                        @"if (metaTags[i].name=='viewport') {"
-                                            @"return metaTags[i].getAttribute('content');"
-                                        @"}"
-                                    @"}"
-                                @"})()";
+    @"var metaTags = document.getElementsByTagName('meta');"
+    @"for (i=0; i<metaTags.length; i++) {"
+    @"if (metaTags[i].name=='viewport') {"
+    @"return metaTags[i].getAttribute('content');"
+    @"}"
+    @"}"
+    @"})()";
     
     NSString *pageViewPortContent = [self.webView stringByEvaluatingJavaScriptFromString:metaDataQuery];
     if ([pageViewPortContent length] == 0)
@@ -1093,7 +1093,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             rect.origin = contentOffset;
             if (contentOffset.y + heightInPortraitMode > contentSize.height )
                 rect.origin.y = contentSize.height - heightInPortraitMode;
-          
+            
             rect.size.width = webViewSize.width;
             rect.size.height = heightInPortraitMode; //make it as tall as it is wide
         }
@@ -1110,7 +1110,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             rect.origin.y = (contentOffset.y+(webViewSize.height*0.5f)) - (scaledHeight*0.5f);
             
             //if this takes us past the visible region, clamp it
-            if (rect.origin.y < 0.0f) 
+            if (rect.origin.y < 0.0f)
                 rect.origin.y = 0.0f;
             else if (rect.origin.y + scaledHeight > contentSize.height)
                 rect.origin.y = contentSize.height - scaledHeight;
@@ -1119,7 +1119,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             rect.size.height = scaledHeight;
         }
     }
-  
+    
     return rect;
 }
 
@@ -1167,7 +1167,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //work out the starting frame for the snapshot based on page state and current orientation
     CGRect frame = self.webView.frame;
-  
+    
     //If we're presently portrait, and animating to landscape
     if (UIInterfaceOrientationIsLandscape(toOrientation))
     {
@@ -1180,7 +1180,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
     else //if we're currently landscape and we're animating to portrait
     {
-        //If the current web page zoom is locked like above, 
+        //If the current web page zoom is locked like above,
         if ([self webViewPageWidthIsDynamic])
         {
             self.webViewRotationSnapshot.backgroundColor = backgroundColor;
@@ -1195,7 +1195,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         else
         {
             frame.size  = self.webViewRotationSnapshot.image.size;
-        
+            
             if( _webViewState.contentOffset.y > CONTENT_OFFSET_THRESHOLD )
             {
                 //Work out the size we're rotating to
@@ -1210,13 +1210,13 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                     frame.origin.y = (CGRectGetMaxY(self.webView.frame) - CGRectGetHeight(frame)) + ((_webViewState.contentSize.height - CGRectGetHeight(self.webView.frame) - _webViewState.contentOffset.y));
                 else //position the webview in the center
                     frame.origin.y = CGRectGetMinY(self.webView.frame) + ((CGRectGetHeight(self.webView.frame)*0.5) - CGRectGetHeight(frame)*0.5);
-                    
+                
             }
         }
     }
-
+    
     self.webViewRotationSnapshot.frame = frame;
-  
+    
     [self.view insertSubview:self.webViewRotationSnapshot belowSubview:self.navigationBar];
     
     //This is a dirty, dirty, DIRTY hack. When a UIWebView's frame changes (At least on iOS 6), in certain conditions,
@@ -1227,7 +1227,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //Once the view has finished rotating, we'll figure out the proper placement + zoom scale and reset it.
     
     //This animation must be complete by the time the view rotation animation is complete, else we'll have incorrect bounds data. This will speed it up to near instant.
-    self.webView.scrollView.layer.speed = 9999.0f; 
+    self.webView.scrollView.layer.speed = 9999.0f;
     
     CGFloat zoomScale = (self.webView.scrollView.minimumZoomScale+self.webView.scrollView.maximumZoomScale) * 0.5f; //zoom into the mid point of the scale. Zooming into either extreme doesn't work.
     [self.webView.scrollView setZoomScale:zoomScale animated:YES];
@@ -1246,7 +1246,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //remove all animations presently applied to the web view
     [self.webView.layer removeAllAnimations];
     [self.webView.scrollView.layer removeAllAnimations];
-  
+    
     //animate the image view rotating to the proper dimensions
     CGRect frame = self.webView.frame;
     
@@ -1342,8 +1342,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                 translatedContentOffset.y += ((CGRectGetHeight(self.webViewRotationSnapshot.frame))*0.5f) - (CGRectGetHeight(self.webView.frame)*0.5f) + CGRectGetHeight(self.navigationBar.frame);
             else
                 translatedContentOffset.y -= (CGRectGetHeight(self.webView.frame)*0.5f) - (((_webViewState.frameSize.height*magnitude)*0.5f) + CGRectGetHeight(self.navigationBar.frame));
-        }   
-            
+        }
+        
         //clamp it to the actual scroll region
         translatedContentOffset.x = MAX(translatedContentOffset.x, self.webView.scrollView.contentInset.left);
         translatedContentOffset.x = MIN(translatedContentOffset.x, contentSize.width - CGRectGetWidth(self.webView.frame));

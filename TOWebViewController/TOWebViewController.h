@@ -40,4 +40,7 @@
 /* Show the 'Action' button instead of the stop/refresh button (On by default)*/
 @property (nonatomic,assign) BOOL showActionButton;
 
+/* Disable the contextual popup that appears if the user taps and holds on a link. */
+@property (nonatomic,assign) BOOL disableContextualPopupMenu;
+
 @end

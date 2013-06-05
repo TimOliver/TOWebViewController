@@ -224,6 +224,7 @@ MFMessageComposeViewControllerDelegate>
     self.titleLabelView.shadowColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
     self.titleLabelView.shadowOffset = CGSizeMake(0.0f,1.0f);
     self.titleLabelView.textAlignment = UITextAlignmentCenter;
+    self.titleLabelView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.navigationItem.titleView = self.titleLabelView;
     
     //Set up the loading bar
@@ -367,6 +368,12 @@ MFMessageComposeViewControllerDelegate>
         [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     return YES;
@@ -481,6 +488,9 @@ MFMessageComposeViewControllerDelegate>
 {
     [self handleLoadRequestCompletion];
     [self refreshButtonsState];
+
+    //see if we can set the proper page title at this point
+    self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -590,7 +600,8 @@ MFMessageComposeViewControllerDelegate>
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         {
-            [self presentModalViewController:activityViewController animated:YES];
+            //If we're on an iPhone, we can just present it modally
+            [self presentViewController:activityViewController animated:YES completion:nil];
         }
         else
         {
@@ -761,8 +772,12 @@ MFMessageComposeViewControllerDelegate>
         url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
         self.title = url;
         
+        //update any visible 'reload' buttons to their 'stop' state
         if (self.actionPopoverView)
             [self.actionPopoverView.leftHeaderItem setImage:self.stopIcon];
+        
+        if (self.reloadStopButton)
+            [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
     }
 }
 
@@ -792,6 +807,9 @@ MFMessageComposeViewControllerDelegate>
     //if the popover is visible, update the 'stop' button to 'refresh'
     if (self.actionPopoverView)
         [self.actionPopoverView.leftHeaderItem setImage:self.reloadIcon];
+    
+    if (self.reloadStopButton)
+        [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
 }
 
 - (void)setLoadingProgress:(CGFloat)loadingProgress
@@ -848,6 +866,10 @@ MFMessageComposeViewControllerDelegate>
         
         //see if we can set the proper page title yet
         self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        
+        //finally, if the app desires it, disable the ability to tap and hold on links
+        if (self.disableContextualPopupMenu)
+            [self.webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
     }
     
     BOOL isNotRedirect = self.url && [self.url isEqual:self.webView.request.mainDocumentURL];
@@ -861,12 +883,6 @@ MFMessageComposeViewControllerDelegate>
 #pragma mark Button State Handling
 - (void)refreshButtonsState
 {
-    //Toggle the stop/reload button
-    if (self.webView.isLoading == NO)
-        [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
-    else
-        [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
-    
     //update the state for the back button
     if (self.webView.canGoBack)
         [self.backButton setEnabled:YES];

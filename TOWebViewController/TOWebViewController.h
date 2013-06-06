@@ -24,8 +24,12 @@
 //  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
 #import <UIKit/UIKit.h>
+
+typedef enum {
+    TOWebViewControllerStyleDefault,
+    TOWebViewControllerStyleDark
+} TOWebViewControllerStyle;
 
 @interface TOWebViewController : UIViewController
 
@@ -34,22 +38,31 @@
 /* Get/set the current URL being displayed. (Will automatically start loading) */
 @property (nonatomic,strong)    NSURL *url;
 
+/* Show the loading progress bar (default YES) */
+@property (nonatomic,assign)    BOOL showLoadingBar;
+
 /* Tint colour for the loading progress bar. Default colour is deep red. */
 @property (nonatomic,copy)      UIColor *loadingBarTintColor;
 
-/* Show the 'Action' button instead of the stop/refresh button (On by default)*/
+/* The colored style of the navigation bar and elements along the top */
+@property (nonatomic,assign)    TOWebViewControllerStyle webViewControllerStyle;
+
+/* Show all of the navigation/action buttons (ON by default) */
+@property (nonatomic,assign)    BOOL showNavigationButtons;
+
+/* Show the 'Action' button instead of the stop/refresh button (YES by default)*/
 @property (nonatomic,assign)    BOOL showActionButton;
 
 /* Disable the contextual popup that appears if the user taps and holds on a link. */
 @property (nonatomic,assign)    BOOL disableContextualPopupMenu;
+
+/* Hide the linin background and all shadows and use the same colour as the current page */
+@property (nonatomic,assign)    BOOL hideWebViewBoundaries;
 
 /* The main navigation bar, containing the navigation controls */
 @property (nonatomic,strong,readonly) UINavigationBar *navigationBar;
 
 /* The 'Done' button to dismiss this controller when it's in a modal state */
 @property (nonatomic,strong,readonly) UIBarButtonItem *modalDoneButton;
-
-/* Use a dark color scheme for the text/icons in the navigation bar */
-@property (nonatomic,assign)    BOOL darkColorScheme;
 
 @end

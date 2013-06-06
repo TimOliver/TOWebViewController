@@ -123,8 +123,18 @@ MFMessageComposeViewControllerDelegate>
 @property (nonatomic,strong) TOWebViewControllerPopoverView *actionPopoverView;
 @property (nonatomic,strong) UIPopoverController *sharingPopoverController;
 
-/* Load all of the image assets and assign them to their respective controls */
+/* Single method to perform all of the major setup that is referenced in all UIViewController init methods */
+- (void)setup;
+
+/* Determines whether the view controller is currently being presented modally. */
+- (BOOL)isBeingPresentedAsModal;
+/* If we're inside a UINavigationController stack, and we're not the root controller (ie, the 'back' arrow is visible) */
+- (BOOL)isOnTopOfNavigationControllerStack;
+
+/* Init and configure various sections of the controller */
 - (void)configureColorScheme;
+- (void)setUpNavigationButtons;
+- (UIView *)navigationButtonsInContainerView;
 
 /* Review the current state of the web view and update the UI controls in the nav bar to match it */
 - (void)refreshButtonsState;
@@ -173,31 +183,51 @@ MFMessageComposeViewControllerDelegate>
 - (id)init
 {
     if (self = [super init])
-    {
-        self.loadingBarTintColor = [UIColor colorWithRed:234/255.0f green:7.0f/255.0f blue:7.0f/255.0f alpha:1.0f];
-        self.showActionButton = YES;
-        self.buttonSpacing = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ? NAVIGATION_BUTTON_SPACING : NAVIGATION_BUTTON_SPACING_IPAD;
-        self.buttonWidth = NAVIGATION_BUTTON_WIDTH;
-    }
+        [self setup];
     
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super initWithCoder:aDecoder])
+        [self setup];
+
+    return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])
+        [self setup];
+  
     return self;
 }
 
 - (id)initWithURL:(NSURL *)url
 {
     if (self = [self init])
-    {
-        self.url = url;
-    }
+        _url = url;
     
     return self;
+}
+
+- (void)setup
+{
+    //Direct ivar reference since we don't want to trigger their actions yet
+    _loadingBarTintColor = [UIColor colorWithRed:234/255.0f green:7.0f/255.0f blue:7.0f/255.0f alpha:1.0f];
+    _showActionButton = YES;
+    _buttonSpacing = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ? NAVIGATION_BUTTON_SPACING : NAVIGATION_BUTTON_SPACING_IPAD;
+    _buttonWidth = NAVIGATION_BUTTON_WIDTH;
+    _showNavigationButtons = YES;
+    _showLoadingBar = YES;
 }
 
 - (void)loadView
 {
     //Create the all-encompassing container view
     UIView *view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-    view.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+    view.backgroundColor = self.hideWebViewBoundaries ? [UIColor whiteColor] : [UIColor scrollViewTexturedBackgroundColor];
     view.opaque = YES;
     self.view = view;
     
@@ -208,7 +238,7 @@ MFMessageComposeViewControllerDelegate>
     [self.view.layer addSublayer:self.gradientLayer];
     
     //Create the web view
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, NAVIGATION_BAR_HEIGHT, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-NAVIGATION_BAR_HEIGHT)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, (self.navigationController ? 0 : NAVIGATION_BAR_HEIGHT), CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-(self.navigationController ? 0 : NAVIGATION_BAR_HEIGHT))];
     self.webView.delegate = self;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.backgroundColor = [UIColor clearColor];
@@ -218,9 +248,12 @@ MFMessageComposeViewControllerDelegate>
     [self.view addSubview:self.webView];
     
     //Create the navigation bar
-    self.navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(self.view.frame),NAVIGATION_BAR_HEIGHT)];
-    self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:self.navigationBar];
+    if (self.navigationController == nil)
+    {
+        self.navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(self.view.frame),NAVIGATION_BAR_HEIGHT)];
+        self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        [self.view addSubview:self.navigationBar];
+    }
     
     //set up a custom label for the title
     self.titleLabelView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.navigationBar.frame.size.width, 44.0f)];
@@ -232,7 +265,8 @@ MFMessageComposeViewControllerDelegate>
     
     //Set up the loading bar
     CGFloat maxWidth = MAX(CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
-    self.loadingBarView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navigationBar.frame), maxWidth, LOADING_BAR_HEIGHT)];
+    CGFloat y = (self.navigationController == nil ? CGRectGetMaxY(self.navigationBar.frame) : 0.0f);
+    self.loadingBarView = [[UIView alloc] initWithFrame:CGRectMake(0, y, maxWidth, LOADING_BAR_HEIGHT)];
     self.loadingBarView.backgroundColor = self.loadingBarTintColor;
     
     //set up a subtle gradient to add over the loading bar
@@ -240,18 +274,25 @@ MFMessageComposeViewControllerDelegate>
     loadingBarGradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.0f alpha:0.25f] CGColor],(id)[[UIColor colorWithWhite:0.0f alpha:0.0f] CGColor]];
     loadingBarGradientLayer.frame = self.loadingBarView.bounds;
     [self.loadingBarView.layer addSublayer:loadingBarGradientLayer];
-    
+
+    //only load the buttons if we need to
+    if (self.showNavigationButtons)
+        [self setUpNavigationButtons];
+}
+
+- (void)setUpNavigationButtons
+{
     //set up the buttons for the navigation bar
     CGRect buttonFrame = CGRectZero; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
-
+    
     //set up the back button
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.backButton setFrame: buttonFrame];
-
+    
     //set up the forward button (Don't worry about the frame at this point as it will be hidden by default)
     self.forwardButton  = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.forwardButton setFrame:buttonFrame];
-
+    
     if (self.showActionButton)
     {
         self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -266,9 +307,51 @@ MFMessageComposeViewControllerDelegate>
     }
 }
 
+- (UIView *)navigationButtonsInContainerView
+{
+    CGRect buttonFrame = CGRectZero;
+    buttonFrame.size = NAVIGATION_BUTTON_SIZE;
+    
+    CGFloat width = (self.buttonWidth*2)+(self.buttonSpacing*1);
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.showActionButton)
+        width = (self.buttonWidth*3)+(self.buttonSpacing*1);
+    
+    //set up the icons for the navigation bar
+    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, self.buttonWidth)];
+    iconsContainerView.backgroundColor = [UIColor clearColor];
+    
+    //add the back button
+    self.backButton.frame = buttonFrame;
+    [iconsContainerView addSubview:self.backButton];
+    
+    //add the forward button too, but keep it hidden for now
+    buttonFrame.origin.x = self.buttonWidth + self.buttonSpacing;
+    self.forwardButton.frame = buttonFrame;
+    self.forwardButton.hidden = YES;
+    [iconsContainerView addSubview:self.forwardButton];
+    
+    //add the reload button if the action button is hidden
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || self.showActionButton==NO)
+    {
+        self.reloadStopButton.frame = buttonFrame;
+        [iconsContainerView addSubview:self.reloadStopButton];
+        buttonFrame.origin.x += (self.buttonWidth + self.buttonSpacing);
+    }
+    
+    //add the action button
+    if (self.showActionButton)
+    {
+        //if we're on iPad, we need to account for the 'reload' button
+        self.actionButton.frame = buttonFrame;
+        [iconsContainerView addSubview:self.actionButton];
+    }
+
+    return iconsContainerView;
+}
+
 - (void)configureColorScheme
 {
-    NSString *themeSuffix = (self.darkColorScheme) ? @"Dark" : @"Light";
+    NSString *themeSuffix = (self.webViewControllerStyle==TOWebViewControllerStyleDark) ? @"Dark" : @"Light";
     NSString *resourcePath = [[NSBundle mainBundle] resourcePath];    
     NSString *fileName = nil;
     
@@ -335,7 +418,7 @@ MFMessageComposeViewControllerDelegate>
         
     //set up the title and 'Done; button label coloring
     NSDictionary *textAttributes = nil;
-    if (self.darkColorScheme)
+    if (self.webViewControllerStyle==TOWebViewControllerStyleDark)
     {
         //title label
         self.titleLabelView.textColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
@@ -366,67 +449,41 @@ MFMessageComposeViewControllerDelegate>
 {
     [super viewDidLoad];
     
-    //remove the top and bottom shadows from the webview
+    //remove the bottom shadow from the webview
     for (UIView *view in self.webView.scrollView.subviews)
     {
-        if ([view isKindOfClass:[UIImageView class]] && CGRectGetWidth(view.frame) == CGRectGetWidth(self.view.frame))
+        if ([view isKindOfClass:[UIImageView class]] && CGRectGetWidth(view.frame) == CGRectGetWidth(self.view.frame) && CGRectGetMinY(view.frame) > 0.0f + FLT_EPSILON)
         {
             [view removeFromSuperview];
-            break;
         }
+        else if ([view isKindOfClass:[UIImageView class]] && self.hideWebViewBoundaries)
+            [view setHidden:YES];
     }
     
-    CGRect buttonFrame = CGRectZero; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
-    
-    CGFloat width = (self.buttonWidth*2)+(self.buttonSpacing*1);
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.showActionButton)
-        width = (self.buttonWidth*3)+(self.buttonSpacing*1);
-    
-    //set up the icons for the navigation bar
-    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, self.buttonWidth)];
-    iconsContainerView.backgroundColor = [UIColor clearColor];
-    
-    //add the back button
-    self.backButton.frame = buttonFrame;
-    [iconsContainerView addSubview:self.backButton];
-    
-    //add the forward button too, but keep it hidden for now
-    buttonFrame.origin.x = self.buttonWidth + self.buttonSpacing;
-    self.forwardButton.frame = buttonFrame;
-    self.forwardButton.hidden = YES;
-    [iconsContainerView addSubview:self.forwardButton];
-    
-    //add the reload button if the action button is hidden
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || self.showActionButton==NO)
-    {
-        self.reloadStopButton.frame = buttonFrame;
-        [iconsContainerView addSubview:self.reloadStopButton];
-        buttonFrame.origin.x += (self.buttonWidth + self.buttonSpacing);
-    }
-    
-    //add the action button
-    if (self.showActionButton)
-    {
-        //if we're on iPad, we need to account for the 'reload' button
-        self.actionButton.frame = buttonFrame;
-        [iconsContainerView addSubview:self.actionButton];
-    }
+    //if we are hiding the web view boundaries, hide the gradient layer
+    if (self.hideWebViewBoundaries)
+        self.gradientLayer.hidden = YES;
     
     //push the buttons on the left to this controller's navigation item
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
+    UIView *iconsContainerView = [self navigationButtonsInContainerView];
+    if ([self isOnTopOfNavigationControllerStack] == NO)
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
+    else
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
     
-
     // Create the Done button
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Modal Web View Controller Close") style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonTapped:)];
+    if ([self isBeingPresentedAsModal] && [self isOnTopOfNavigationControllerStack] == NO)
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Modal Web View Controller Close") style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonTapped:)];
     
     //push the navigation item to the navigation bar
-    [self.navigationBar pushNavigationItem:self.navigationItem animated:NO];
+    if (self.navigationController==nil)
+        [self.navigationBar pushNavigationItem:self.navigationItem animated:NO];
     
     //Set the appropriate actions to the buttons
-    [self.backButton addTarget:self action:@selector(backButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.forwardButton addTarget:self action:@selector(forwardButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.reloadStopButton addTarget:self action:@selector(reloadStopButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.actionButton addTarget:self action:@selector(actionButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [self.backButton        addTarget:self action:@selector(backButtonTapped:)          forControlEvents:UIControlEventTouchUpInside];
+    [self.forwardButton     addTarget:self action:@selector(forwardButtonTapped:)       forControlEvents:UIControlEventTouchUpInside];
+    [self.reloadStopButton  addTarget:self action:@selector(reloadStopButtonTapped:)    forControlEvents:UIControlEventTouchUpInside];
+    [self.actionButton      addTarget:self action:@selector(actionButtonTapped:)        forControlEvents:UIControlEventTouchUpInside];
     
     //load all of the image assets and set the theme
     [self configureColorScheme];
@@ -481,6 +538,29 @@ MFMessageComposeViewControllerDelegate>
 }
 
 #pragma mark -
+#pragma mark State Tracking
+- (BOOL)isBeingPresentedAsModal
+{
+    if (self.navigationController==nil)
+        return [self presentingViewController] != nil;
+    else
+        return [self.navigationController presentingViewController] != nil;
+
+    return NO;
+}
+
+- (BOOL)isOnTopOfNavigationControllerStack
+{
+    if (self.navigationController == nil)
+        return NO;
+    
+    if ([self.navigationController.viewControllers count] && [self.navigationController.viewControllers indexOfObject:self] > 0)
+        return YES;
+    
+    return NO;
+}
+
+#pragma mark -
 #pragma mark Manual Property Accessors
 - (void)setUrl:(NSURL *)url
 {
@@ -509,8 +589,52 @@ MFMessageComposeViewControllerDelegate>
     self.titleLabelView.text = title;
 }
 
+- (UINavigationBar *)navigationBar
+{
+    if (self.navigationController)
+        return self.navigationController.navigationBar;
+    
+    return _navigationBar;
+}
+
+- (void)setShowNavigationButtons:(BOOL)showNavigationButtons
+{
+    if (showNavigationButtons == self.showNavigationButtons)
+        return;
+    
+    _showNavigationButtons = showNavigationButtons;
+    
+    if (_showNavigationButtons)
+    {
+        [self setUpNavigationButtons];
+        [self configureColorScheme];
+        UIView *iconsContainerView = [self navigationButtonsInContainerView];
+        if ([self isOnTopOfNavigationControllerStack])
+            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
+        else
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
+    }
+    else
+    {
+        if ([self isOnTopOfNavigationControllerStack])
+            self.navigationItem.leftBarButtonItem   = nil;
+        else
+            self.navigationItem.rightBarButtonItem  = nil;
+        
+        self.backButton = nil;
+        self.forwardButton = nil;
+        self.reloadIcon = nil;
+        self.stopIcon = nil;
+        self.reloadStopButton = nil;
+        self.actionButton = nil;
+    }
+}
+
 - (UIBarButtonItem *)modalDoneButton
 {
+    if ([self isOnTopOfNavigationControllerStack])
+        return nil;
+    
     return self.navigationItem.rightBarButtonItem;
 }
 
@@ -839,7 +963,8 @@ MFMessageComposeViewControllerDelegate>
         self.loadingBarView.alpha = 1.0f;
         
         //add the loading bar to the view
-        [self.view insertSubview:self.loadingBarView aboveSubview:self.navigationBar];
+        if (self.showLoadingBar)
+            [self.view insertSubview:self.loadingBarView aboveSubview:self.navigationBar];
         
         //kickstart the loading progress
         [self setLoadingProgress:kInitialProgressValue];
@@ -901,20 +1026,23 @@ MFMessageComposeViewControllerDelegate>
         _loadingProgressState.loadingProgress = loadingProgress;
         
         //Update the loading bar progress to match
-        CGRect frame = self.loadingBarView.frame;
-        frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame) + (CGRectGetWidth(self.view.bounds) * _loadingProgressState.loadingProgress);
-        
-        [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-            self.loadingBarView.frame = frame;
-        } completion:^(BOOL finished) {
-            //once loading is complete, fade it out
-            if (loadingProgress >= 1.0f - FLT_EPSILON)
-            {
-                [UIView animateWithDuration:0.2f animations:^{
-                    self.loadingBarView.alpha = 0.0f;
-                }];
-            }
-        }];
+        if (self.showLoadingBar)
+        {
+            CGRect frame = self.loadingBarView.frame;
+            frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame) + (CGRectGetWidth(self.view.bounds) * _loadingProgressState.loadingProgress);
+            
+            [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+                self.loadingBarView.frame = frame;
+            } completion:^(BOOL finished) {
+                //once loading is complete, fade it out
+                if (loadingProgress >= 1.0f - FLT_EPSILON)
+                {
+                    [UIView animateWithDuration:0.2f animations:^{
+                        self.loadingBarView.alpha = 0.0f;
+                    }];
+                }
+            }];
+        }
     }
 }
 
@@ -947,6 +1075,10 @@ MFMessageComposeViewControllerDelegate>
         
         //see if we can set the proper page title yet
         self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        
+        //if we're matching the view BG to the web view, update the background colour now
+        if (self.hideWebViewBoundaries)
+            self.view.backgroundColor = [self webViewPageBackgroundColor];
         
         //finally, if the app desires it, disable the ability to tap and hold on links
         if (self.disableContextualPopupMenu)

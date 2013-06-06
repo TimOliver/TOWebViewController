@@ -91,7 +91,7 @@ MFMessageComposeViewControllerDelegate>
 @property (nonatomic,strong) CAGradientLayer *gradientLayer;
 
 /* Navigation bar shown along the top of the view */
-@property (nonatomic,strong) UINavigationBar *navigationBar;
+@property (nonatomic,strong,readwrite) UINavigationBar *navigationBar;
 
 /* The web view where all the magic happens */
 @property (nonatomic,strong) UIWebView *webView;
@@ -122,6 +122,9 @@ MFMessageComposeViewControllerDelegate>
 /* Popover View Handlers */
 @property (nonatomic,strong) TOWebViewControllerPopoverView *actionPopoverView;
 @property (nonatomic,strong) UIPopoverController *sharingPopoverController;
+
+/* Load all of the image assets and assign them to their respective controls */
+- (void)configureColorScheme;
 
 /* Review the current state of the web view and update the UI controls in the nav bar to match it */
 - (void)refreshButtonsState;
@@ -167,11 +170,10 @@ MFMessageComposeViewControllerDelegate>
 #pragma mark Class Implementation
 @implementation TOWebViewController
 
-- (id)initWithURL:(NSURL *)url
+- (id)init
 {
     if (self = [super init])
     {
-        self.url = url;
         self.loadingBarTintColor = [UIColor colorWithRed:234/255.0f green:7.0f/255.0f blue:7.0f/255.0f alpha:1.0f];
         self.showActionButton = YES;
         self.buttonSpacing = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ? NAVIGATION_BUTTON_SPACING : NAVIGATION_BUTTON_SPACING_IPAD;
@@ -181,10 +183,18 @@ MFMessageComposeViewControllerDelegate>
     return self;
 }
 
+- (id)initWithURL:(NSURL *)url
+{
+    if (self = [self init])
+    {
+        self.url = url;
+    }
+    
+    return self;
+}
+
 - (void)loadView
 {
-    NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
-    
     //Create the all-encompassing container view
     UIView *view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     view.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
@@ -212,17 +222,10 @@ MFMessageComposeViewControllerDelegate>
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:self.navigationBar];
     
-    //Set up the custom skinning for the navigation bar
-    UIImage *navigationBarImage = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerNavigationBarBG.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
-    [self.navigationBar setBackgroundImage:navigationBarImage forBarMetrics:UIBarMetricsDefault];
-    
     //set up a custom label for the title
     self.titleLabelView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.navigationBar.frame.size.width, 44.0f)];
     self.titleLabelView.backgroundColor = [UIColor clearColor];
-    self.titleLabelView.textColor = [UIColor colorWithWhite:0.3f alpha:1.0f];
     self.titleLabelView.font = [UIFont boldSystemFontOfSize:17.0f];
-    self.titleLabelView.shadowColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
-    self.titleLabelView.shadowOffset = CGSizeMake(0.0f,1.0f);
     self.titleLabelView.textAlignment = UITextAlignmentCenter;
     self.titleLabelView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.navigationItem.titleView = self.titleLabelView;
@@ -240,47 +243,128 @@ MFMessageComposeViewControllerDelegate>
     
     //set up the buttons for the navigation bar
     CGRect buttonFrame = CGRectZero; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
-    UIImage *buttonPressedImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerIconPressedBG.png"]];
-    
-    UIImage *backButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerBackIcon.png"]];
+
+    //set up the back button
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.backButton setFrame: buttonFrame];
-    [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
-    [self.backButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
-    
-    UIImage *forwardButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerForwardIcon.png"]];
+
+    //set up the forward button (Don't worry about the frame at this point as it will be hidden by default)
     self.forwardButton  = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.forwardButton setFrame:buttonFrame];
-    [self.forwardButton setImage:forwardButtonImage forState:UIControlStateNormal];
-    [self.forwardButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
-    
-    self.reloadIcon = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerRefreshIcon.png"]];
-    self.stopIcon   = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerStopIcon.png"]];
-    
+
     if (self.showActionButton)
     {
         self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.actionButton setFrame:buttonFrame];
-        [self.actionButton setImage:[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerActionIcon.png"]] forState:UIControlStateNormal];
-        [self.actionButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
-        
     }
     
-    //show the 'reload' button only if on iPad
+    //if we're NOT showing the action button on iPhone (or just iPad), show the reload button
     if (self.showActionButton == NO || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
         self.reloadStopButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.reloadStopButton setFrame:buttonFrame];
+    }
+}
+
+- (void)configureColorScheme
+{
+    NSString *themeSuffix = (self.darkColorScheme) ? @"Dark" : @"Light";
+    NSString *resourcePath = [[NSBundle mainBundle] resourcePath];    
+    NSString *fileName = nil;
+    
+    //Only set up the navigation bar background graphic if the calling class has 
+    if ([[UINavigationBar appearance] backgroundImageForBarMetrics:UIBarMetricsDefault] == nil &&
+        [[UINavigationBar appearanceWhenContainedIn:[self class], nil] backgroundImageForBarMetrics:UIBarMetricsDefault] == nil)
+    {
+        fileName = [NSString stringWithFormat:@"TOWebViewControllerNavigationBarBG%@.png",themeSuffix];
+        UIImage *navigationBarImage = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
+        [self.navigationBar setBackgroundImage:navigationBarImage forBarMetrics:UIBarMetricsDefault];
+    }
+        
+    //The 'impressed' graphic that appears when a button is tapped
+    fileName = [NSString stringWithFormat:@"TOWebViewControllerIconPressedBG%@.png", themeSuffix];
+    UIImage *buttonPressedImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    
+    //The back button
+    fileName = [NSString stringWithFormat:@"TOWebViewControllerBackIcon%@.png", themeSuffix];
+    UIImage *backButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
+    [self.backButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+    
+    //The forward button
+    fileName = [NSString stringWithFormat:@"TOWebViewControllerForwardIcon%@.png", themeSuffix];
+    UIImage *forwardButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    [self.forwardButton setImage:forwardButtonImage forState:UIControlStateNormal];
+    [self.forwardButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+    
+    //The reload icon
+    fileName = [NSString stringWithFormat:@"TOWebViewControllerRefreshIcon%@.png", themeSuffix];
+    self.reloadIcon = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    
+    //The stop icon
+    fileName = [NSString stringWithFormat:@"TOWebViewControllerStopIcon%@.png", themeSuffix];
+    self.stopIcon   = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    
+    //If we're showing the action button, load its icon
+    if (self.showActionButton)
+    {
+        fileName = [NSString stringWithFormat:@"TOWebViewControllerActionIcon%@.png", themeSuffix];
+        [self.actionButton setImage:[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]] forState:UIControlStateNormal];
+        [self.actionButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
+    }
+    
+    //if we're NOT showing the action button on iPhone (or just iPad), show the reload button
+    if (self.showActionButton == NO || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
         [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
         [self.reloadStopButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
     }
+    
+    //'Done' button - Only do if the app isn't applying a custom UIApperance
+    if ([[UIBarButtonItem appearance] backgroundImageForState:UIControlStateNormal barMetrics:UIBarMetricsDefault] == nil &&
+        [[UIBarButtonItem appearanceWhenContainedIn:[self class], nil] backgroundImageForState:UIControlStateNormal barMetrics:UIBarMetricsDefault] == nil)
+    {
+        fileName = [NSString stringWithFormat:@"TOWebViewControllerButtonBG%@.png",themeSuffix];
+        UIImage *doneButtonBG           = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
+        fileName = [NSString stringWithFormat:@"TOWebViewControllerButtonBGPressed%@.png",themeSuffix];
+        UIImage *doneButtonBGPressed    = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
+        
+        [self.navigationItem.rightBarButtonItem setBackgroundImage:doneButtonBG forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        [self.navigationItem.rightBarButtonItem setBackgroundImage:doneButtonBGPressed forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+    }
+        
+    //set up the title and 'Done; button label coloring
+    NSDictionary *textAttributes = nil;
+    if (self.darkColorScheme)
+    {
+        //title label
+        self.titleLabelView.textColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
+        self.titleLabelView.shadowColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
+        self.titleLabelView.shadowOffset = CGSizeMake(0.0f,-1.0f);
+        
+        textAttributes = @{UITextAttributeTextColor:[UIColor colorWithWhite:1.0f alpha:1.0f],
+                           UITextAttributeTextShadowOffset:[NSValue valueWithCGSize:CGSizeMake(0.0f, -1.0f)],
+                           UITextAttributeTextShadowColor:[UIColor colorWithWhite:0.0f alpha:1.0f]};
+    }
+    else
+    {
+        //title label
+        self.titleLabelView.textColor = [UIColor colorWithWhite:0.3f alpha:1.0f];
+        self.titleLabelView.shadowColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
+        self.titleLabelView.shadowOffset = CGSizeMake(0.0f,1.0f);
+
+        textAttributes = @{UITextAttributeTextColor:[UIColor colorWithWhite:0.31f alpha:1.0f],
+                           UITextAttributeTextShadowOffset:[NSValue valueWithCGSize:CGSizeMake(0.0f, 1.0f)],
+                           UITextAttributeTextShadowColor:[UIColor colorWithWhite:1.0f alpha:0.75f]};
+    }
+    
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateHighlighted];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
     
     //remove the top and bottom shadows from the webview
     for (UIView *view in self.webView.scrollView.subviews)
@@ -331,20 +415,9 @@ MFMessageComposeViewControllerDelegate>
     //push the buttons on the left to this controller's navigation item
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
     
-    //create the 'Done' button
-    UIImage *doneButtonBG           = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerButtonBG.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
-    UIImage *doneButtonBGPressed    = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"TOWebViewControllerButtonBGPressed.png"]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Modal Web View Controller Close") style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonTapped:)];
-    [self.navigationItem.rightBarButtonItem setBackgroundImage:doneButtonBG forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [self.navigationItem.rightBarButtonItem setBackgroundImage:doneButtonBGPressed forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    
-    NSDictionary *textAttributes = @{UITextAttributeTextColor:[UIColor colorWithWhite:0.31f alpha:1.0f],
-                                     UITextAttributeTextShadowOffset:[NSValue valueWithCGSize:CGSizeMake(0.0f, 1.0f)],
-                                     UITextAttributeTextShadowColor:[UIColor colorWithWhite:1.0f alpha:0.75f]};
-    
-    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
-    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateHighlighted];
+
+    // Create the Done button
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Modal Web View Controller Close") style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonTapped:)];
     
     //push the navigation item to the navigation bar
     [self.navigationBar pushNavigationItem:self.navigationItem animated:NO];
@@ -354,6 +427,9 @@ MFMessageComposeViewControllerDelegate>
     [self.forwardButton addTarget:self action:@selector(forwardButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.reloadStopButton addTarget:self action:@selector(reloadStopButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.actionButton addTarget:self action:@selector(actionButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    
+    //load all of the image assets and set the theme
+    [self configureColorScheme];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -431,6 +507,11 @@ MFMessageComposeViewControllerDelegate>
 {
     [super setTitle:title];
     self.titleLabelView.text = title;
+}
+
+- (UIBarButtonItem *)modalDoneButton
+{
+    return self.navigationItem.rightBarButtonItem;
 }
 
 #pragma mark -

@@ -29,18 +29,27 @@
 
 @interface TOWebViewController : UIViewController
 
-- (id)initWithURL: (NSURL *)url;
+- (id)initWithURL:(NSURL *)url;
 
 /* Get/set the current URL being displayed. (Will automatically start loading) */
-@property (nonatomic,strong) NSURL *url;
+@property (nonatomic,strong)    NSURL *url;
 
 /* Tint colour for the loading progress bar. Default colour is deep red. */
-@property (nonatomic,copy) UIColor *loadingBarTintColor;
+@property (nonatomic,copy)      UIColor *loadingBarTintColor;
 
 /* Show the 'Action' button instead of the stop/refresh button (On by default)*/
-@property (nonatomic,assign) BOOL showActionButton;
+@property (nonatomic,assign)    BOOL showActionButton;
 
 /* Disable the contextual popup that appears if the user taps and holds on a link. */
-@property (nonatomic,assign) BOOL disableContextualPopupMenu;
+@property (nonatomic,assign)    BOOL disableContextualPopupMenu;
+
+/* The main navigation bar, containing the navigation controls */
+@property (nonatomic,strong,readonly) UINavigationBar *navigationBar;
+
+/* The 'Done' button to dismiss this controller when it's in a modal state */
+@property (nonatomic,strong,readonly) UIBarButtonItem *modalDoneButton;
+
+/* Use a dark color scheme for the text/icons in the navigation bar */
+@property (nonatomic,assign)    BOOL darkColorScheme;
 
 @end

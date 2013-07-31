@@ -473,7 +473,7 @@ MFMessageComposeViewControllerDelegate>
     
     // Create the Done button
     if ([self isBeingPresentedAsModal] && [self isOnTopOfNavigationControllerStack] == NO)
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Modal Web View Controller Close") style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonTapped:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTable(@"Done", @"TOWebViewControllerLocalizable", @"Modal Web View Controller Close") style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonTapped:)];
     
     //push the navigation item to the navigation bar
     if (self.navigationController==nil)
@@ -828,7 +828,7 @@ MFMessageComposeViewControllerDelegate>
     {
         //Email button
         TOWebViewControllerPopoverViewItem *mailItem = [TOWebViewControllerPopoverViewItem new];
-        mailItem.title  = NSLocalizedString(@"Mail", @"Send Email");
+        mailItem.title  = NSLocalizedStringFromTable(@"Mail", @"TOWebViewControllerLocalizable", @"Send Email");
         mailItem.action = ^(TOWebViewControllerPopoverViewItem *item) { [self openMailDialog]; };
         
         //The share button
@@ -836,7 +836,7 @@ MFMessageComposeViewControllerDelegate>
         if ([MFMessageComposeViewController canSendText])
         {
             messageItem = [TOWebViewControllerPopoverViewItem new];
-            messageItem.title = NSLocalizedString(@"Message", @"Send Message");
+            messageItem.title = NSLocalizedStringFromTable(@"Message", @"TOWebViewControllerLocalizable", @"Send Message");
             messageItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openMessageDialog]; };
         }
         
@@ -844,7 +844,7 @@ MFMessageComposeViewControllerDelegate>
         if ([TWTweetComposeViewController canSendTweet])
         {
             twitterItem = [TOWebViewControllerPopoverViewItem new];
-            twitterItem.title = NSLocalizedString(@"Tweet", @"Send a Tweet");
+            twitterItem.title = NSLocalizedStringFromTable(@"Tweet", @"TOWebViewControllerLocalizable", @"Send a Tweet");
             twitterItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openTwitterDialog]; };
         }
         

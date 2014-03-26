@@ -26,11 +26,6 @@
 
 #import <UIKit/UIKit.h>
 
-typedef enum {
-    TOWebViewControllerStyleDefault,
-    TOWebViewControllerStyleDark
-} TOWebViewControllerStyle;
-
 @interface TOWebViewController : UIViewController
 
 - (id)initWithURL:(NSURL *)url;
@@ -44,9 +39,6 @@ typedef enum {
 /* Tint colour for the loading progress bar. Default colour is deep red. */
 @property (nonatomic,copy)      UIColor *loadingBarTintColor;
 
-/* The colored style of the navigation bar and elements along the top */
-@property (nonatomic,assign)    TOWebViewControllerStyle webViewControllerStyle;
-
 /* Show all of the navigation/action buttons (ON by default) */
 @property (nonatomic,assign)    BOOL showNavigationButtons;
 
@@ -56,11 +48,14 @@ typedef enum {
 /* Disable the contextual popup that appears if the user taps and holds on a link. */
 @property (nonatomic,assign)    BOOL disableContextualPopupMenu;
 
-/* Hide the linin background and all shadows and use the same colour as the current page */
+/* Hide the gray/linin background and all shadows and use the same colour as the current page */
 @property (nonatomic,assign)    BOOL hideWebViewBoundaries;
 
-/* The main navigation bar, containing the navigation controls */
+/* The main navigation bar, containing the page title and dismiss button*/
 @property (nonatomic,strong,readonly) UINavigationBar *navigationBar;
+
+/* On the iPhone, the toolbar displays all of the page navigation buttons */
+@property (nonatomic,strong,readonly) UIToolbar *toolbar;
 
 /* The 'Done' button to dismiss this controller when it's in a modal state */
 @property (nonatomic,strong,readonly) UIBarButtonItem *modalDoneButton;

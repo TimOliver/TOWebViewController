@@ -35,20 +35,11 @@
 		22F9226A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9224A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png */; };
 		22F9226B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9224B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png */; };
 		22F9226C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9224C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png */; };
-		22F9226D1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9224D1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop.png */; };
-		22F9226E1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9224E1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop@2x.png */; };
-		22F9226F1753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9224F1753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG.png */; };
-		22F922701753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922501753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG@2x.png */; };
-		22F922711753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922511753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG.png */; };
-		22F922721753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922521753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG@2x.png */; };
-		22F922731753B15E0034FEF6 /* TOWebViewControllerPopupViewBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922531753B15E0034FEF6 /* TOWebViewControllerPopupViewBG.png */; };
-		22F922741753B15E0034FEF6 /* TOWebViewControllerPopupViewBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922541753B15E0034FEF6 /* TOWebViewControllerPopupViewBG@2x.png */; };
 		22F922751753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922551753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png */; };
 		22F922761753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922561753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png */; };
 		22F922771753B15E0034FEF6 /* TOWebViewControllerStopIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922571753B15E0034FEF6 /* TOWebViewControllerStopIcon.png */; };
 		22F922781753B15E0034FEF6 /* TOWebViewControllerStopIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922581753B15E0034FEF6 /* TOWebViewControllerStopIcon@2x.png */; };
 		22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
-		22F9227A1753B15E0034FEF6 /* TOWebViewControllerPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225C1753B15E0034FEF6 /* TOWebViewControllerPopoverView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,22 +80,12 @@
 		22F9224A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerIconPressedBG@2x.png"; sourceTree = "<group>"; };
 		22F9224B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerNavigationBarBG.png; sourceTree = "<group>"; };
 		22F9224C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerNavigationBarBG@2x.png"; sourceTree = "<group>"; };
-		22F9224D1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupArrowTop.png; sourceTree = "<group>"; };
-		22F9224E1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupArrowTop@2x.png"; sourceTree = "<group>"; };
-		22F9224F1753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupButtonBG.png; sourceTree = "<group>"; };
-		22F922501753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupButtonBG@2x.png"; sourceTree = "<group>"; };
-		22F922511753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupButtonPressedBG.png; sourceTree = "<group>"; };
-		22F922521753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupButtonPressedBG@2x.png"; sourceTree = "<group>"; };
-		22F922531753B15E0034FEF6 /* TOWebViewControllerPopupViewBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerPopupViewBG.png; sourceTree = "<group>"; };
-		22F922541753B15E0034FEF6 /* TOWebViewControllerPopupViewBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerPopupViewBG@2x.png"; sourceTree = "<group>"; };
 		22F922551753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerRefreshIcon.png; sourceTree = "<group>"; };
 		22F922561753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerRefreshIcon@2x.png"; sourceTree = "<group>"; };
 		22F922571753B15E0034FEF6 /* TOWebViewControllerStopIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerStopIcon.png; sourceTree = "<group>"; };
 		22F922581753B15E0034FEF6 /* TOWebViewControllerStopIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerStopIcon@2x.png"; sourceTree = "<group>"; };
 		22F922591753B15E0034FEF6 /* TOWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebViewController.h; sourceTree = "<group>"; };
 		22F9225A1753B15E0034FEF6 /* TOWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewController.m; sourceTree = "<group>"; };
-		22F9225B1753B15E0034FEF6 /* TOWebViewControllerPopoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebViewControllerPopoverView.h; sourceTree = "<group>"; };
-		22F9225C1753B15E0034FEF6 /* TOWebViewControllerPopoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewControllerPopoverView.m; sourceTree = "<group>"; };
 		22F9225D1753B15E0034FEF6 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/TOWebViewControllerLocalizable.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -191,8 +172,6 @@
 				22F9223E1753B15E0034FEF6 /* Resources */,
 				22F922591753B15E0034FEF6 /* TOWebViewController.h */,
 				22F9225A1753B15E0034FEF6 /* TOWebViewController.m */,
-				22F9225B1753B15E0034FEF6 /* TOWebViewControllerPopoverView.h */,
-				22F9225C1753B15E0034FEF6 /* TOWebViewControllerPopoverView.m */,
 			);
 			path = TOWebViewController;
 			sourceTree = SOURCE_ROOT;
@@ -214,14 +193,6 @@
 				22F9224A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png */,
 				22F9224B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png */,
 				22F9224C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png */,
-				22F9224D1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop.png */,
-				22F9224E1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop@2x.png */,
-				22F9224F1753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG.png */,
-				22F922501753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG@2x.png */,
-				22F922511753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG.png */,
-				22F922521753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG@2x.png */,
-				22F922531753B15E0034FEF6 /* TOWebViewControllerPopupViewBG.png */,
-				22F922541753B15E0034FEF6 /* TOWebViewControllerPopupViewBG@2x.png */,
 				22F922551753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png */,
 				22F922561753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png */,
 				22F922571753B15E0034FEF6 /* TOWebViewControllerStopIcon.png */,
@@ -306,14 +277,6 @@
 				22F9226A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png in Resources */,
 				22F9226B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png in Resources */,
 				22F9226C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png in Resources */,
-				22F9226D1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop.png in Resources */,
-				22F9226E1753B15E0034FEF6 /* TOWebViewControllerPopupArrowTop@2x.png in Resources */,
-				22F9226F1753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG.png in Resources */,
-				22F922701753B15E0034FEF6 /* TOWebViewControllerPopupButtonBG@2x.png in Resources */,
-				22F922711753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG.png in Resources */,
-				22F922721753B15E0034FEF6 /* TOWebViewControllerPopupButtonPressedBG@2x.png in Resources */,
-				22F922731753B15E0034FEF6 /* TOWebViewControllerPopupViewBG.png in Resources */,
-				22F922741753B15E0034FEF6 /* TOWebViewControllerPopupViewBG@2x.png in Resources */,
 				22F922751753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png in Resources */,
 				22F922761753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png in Resources */,
 				22F922771753B15E0034FEF6 /* TOWebViewControllerStopIcon.png in Resources */,
@@ -332,7 +295,6 @@
 				227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */,
 				227C55FB1750F20700FC3411 /* main.m in Sources */,
 				22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */,
-				22F9227A1753B15E0034FEF6 /* TOWebViewControllerPopoverView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

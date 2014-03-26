@@ -10,11 +10,11 @@
 #import "TOWebViewController.h"
 
 #ifndef NSFoundationVersionNumber_iOS_6_1
-#define NSFoundationVersionNumber_iOS_6_1  993.00
+    #define NSFoundationVersionNumber_iOS_6_1  993.00
 #endif
 
 /* Detect if we're running iOS 7.0 or higher */
-#define UI_IS_MINIMAL (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
+#define MINIMAL_UI (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
 
 @interface TOViewController ()
 
@@ -26,7 +26,7 @@
 {
     self.title = @"TOWebViewController";
     
-    if (UI_IS_MINIMAL) {
+    if (MINIMAL_UI) {
         self.view.backgroundColor = [UIColor whiteColor];
     
         //Offset the buttons by the height of the navigation bar
@@ -39,7 +39,6 @@
 - (IBAction)presentModalButtonTapped:(id)sender
 {
     TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://apple.com/"]];
-    webViewController.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:webViewController animated:YES completion:nil];
 }
 

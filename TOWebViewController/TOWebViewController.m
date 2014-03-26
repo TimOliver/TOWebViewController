@@ -25,20 +25,33 @@
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import "TOWebViewController.h"
-#import "TOWebViewControllerPopoverView.h"
 #import <QuartzCore/QuartzCore.h>
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <Twitter/Twitter.h>
 
+/* Detect if we're running iOS 7.0 or higher */
+#ifndef NSFoundationVersionNumber_iOS_6_1
+#define NSFoundationVersionNumber_iOS_6_1  993.00
+#endif
+#define MINIMAL_UI (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
+
+/* View Controller Theming Properties */
+#define BACKGROUND_COLOR_MINIMAL    [UIColor colorWithRed:0.741f green:0.741 blue:0.76f alpha:1.0f]
+#define BACKGROUND_COLOR_CLASSIC    [UIColor scrollViewTexturedBackgroundColor]
+#define BACKGROUND_COLOR            ((MINIMAL_UI) ? BACKGROUND_COLOR_MINIMAL : BACKGROUND_COLOR_CLASSIC)
+
 /* Navigation Bar Properties */
 #define NAVIGATION_BUTTON_WIDTH             31
 #define NAVIGATION_BUTTON_SIZE              CGSizeMake(31,31)
 #define NAVIGATION_BUTTON_SPACING           5
 #define NAVIGATION_BUTTON_SPACING_IPAD      12
-#define NAVIGATION_BAR_HEIGHT               44.0f
+#define NAVIGATION_BAR_HEIGHT               (MINIMAL_UI ? 64.0f : 44.0f)
 #define NAVIGATION_TOGGLE_ANIM_TIME         0.3
+
+/* Toolbar Properties */
+#define TOOLBAR_HEIGHT      44.0f
 
 /* The distance down from the top of the scrollview,
  that must be scrolled before the rotation animation
@@ -59,10 +72,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark -
 #pragma mark Hidden Properties/Methods
 @interface TOWebViewController () <UIWebViewDelegate,
-TOWebViewControllerPopoverViewDelegate,
-UIPopoverControllerDelegate,
-MFMailComposeViewControllerDelegate,
-MFMessageComposeViewControllerDelegate>
+                                    UIPopoverControllerDelegate,
+                                    MFMailComposeViewControllerDelegate,
+                                    MFMessageComposeViewControllerDelegate>
 {
     
     //Save the state of the web view before we rotate so we can properly re-align it afterwards
@@ -84,23 +96,15 @@ MFMessageComposeViewControllerDelegate>
     } _loadingProgressState;
 }
 
-/* The label for the title view along the navigation bar */
-@property (nonatomic,strong) UILabel *titleLabelView;
-
 /* Gradient layer added to the background view for a bit of extra detail */
 @property (nonatomic,strong) CAGradientLayer *gradientLayer;
 
 /* Navigation bar shown along the top of the view */
 @property (nonatomic,strong,readwrite) UINavigationBar *navigationBar;
-
-/* The web view where all the magic happens */
-@property (nonatomic,strong) UIWebView *webView;
-
-/* The loading bar, displayed when a page is being loaded */
-@property (nonatomic,strong) UIView *loadingBarView;
-
-/* A snapshot of the web view, shown when rotating */
-@property (nonatomic,strong) UIImageView *webViewRotationSnapshot;
+@property (nonatomic,strong,readwrite) UIToolbar *toolbar;
+@property (nonatomic,strong) UIWebView *webView;                        /* The web view, where all the magic happens */
+@property (nonatomic,strong) UIView *loadingBarView;                    /* The loading bar, displayed when a page is being loaded */
+@property (nonatomic,strong) UIImageView *webViewRotationSnapshot;      /* A snapshot of the web view, shown when rotating */
 
 /* Metrics for sizing + placing control buttons in the navigation bar */
 @property (nonatomic,assign) CGFloat buttonWidth;
@@ -116,19 +120,17 @@ MFMessageComposeViewControllerDelegate>
 @property (nonatomic,strong) UIImage *reloadIcon;
 @property (nonatomic,strong) UIImage *stopIcon;
 
-/* The dismissal button displayed on the right of the nav bar. */
+/* The dismissal button displayed on the left of the nav bar. */
 @property (nonatomic,strong) UIButton *doneButton;
 
 /* Popover View Handlers */
-@property (nonatomic,strong) TOWebViewControllerPopoverView *actionPopoverView;
 @property (nonatomic,strong) UIPopoverController *sharingPopoverController;
 
 /* Single method to perform all of the major setup that is referenced in all UIViewController init methods */
 - (void)setup;
 
-/* Determines whether the view controller is currently being presented modally. */
+/* Determines the state of our presentation (whether we're modally presented, or in a navigation controller */
 - (BOOL)isBeingPresentedAsModal;
-/* If we're inside a UINavigationController stack, and we're not the root controller (ie, the 'back' arrow is visible) */
 - (BOOL)isOnTopOfNavigationControllerStack;
 
 /* Init and configure various sections of the controller */
@@ -221,24 +223,29 @@ MFMessageComposeViewControllerDelegate>
     _buttonWidth = NAVIGATION_BUTTON_WIDTH;
     _showNavigationButtons = YES;
     _showLoadingBar = YES;
+    
+    //Set the default presentation style as fullscreen now, so it can be overridden if desired
+    self.modalPresentationStyle = UIModalPresentationFullScreen;
 }
 
 - (void)loadView
 {
     //Create the all-encompassing container view
     UIView *view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-    view.backgroundColor = self.hideWebViewBoundaries ? [UIColor whiteColor] : [UIColor scrollViewTexturedBackgroundColor];
+    view.backgroundColor = (self.hideWebViewBoundaries ? [UIColor whiteColor] : BACKGROUND_COLOR);
     view.opaque = YES;
     self.view = view;
     
     //add a gradient to the background view
-    self.gradientLayer = [CAGradientLayer layer];
-    self.gradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.0f alpha:0.0f] CGColor],(id)[[UIColor colorWithWhite:0.0f alpha:0.35f] CGColor]];
-    self.gradientLayer.frame = self.view.bounds;
-    [self.view.layer addSublayer:self.gradientLayer];
+    if (MINIMAL_UI == NO) {
+        self.gradientLayer = [CAGradientLayer layer];
+        self.gradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.0f alpha:0.0f] CGColor],(id)[[UIColor colorWithWhite:0.0f alpha:0.35f] CGColor]];
+        self.gradientLayer.frame = self.view.bounds;
+        [self.view.layer addSublayer:self.gradientLayer];
+    }
     
     //Create the web view
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, (self.navigationController ? 0 : NAVIGATION_BAR_HEIGHT), CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-(self.navigationController ? 0 : NAVIGATION_BAR_HEIGHT))];
+    self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     self.webView.delegate = self;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.backgroundColor = [UIColor clearColor];
@@ -253,27 +260,42 @@ MFMessageComposeViewControllerDelegate>
         self.navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(self.view.frame),NAVIGATION_BAR_HEIGHT)];
         self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         [self.view addSubview:self.navigationBar];
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            CGFloat y = CGRectGetHeight(self.view.bounds) - TOOLBAR_HEIGHT;
+            self.toolbar = [[UIToolbar alloc] initWithFrame:(CGRect){0, y, CGRectGetWidth(self.view.bounds), TOOLBAR_HEIGHT}];
+            self.toolbar.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth);
+            [self.view addSubview:self.toolbar];
+        }
     }
     
-    //set up a custom label for the title
-    self.titleLabelView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.navigationBar.frame.size.width, 44.0f)];
-    self.titleLabelView.backgroundColor = [UIColor clearColor];
-    self.titleLabelView.font = [UIFont boldSystemFontOfSize:17.0f];
-    self.titleLabelView.textAlignment = UITextAlignmentCenter;
-    self.titleLabelView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    self.navigationItem.titleView = self.titleLabelView;
-    
+    //Set up the content insets of the web view as needed
+    if (self.navigationController == nil) {
+        UIEdgeInsets insets = UIEdgeInsetsZero;
+        
+        if (self.navigationBar)
+            insets.top = NAVIGATION_BAR_HEIGHT;
+        
+        if (self.toolbar)
+            insets.bottom = TOOLBAR_HEIGHT;
+        
+        self.webView.scrollView.contentInset = insets;
+    }
+
     //Set up the loading bar
     CGFloat maxWidth = MAX(CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
     CGFloat y = (self.navigationController == nil ? CGRectGetMaxY(self.navigationBar.frame) : 0.0f);
     self.loadingBarView = [[UIView alloc] initWithFrame:CGRectMake(0, y, maxWidth, LOADING_BAR_HEIGHT)];
     self.loadingBarView.backgroundColor = self.loadingBarTintColor;
+    self.loadingBarView.hidden = YES;
     
     //set up a subtle gradient to add over the loading bar
-    CAGradientLayer *loadingBarGradientLayer = [CAGradientLayer layer];
-    loadingBarGradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.0f alpha:0.25f] CGColor],(id)[[UIColor colorWithWhite:0.0f alpha:0.0f] CGColor]];
-    loadingBarGradientLayer.frame = self.loadingBarView.bounds;
-    [self.loadingBarView.layer addSublayer:loadingBarGradientLayer];
+    if (MINIMAL_UI == NO) {
+        CAGradientLayer *loadingBarGradientLayer = [CAGradientLayer layer];
+        loadingBarGradientLayer.colors = @[(id)[[UIColor colorWithWhite:0.0f alpha:0.25f] CGColor],(id)[[UIColor colorWithWhite:0.0f alpha:0.0f] CGColor]];
+        loadingBarGradientLayer.frame = self.loadingBarView.bounds;
+        [self.loadingBarView.layer addSublayer:loadingBarGradientLayer];
+    }
 
     //only load the buttons if we need to
     if (self.showNavigationButtons)
@@ -351,48 +373,40 @@ MFMessageComposeViewControllerDelegate>
 
 - (void)configureColorScheme
 {
-    NSString *themeSuffix = (self.webViewControllerStyle==TOWebViewControllerStyleDark) ? @"Dark" : @"Light";
-    NSString *resourcePath = [[NSBundle mainBundle] resourcePath];    
-    NSString *fileName = nil;
-    
-    //Only set up the navigation bar background graphic if the calling class has 
-    if ([[UINavigationBar appearance] backgroundImageForBarMetrics:UIBarMetricsDefault] == nil &&
-        [[UINavigationBar appearanceWhenContainedIn:[self class], nil] backgroundImageForBarMetrics:UIBarMetricsDefault] == nil)
-    {
-        fileName = [NSString stringWithFormat:@"TOWebViewControllerNavigationBarBG%@.png",themeSuffix];
-        UIImage *navigationBarImage = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
-        [self.navigationBar setBackgroundImage:navigationBarImage forBarMetrics:UIBarMetricsDefault];
+    if (NO && MINIMAL_UI == NO && [self isBeingPresentedAsModal]) {
+        //Only set up the navigation bar background graphic if the calling class has
+        if ([[UINavigationBar appearance] backgroundImageForBarMetrics:UIBarMetricsDefault] == nil &&
+            [[UINavigationBar appearanceWhenContainedIn:[self class], nil] backgroundImageForBarMetrics:UIBarMetricsDefault] == nil)
+        {
+            UIImage *navigationBarImage = [[UIImage imageNamed:@"TOWebViewControllerNavigationBarBG.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 7, 0, 7)];
+            [self.navigationBar setTintColor:[UIColor grayColor]];
+            [self.navigationBar setBackgroundImage:navigationBarImage forBarMetrics:UIBarMetricsDefault];
+        }
     }
-        
+    
     //The 'impressed' graphic that appears when a button is tapped
-    fileName = [NSString stringWithFormat:@"TOWebViewControllerIconPressedBG%@.png", themeSuffix];
-    UIImage *buttonPressedImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    UIImage *buttonPressedImage = [UIImage imageNamed:@"TOWebViewControllerIconPressedBG.png"];
     
     //The back button
-    fileName = [NSString stringWithFormat:@"TOWebViewControllerBackIcon%@.png", themeSuffix];
-    UIImage *backButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    UIImage *backButtonImage = [UIImage imageNamed:@"TOWebViewControllerBackIcon.png"];
     [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
     [self.backButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
     
     //The forward button
-    fileName = [NSString stringWithFormat:@"TOWebViewControllerForwardIcon%@.png", themeSuffix];
-    UIImage *forwardButtonImage = [UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    UIImage *forwardButtonImage = [UIImage imageNamed:@"TOWebViewControllerForwardIcon.png"];
     [self.forwardButton setImage:forwardButtonImage forState:UIControlStateNormal];
     [self.forwardButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
     
     //The reload icon
-    fileName = [NSString stringWithFormat:@"TOWebViewControllerRefreshIcon%@.png", themeSuffix];
-    self.reloadIcon = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    self.reloadIcon = [UIImage imageNamed:@"TOWebViewControllerRefreshIcon.png"];
     
     //The stop icon
-    fileName = [NSString stringWithFormat:@"TOWebViewControllerStopIcon%@.png", themeSuffix];
-    self.stopIcon   = [[UIImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]];
+    self.stopIcon   = [UIImage imageNamed:@"TOWebViewControllerStopIcon.png"];
     
     //If we're showing the action button, load its icon
     if (self.showActionButton)
     {
-        fileName = [NSString stringWithFormat:@"TOWebViewControllerActionIcon%@.png", themeSuffix];
-        [self.actionButton setImage:[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]] forState:UIControlStateNormal];
+        [self.actionButton setImage:[UIImage imageNamed:@"TOWebViewControllerActionIcon.png"] forState:UIControlStateNormal];
         [self.actionButton setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
     }
     
@@ -404,45 +418,28 @@ MFMessageComposeViewControllerDelegate>
     }
     
     //'Done' button - Only do if the app isn't applying a custom UIApperance
-    if ([[UIBarButtonItem appearance] backgroundImageForState:UIControlStateNormal barMetrics:UIBarMetricsDefault] == nil &&
+    /*if ([[UIBarButtonItem appearance] backgroundImageForState:UIControlStateNormal barMetrics:UIBarMetricsDefault] == nil &&
         [[UIBarButtonItem appearanceWhenContainedIn:[self class], nil] backgroundImageForState:UIControlStateNormal barMetrics:UIBarMetricsDefault] == nil)
     {
-        fileName = [NSString stringWithFormat:@"TOWebViewControllerButtonBG%@.png",themeSuffix];
-        UIImage *doneButtonBG           = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
-        fileName = [NSString stringWithFormat:@"TOWebViewControllerButtonBGPressed%@.png",themeSuffix];
-        UIImage *doneButtonBGPressed    = [[UIImage imageWithContentsOfFile:[resourcePath stringByAppendingPathComponent:fileName]] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
+        UIImage *doneButtonBG        = [[UIImage imageNamed:@"TOWebViewControllerButtonBG.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
+        UIImage *doneButtonBGPressed = [[UIImage imageNamed:@"TOWebViewControllerButtonBGPressed.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(9, 9, 9, 9)];
         
         [self.navigationItem.rightBarButtonItem setBackgroundImage:doneButtonBG forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
         [self.navigationItem.rightBarButtonItem setBackgroundImage:doneButtonBGPressed forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
     }
         
     //set up the title and 'Done; button label coloring
-    NSDictionary *textAttributes = nil;
-    if (self.webViewControllerStyle==TOWebViewControllerStyleDark)
-    {
-        //title label
-        self.titleLabelView.textColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
-        self.titleLabelView.shadowColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
-        self.titleLabelView.shadowOffset = CGSizeMake(0.0f,-1.0f);
-        
-        textAttributes = @{UITextAttributeTextColor:[UIColor colorWithWhite:1.0f alpha:1.0f],
-                           UITextAttributeTextShadowOffset:[NSValue valueWithCGSize:CGSizeMake(0.0f, -1.0f)],
-                           UITextAttributeTextShadowColor:[UIColor colorWithWhite:0.0f alpha:1.0f]};
-    }
-    else
-    {
-        //title label
-        self.titleLabelView.textColor = [UIColor colorWithWhite:0.3f alpha:1.0f];
-        self.titleLabelView.shadowColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
-        self.titleLabelView.shadowOffset = CGSizeMake(0.0f,1.0f);
+    //title label
+    self.titleLabelView.textColor = [UIColor colorWithWhite:0.3f alpha:1.0f];
+    self.titleLabelView.shadowColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
+    self.titleLabelView.shadowOffset = CGSizeMake(0.0f,1.0f);
 
-        textAttributes = @{UITextAttributeTextColor:[UIColor colorWithWhite:0.31f alpha:1.0f],
-                           UITextAttributeTextShadowOffset:[NSValue valueWithCGSize:CGSizeMake(0.0f, 1.0f)],
-                           UITextAttributeTextShadowColor:[UIColor colorWithWhite:1.0f alpha:0.75f]};
-    }
+    NSDictionary *textAttributes = @{UITextAttributeTextColor:[UIColor colorWithWhite:0.31f alpha:1.0f],
+                       UITextAttributeTextShadowOffset:[NSValue valueWithCGSize:CGSizeMake(0.0f, 1.0f)],
+                       UITextAttributeTextShadowColor:[UIColor colorWithWhite:1.0f alpha:0.75f]};
     
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
-    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateHighlighted];
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateHighlighted];*/
 }
 
 - (void)viewDidLoad
@@ -453,9 +450,7 @@ MFMessageComposeViewControllerDelegate>
     for (UIView *view in self.webView.scrollView.subviews)
     {
         if ([view isKindOfClass:[UIImageView class]] && CGRectGetWidth(view.frame) == CGRectGetWidth(self.view.frame) && CGRectGetMinY(view.frame) > 0.0f + FLT_EPSILON)
-        {
             [view removeFromSuperview];
-        }
         else if ([view isKindOfClass:[UIImageView class]] && self.hideWebViewBoundaries)
             [view setHidden:YES];
     }
@@ -583,18 +578,23 @@ MFMessageComposeViewControllerDelegate>
     self.loadingBarView.backgroundColor = self.loadingBarTintColor;
 }
 
-- (void)setTitle:(NSString *)title
-{
-    [super setTitle:title];
-    self.titleLabelView.text = title;
-}
-
 - (UINavigationBar *)navigationBar
 {
     if (self.navigationController)
         return self.navigationController.navigationBar;
     
     return _navigationBar;
+}
+
+- (UIToolbar *)toolbar
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        return nil;
+    
+    if (self.navigationController)
+        return self.navigationController.toolbar;
+    
+    return _toolbar;
 }
 
 - (void)setShowNavigationButtons:(BOOL)showNavigationButtons
@@ -728,63 +728,6 @@ MFMessageComposeViewControllerDelegate>
     [self refreshButtonsState];
 }
 
-- (void)actionButtonTapped:(id)sender
-{
-    //set up the list of actions to display
-    if (self.actionPopoverView)
-    {
-        [self.actionPopoverView dismissAnimated:NO];
-        self.actionPopoverView = nil;
-    }
-    
-    //create the popover view
-    self.actionPopoverView = [TOWebViewControllerPopoverView new];
-    self.actionPopoverView.delegate = self;
-    
-    //The 'Stop/Refresh' button
-    TOWebViewControllerPopoverViewItem *reloadStopItem = nil;
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad)
-    {
-        reloadStopItem = [TOWebViewControllerPopoverViewItem new];
-        reloadStopItem.image = self.webView.loading ? self.stopIcon : self.reloadIcon;
-        reloadStopItem.action = ^(TOWebViewControllerPopoverViewItem *item) { [self reloadStopButtonTapped:nil]; };
-    }
-    
-    //The share button
-    TOWebViewControllerPopoverViewItem *sharingItem = [TOWebViewControllerPopoverViewItem new];
-    sharingItem.title = NSLocalizedStringFromTable(@"Share...", @"TOWebViewControllerLocalizable", @"Sharing button");
-    sharingItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openSharingDialog]; };
-    
-    // Open in button
-    BOOL chromeIsInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]];
-    TOWebViewControllerPopoverViewItem *openItem = [TOWebViewControllerPopoverViewItem new];
-    openItem.title = chromeIsInstalled ? NSLocalizedStringFromTable(@"Open in Chrome", @"TOWebViewControllerLocalizable", @"Open page in Chrome") : NSLocalizedStringFromTable(@"Open in Safari", @"TOWebViewControllerLocalizable", @"Open page in Safari");
-    openItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openInBrowser]; };
-    
-    //Copy Link button
-    TOWebViewControllerPopoverViewItem *copyLinkItem = [TOWebViewControllerPopoverViewItem new];
-    copyLinkItem.title = NSLocalizedStringFromTable(@"Copy URL", @"TOWebViewControllerLocalizable", @"Copy Link to Pasteboard");
-    copyLinkItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [[UIPasteboard generalPasteboard] setString:[self.webView.request.URL absoluteString]]; };
-    
-    if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-    {
-        self.actionPopoverView.leftHeaderItem = reloadStopItem;
-        self.actionPopoverView.rightHeaderItem = sharingItem;
-        self.actionPopoverView.items = @[openItem,copyLinkItem];
-    }
-    else
-    {
-        self.actionPopoverView.items = @[openItem,copyLinkItem,sharingItem];
-    }
-    
-    [self.actionPopoverView presentPopoverFromView:sender animated:YES];
-}
-
-- (void)webViewControllerPopoverView:(TOWebViewControllerPopoverView *)popoverView didDismissAnimated:(BOOL)animated
-{
-    self.actionPopoverView = nil;
-}
-
 - (void)doneButtonTapped:(id)sender
 {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
@@ -794,10 +737,7 @@ MFMessageComposeViewControllerDelegate>
 #pragma mark Action Item Event Handlers
 - (void)openSharingDialog
 {
-    //dismiss the present popover view
-    [self.actionPopoverView dismissAnimated:NO];
-    
-    // If we're on iOS 6, we can use the new, super-duper activity view controller :)
+    // If we're on iOS 6 or above, we can use the  super-duper activity view controller :)
     if (NSClassFromString(@"UIActivityViewController"))
     {
         UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.url] applicationActivities:nil];
@@ -826,8 +766,10 @@ MFMessageComposeViewControllerDelegate>
     }
     else //We must be on iOS 5
     {
+        //TODO: Implement UIActionSheet
+        
         //Email button
-        TOWebViewControllerPopoverViewItem *mailItem = [TOWebViewControllerPopoverViewItem new];
+        /*TOWebViewControllerPopoverViewItem *mailItem = [TOWebViewControllerPopoverViewItem new];
         mailItem.title  = NSLocalizedStringFromTable(@"Mail", @"TOWebViewControllerLocalizable", @"Send Email");
         mailItem.action = ^(TOWebViewControllerPopoverViewItem *item) { [self openMailDialog]; };
         
@@ -859,7 +801,7 @@ MFMessageComposeViewControllerDelegate>
         
         TOWebViewControllerPopoverView *sharePopoverView = [TOWebViewControllerPopoverView new];
         sharePopoverView.items = items;
-        [sharePopoverView presentPopoverFromView:self.actionButton animated:YES];
+        [sharePopoverView presentPopoverFromView:self.actionButton animated:YES];*/
     }
 }
 
@@ -978,10 +920,6 @@ MFMessageComposeViewControllerDelegate>
         url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
         self.title = url;
         
-        //update any visible 'reload' buttons to their 'stop' state
-        if (self.actionPopoverView)
-            [self.actionPopoverView.leftHeaderItem setImage:self.stopIcon];
-        
         if (self.reloadStopButton)
             [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
     }
@@ -1009,10 +947,6 @@ MFMessageComposeViewControllerDelegate>
     
     //in case it didn't succeed yet, try setting the page title again
     self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    
-    //if the popover is visible, update the 'stop' button to 'refresh'
-    if (self.actionPopoverView)
-        [self.actionPopoverView.leftHeaderItem setImage:self.reloadIcon];
     
     if (self.reloadStopButton)
         [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];

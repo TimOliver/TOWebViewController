@@ -37,6 +37,9 @@
 #endif
 #define MINIMAL_UI (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
 
+/* Detect which user idiom we're running on */
+#define IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+
 /* View Controller Theming Properties */
 #define BACKGROUND_COLOR_MINIMAL    [UIColor colorWithRed:0.741f green:0.741 blue:0.76f alpha:1.0f]
 #define BACKGROUND_COLOR_CLASSIC    [UIColor scrollViewTexturedBackgroundColor]
@@ -45,7 +48,7 @@
 /* Navigation Bar Properties */
 #define NAVIGATION_BUTTON_WIDTH             31
 #define NAVIGATION_BUTTON_SIZE              CGSizeMake(31,31)
-#define NAVIGATION_BUTTON_SPACING           5
+#define NAVIGATION_BUTTON_SPACING           35
 #define NAVIGATION_BUTTON_SPACING_IPAD      12
 #define NAVIGATION_BAR_HEIGHT               (MINIMAL_UI ? 64.0f : 44.0f)
 #define NAVIGATION_TOGGLE_ANIM_TIME         0.3
@@ -71,7 +74,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 #pragma mark -
 #pragma mark Hidden Properties/Methods
-@interface TOWebViewController () <UIWebViewDelegate,
+@interface TOWebViewController () <UIWebViewDelegate, UIActionSheetDelegate,
                                     UIPopoverControllerDelegate,
                                     MFMailComposeViewControllerDelegate,
                                     MFMessageComposeViewControllerDelegate>
@@ -125,6 +128,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 /* Popover View Handlers */
 @property (nonatomic,strong) UIPopoverController *sharingPopoverController;
+
+/* See if we need to revert the toolbar to 'hidden' when we pop off a navigation controller. */
+@property (nonatomic,assign) BOOL hideToolbarOnClose;
 
 /* Single method to perform all of the major setup that is referenced in all UIViewController init methods */
 - (void)setup;
@@ -309,23 +315,21 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //set up the back button
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.backButton setFrame: buttonFrame];
+    [self.backButton setFrame:buttonFrame];
     
     //set up the forward button (Don't worry about the frame at this point as it will be hidden by default)
     self.forwardButton  = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.forwardButton setFrame:buttonFrame];
     
+    //set up the reload button
+    self.reloadStopButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.reloadStopButton setFrame:buttonFrame];
+    
+    //if desired, show the action button
     if (self.showActionButton)
     {
         self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.actionButton setFrame:buttonFrame];
-    }
-    
-    //if we're NOT showing the action button on iPhone (or just iPad), show the reload button
-    if (self.showActionButton == NO || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        self.reloadStopButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [self.reloadStopButton setFrame:buttonFrame];
     }
 }
 
@@ -334,9 +338,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     CGRect buttonFrame = CGRectZero;
     buttonFrame.size = NAVIGATION_BUTTON_SIZE;
     
-    CGFloat width = (self.buttonWidth*2)+(self.buttonSpacing*1);
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.showActionButton)
-        width = (self.buttonWidth*3)+(self.buttonSpacing*1);
+    CGFloat width = (self.buttonWidth*3)+(self.buttonSpacing*2);
+    if (self.showActionButton)
+        width = (self.buttonWidth*4)+(self.buttonSpacing*3);
     
     //set up the icons for the navigation bar
     UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, self.buttonWidth)];
@@ -349,21 +353,16 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //add the forward button too, but keep it hidden for now
     buttonFrame.origin.x = self.buttonWidth + self.buttonSpacing;
     self.forwardButton.frame = buttonFrame;
-    self.forwardButton.hidden = YES;
     [iconsContainerView addSubview:self.forwardButton];
+    buttonFrame.origin.x += (self.buttonWidth + self.buttonSpacing);
     
     //add the reload button if the action button is hidden
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || self.showActionButton==NO)
-    {
-        self.reloadStopButton.frame = buttonFrame;
-        [iconsContainerView addSubview:self.reloadStopButton];
-        buttonFrame.origin.x += (self.buttonWidth + self.buttonSpacing);
-    }
+    self.reloadStopButton.frame = buttonFrame;
+    [iconsContainerView addSubview:self.reloadStopButton];
+    buttonFrame.origin.x += (self.buttonWidth + self.buttonSpacing);
     
     //add the action button
-    if (self.showActionButton)
-    {
-        //if we're on iPad, we need to account for the 'reload' button
+    if (self.showActionButton) {
         self.actionButton.frame = buttonFrame;
         [iconsContainerView addSubview:self.actionButton];
     }
@@ -447,24 +446,34 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [super viewDidLoad];
     
     //remove the bottom shadow from the webview
-    for (UIView *view in self.webView.scrollView.subviews)
-    {
-        if ([view isKindOfClass:[UIImageView class]] && CGRectGetWidth(view.frame) == CGRectGetWidth(self.view.frame) && CGRectGetMinY(view.frame) > 0.0f + FLT_EPSILON)
-            [view removeFromSuperview];
-        else if ([view isKindOfClass:[UIImageView class]] && self.hideWebViewBoundaries)
-            [view setHidden:YES];
+    if (MINIMAL_UI == NO) {
+        for (UIView *view in self.webView.scrollView.subviews) {
+            if ([view isKindOfClass:[UIImageView class]] && CGRectGetWidth(view.frame) == CGRectGetWidth(self.view.frame) && CGRectGetMinY(view.frame) > 0.0f + FLT_EPSILON)
+                [view removeFromSuperview];
+            else if ([view isKindOfClass:[UIImageView class]] && self.hideWebViewBoundaries)
+                [view setHidden:YES];
+        }
     }
     
     //if we are hiding the web view boundaries, hide the gradient layer
     if (self.hideWebViewBoundaries)
         self.gradientLayer.hidden = YES;
     
-    //push the buttons on the left to this controller's navigation item
+    //create the buttons view and add it
     UIView *iconsContainerView = [self navigationButtonsInContainerView];
-    if ([self isOnTopOfNavigationControllerStack] == NO)
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
-    else
+    if (IPAD) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
+    }
+    else {
+        NSArray *items = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                           [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView],
+                           [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+        
+        if (self.navigationController)
+            self.toolbarItems = items;
+        else
+            self.toolbar.items = items;
+    }
     
     // Create the Done button
     if ([self isBeingPresentedAsModal] && [self isOnTopOfNavigationControllerStack] == NO)
@@ -488,12 +497,27 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     [super viewWillAppear:animated];
     
+    //see if we need to show the toolbar
+    if (self.navigationController) {
+        self.hideToolbarOnClose = self.navigationController.toolbarHidden;
+        [self.navigationController setToolbarHidden:NO animated:YES];
+    }
+    
     //reset the gradient layer in case the bounds changed before display
     self.gradientLayer.frame = self.view.bounds;
     
     //start loading the initial page
     if (self.url)
         [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    if (self.navigationController) {
+        [self.navigationController setToolbarHidden:self.hideToolbarOnClose animated:YES];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -735,13 +759,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 #pragma mark -
 #pragma mark Action Item Event Handlers
-- (void)openSharingDialog
+- (void)actionButtonTapped:(id)sender
 {
     // If we're on iOS 6 or above, we can use the  super-duper activity view controller :)
-    if (NSClassFromString(@"UIActivityViewController"))
+    if (NO && NSClassFromString(@"UIActivityViewController"))
     {
         UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.url] applicationActivities:nil];
-        activityViewController.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard]; //we've already provided 'Copy' functionality. This is a bit redundant.
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         {
@@ -766,42 +789,56 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
     else //We must be on iOS 5
     {
-        //TODO: Implement UIActionSheet
-        
-        //Email button
-        /*TOWebViewControllerPopoverViewItem *mailItem = [TOWebViewControllerPopoverViewItem new];
-        mailItem.title  = NSLocalizedStringFromTable(@"Mail", @"TOWebViewControllerLocalizable", @"Send Email");
-        mailItem.action = ^(TOWebViewControllerPopoverViewItem *item) { [self openMailDialog]; };
-        
-        //The share button
-        TOWebViewControllerPopoverViewItem *messageItem = nil;
-        if ([MFMessageComposeViewController canSendText])
-        {
-            messageItem = [TOWebViewControllerPopoverViewItem new];
-            messageItem.title = NSLocalizedStringFromTable(@"Message", @"TOWebViewControllerLocalizable", @"Send Message");
-            messageItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openMessageDialog]; };
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                 delegate:self
+                                                        cancelButtonTitle:nil
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:NSLocalizedStringFromTable(@"Mail", @"TOWebViewControllerLocalizable", @"Send Email"), nil];
+
+        NSInteger numberOfButtons = 1;
+
+        //Add SMS
+        if ([MFMessageComposeViewController canSendText]) {
+            [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Mail", @"TOWebViewControllerLocalizable", @"Send Email")];
+            numberOfButtons++;
         }
         
-        TOWebViewControllerPopoverViewItem *twitterItem = nil;
-        if ([TWTweetComposeViewController canSendTweet])
-        {
-            twitterItem = [TOWebViewControllerPopoverViewItem new];
-            twitterItem.title = NSLocalizedStringFromTable(@"Tweet", @"TOWebViewControllerLocalizable", @"Send a Tweet");
-            twitterItem.action = ^(TOWebViewControllerPopoverViewItem *item){ [self openTwitterDialog]; };
+        //Add Twitter
+        if ([TWTweetComposeViewController canSendTweet]) {
+            [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Tweet", @"TOWebViewControllerLocalizable", @"Send a Tweet")];
+            numberOfButtons++;
         }
         
-        NSMutableArray *items = [NSMutableArray array];
-        [items addObject:mailItem];
-        
-        if (messageItem)
-            [items addObject:messageItem];
-        
-        if (twitterItem)
-            [items addObject:twitterItem];
-        
-        TOWebViewControllerPopoverView *sharePopoverView = [TOWebViewControllerPopoverView new];
-        sharePopoverView.items = items;
-        [sharePopoverView presentPopoverFromView:self.actionButton animated:YES];*/
+        //Add a cancel button if on iPhone
+        if (IPAD == NO) {
+            [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"TOWebViewControllerLocalizable", @"Cancel")];
+            [actionSheet setCancelButtonIndex:numberOfButtons];
+            
+            [actionSheet showInView:self.view];
+        }
+        else {
+            [actionSheet showFromRect:[(UIView *)sender frame] inView:[(UIView *)sender superview] animated:YES];
+        }
+    }
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    //Handle whichever button was tapped
+    switch (buttonIndex) {
+        case 0: //Email
+            [self openMailDialog];
+            break;
+        case 1: //SMS or Twitter
+            if ([MFMessageComposeViewController canSendText])
+                [self openMessageDialog];
+            else
+                [self openTwitterDialog];
+        case 2: //Twitter (or Cancel)
+            if ([MFMessageComposeViewController canSendText])
+                [self openTwitterDialog];
+        default:
+            break;
     }
 }
 
@@ -1036,105 +1073,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     else
         [self.backButton setEnabled:NO];
     
-    //update the state for the forward button
-    if (self.webView.canGoForward && self.forwardButton.hidden)
-    {
-        UIView *containerView = self.forwardButton.superview;
-        
-        self.forwardButton.alpha = 0.0f;
-        self.forwardButton.hidden = NO;
-        
-        [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
-            
-            //make the forward button visible
-            self.forwardButton.alpha = 1.0f;
-            
-            //animate the container to accomodate
-            CGRect frame = containerView.frame;
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || self.showActionButton == NO)
-                frame.size.width = (self.buttonWidth*3) + (self.buttonSpacing*2);
-            else
-                frame.size.width = (self.buttonWidth*4) + (self.buttonSpacing*3);
-            containerView.frame = frame;
-            
-            //move the reload (and maybe also the action button)
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-            {
-                UIButton *button = nil;
-                if (self.showActionButton)
-                    button = self.actionButton;
-                else
-                    button = self.reloadStopButton;
-                
-                frame = button.frame;
-                frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
-                button.frame = frame;
-            }
-            else
-            {
-                frame = self.reloadStopButton.frame;
-                frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
-                self.reloadStopButton.frame = frame;
-                
-                if (self.showActionButton)
-                {
-                    frame = self.actionButton.frame;
-                    frame.origin.x = (self.buttonWidth*3) + (self.buttonSpacing*3);
-                    self.actionButton.frame = frame;
-                }
-            }
-        }];
-    }
-    
-    if (self.webView.canGoForward == NO && self.forwardButton.hidden == NO)
-    {
-        UIView *containerView = self.forwardButton.superview;
-        self.forwardButton.alpha = 1.0f;
-        
-        [UIView animateWithDuration:NAVIGATION_TOGGLE_ANIM_TIME animations:^{
-            
-            //make the forward button invisible
-            self.forwardButton.alpha = 0.0f;
-            
-            //animate the container to accomodate
-            CGRect frame = containerView.frame;
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || self.showActionButton == NO)
-                frame.size.width = (self.buttonWidth*2) + (self.buttonSpacing);
-            else
-                frame.size.width = (self.buttonWidth*3) + (self.buttonSpacing*2);
-            containerView.frame = frame;
-            
-            //move the reload buttons
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-            {
-                UIButton *button = nil;
-                if (self.showActionButton)
-                    button = self.actionButton;
-                else
-                    button = self.reloadStopButton;
-                
-                frame = button.frame;
-                frame.origin.x = (self.buttonWidth) + (self.buttonSpacing);
-                button.frame = frame;
-            }
-            else
-            {
-                frame = self.reloadStopButton.frame;
-                frame.origin.x = (self.buttonWidth) + (self.buttonSpacing);
-                self.reloadStopButton.frame = frame;
-                
-                if (self.showActionButton)
-                {
-                    frame = self.actionButton.frame;
-                    frame.origin.x = (self.buttonWidth*2) + (self.buttonSpacing*2);
-                    self.actionButton.frame = frame;
-                }
-            }
-            
-        } completion:^(BOOL completion) {
-            self.forwardButton.hidden = YES;
-        }];
-    }
+    if (self.webView.canGoForward)
+        [self.forwardButton setEnabled:YES];
+    else
+        [self.forwardButton setEnabled:NO];
 }
 
 #pragma mark -

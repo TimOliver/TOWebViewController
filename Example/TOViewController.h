@@ -10,8 +10,10 @@
 
 @interface TOViewController : UIViewController
 
-@property (nonatomic,strong) IBOutlet UIButton *openButton;
+@property (strong, nonatomic) IBOutlet UIButton *presentModalButton;
+@property (strong, nonatomic) IBOutlet UIButton *pushNavigationControllerButton;
 
-- (IBAction)openButtonTapped:(id)sender;
+- (IBAction)presentModalButtonTapped:(id)sender;
+- (IBAction)pushToNavigationButtonTapped:(id)sender;
 
 @end

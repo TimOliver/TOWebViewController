@@ -799,7 +799,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
         //Add SMS
         if ([MFMessageComposeViewController canSendText]) {
-            [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Mail", @"TOWebViewControllerLocalizable", @"Send Email")];
+            [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Message", @"TOWebViewControllerLocalizable", @"Send iMessage")];
             numberOfButtons++;
         }
         
@@ -832,7 +832,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         case 1: //SMS or Twitter
             if ([MFMessageComposeViewController canSendText])
                 [self openMessageDialog];
-            else
+            else if ([TWTweetComposeViewController canSendTweet])
                 [self openTwitterDialog];
         case 2: //Twitter (or Cancel)
             if ([MFMessageComposeViewController canSendText])

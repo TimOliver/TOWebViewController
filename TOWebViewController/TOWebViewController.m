@@ -761,8 +761,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark Action Item Event Handlers
 - (void)actionButtonTapped:(id)sender
 {
-    // If we're on iOS 6 or above, we can use the  super-duper activity view controller :)
-    if (NO && NSClassFromString(@"UIActivityViewController"))
+    // If we're on iOS 6 or above, we can use the super-duper activity view controller :)
+    if (NSClassFromString(@"UIActivityViewController"))
     {
         UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.url] applicationActivities:nil];
         

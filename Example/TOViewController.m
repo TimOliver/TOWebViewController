@@ -39,7 +39,7 @@
 - (IBAction)presentModalButtonTapped:(id)sender
 {
     TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://apple.com/"]];
-    [self presentViewController:webViewController animated:YES completion:nil];
+    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];
 }
 
 - (IBAction)pushToNavigationButtonTapped:(id)sender

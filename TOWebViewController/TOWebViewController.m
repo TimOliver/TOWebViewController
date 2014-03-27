@@ -88,6 +88,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         CGFloat    zoomScale;
         CGFloat    minimumZoomScale;
         CGFloat    maximumZoomScale;
+        CGFloat    topEdgeInset;
     } _webViewState;
     
     //State tracking for load progress of current page
@@ -102,12 +103,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 /* Gradient layer added to the background view for a bit of extra detail */
 @property (nonatomic,strong) CAGradientLayer *gradientLayer;
 
-/* Navigation bar shown along the top of the view */
-@property (nonatomic,strong,readwrite) UINavigationBar *navigationBar;
-@property (nonatomic,strong,readwrite) UIToolbar *toolbar;
-@property (nonatomic,strong) UIWebView *webView;                        /* The web view, where all the magic happens */
-@property (nonatomic,strong) UIView *loadingBarView;                    /* The loading bar, displayed when a page is being loaded */
-@property (nonatomic,strong) UIImageView *webViewRotationSnapshot;      /* A snapshot of the web view, shown when rotating */
+
+@property (nonatomic,readonly)  UINavigationBar *navigationBar;          /* Navigation bar shown along the top of the view */
+@property (nonatomic,readonly)  UIToolbar *toolbar;                      /* Toolbar shown along the bottom */
+@property (nonatomic,strong)    UIWebView *webView;                      /* The web view, where all the magic happens */
+@property (nonatomic,strong)    UIView *loadingBarView;                  /* The loading bar, displayed when a page is being loaded */
+@property (nonatomic,strong)    UIImageView *webViewRotationSnapshot;    /* A snapshot of the web view, shown when rotating */
 
 /* Metrics for sizing + placing control buttons in the navigation bar */
 @property (nonatomic,assign) CGFloat buttonWidth;
@@ -155,7 +156,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)doneButtonTapped:(id)sender;
 
 /* Event handlers for items in the 'action' popup */
-- (void)openSharingDialog;
 - (void)openInBrowser;
 - (void)openMailDialog;
 - (void)openMessageDialog;
@@ -240,6 +240,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     UIView *view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     view.backgroundColor = (self.hideWebViewBoundaries ? [UIColor whiteColor] : BACKGROUND_COLOR);
     view.opaque = YES;
+    view.clipsToBounds = YES;
     self.view = view;
     
     //add a gradient to the background view
@@ -259,41 +260,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.webView.contentMode = UIViewContentModeRedraw;
     self.webView.opaque = YES;
     [self.view addSubview:self.webView];
-    
-    //Create the navigation bar
-    if (self.navigationController == nil)
-    {
-        self.navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(self.view.frame),NAVIGATION_BAR_HEIGHT)];
-        self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        [self.view addSubview:self.navigationBar];
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            CGFloat y = CGRectGetHeight(self.view.bounds) - TOOLBAR_HEIGHT;
-            self.toolbar = [[UIToolbar alloc] initWithFrame:(CGRect){0, y, CGRectGetWidth(self.view.bounds), TOOLBAR_HEIGHT}];
-            self.toolbar.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth);
-            [self.view addSubview:self.toolbar];
-        }
-    }
-    
-    //Set up the content insets of the web view as needed
-    if (self.navigationController == nil) {
-        UIEdgeInsets insets = UIEdgeInsetsZero;
-        
-        if (self.navigationBar)
-            insets.top = NAVIGATION_BAR_HEIGHT;
-        
-        if (self.toolbar)
-            insets.bottom = TOOLBAR_HEIGHT;
-        
-        self.webView.scrollView.contentInset = insets;
-    }
 
     //Set up the loading bar
     CGFloat maxWidth = MAX(CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
-    CGFloat y = (self.navigationController == nil ? CGRectGetMaxY(self.navigationBar.frame) : 0.0f);
+    CGFloat y = CGRectGetMaxY(self.navigationBar.frame);
     self.loadingBarView = [[UIView alloc] initWithFrame:CGRectMake(0, y, maxWidth, LOADING_BAR_HEIGHT)];
     self.loadingBarView.backgroundColor = self.loadingBarTintColor;
-    self.loadingBarView.hidden = YES;
     
     //set up a subtle gradient to add over the loading bar
     if (MINIMAL_UI == NO) {
@@ -498,7 +470,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [super viewWillAppear:animated];
     
     //see if we need to show the toolbar
-    if (self.navigationController) {
+    if (self.navigationController && IPAD == NO) {
         self.hideToolbarOnClose = self.navigationController.toolbarHidden;
         [self.navigationController setToolbarHidden:NO animated:YES];
     }
@@ -544,6 +516,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //update the loading bar to match the proper bounds
     CGRect frame = self.loadingBarView.frame;
+    frame.origin.y = CGRectGetMaxY(self.navigationBar.frame);
     frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame) + (CGRectGetWidth(self.view.bounds) * _loadingProgressState.loadingProgress);
     self.loadingBarView.frame = frame;
     
@@ -607,7 +580,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     if (self.navigationController)
         return self.navigationController.navigationBar;
     
-    return _navigationBar;
+    return nil;
 }
 
 - (UIToolbar *)toolbar
@@ -618,7 +591,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     if (self.navigationController)
         return self.navigationController.toolbar;
     
-    return _toolbar;
+    return nil;
 }
 
 - (void)setShowNavigationButtons:(BOOL)showNavigationButtons
@@ -1190,7 +1163,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         rect.origin = contentOffset;
         rect.size = webViewSize;
     }
-    else //rotating from landscape to portrait. We need to make sure we capture content outside the visible region and pan it back in
+    else //rotating from landscape to portrait. We need to make sure we capture content outside the visible region so it can pan back in
     {
         if ([self webViewPageWidthIsDynamic])
         {
@@ -1238,8 +1211,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         self.webViewRotationSnapshot = nil;
     }
     
-    // form sheet style controllers' bounds don't change, so implementing this is rather pointless
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.modalPresentationStyle == UIModalPresentationFormSheet)
+    // form sheet style controllers' bounds don't change, so none of this is necessary
+    if (IPAD && self.modalPresentationStyle == UIModalPresentationFormSheet)
         return;
     
     //Save the current state so we can use it to properly transition after the rotation is complete
@@ -1301,7 +1274,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         {
             frame.size  = self.webViewRotationSnapshot.image.size;
             
-            if( _webViewState.contentOffset.y > CONTENT_OFFSET_THRESHOLD )
+            if (_webViewState.contentOffset.y > CONTENT_OFFSET_THRESHOLD)
             {
                 //Work out the size we're rotating to
                 CGFloat heightInPortraitMode = CGRectGetWidth(self.webView.frame) - CGRectGetHeight(self.navigationBar.frame);
@@ -1321,7 +1294,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
     
     self.webViewRotationSnapshot.frame = frame;
-    
     [self.view insertSubview:self.webViewRotationSnapshot belowSubview:self.navigationBar];
     
     //This is a dirty, dirty, DIRTY hack. When a UIWebView's frame changes (At least on iOS 6), in certain conditions,
@@ -1334,7 +1306,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //This animation must be complete by the time the view rotation animation is complete, else we'll have incorrect bounds data. This will speed it up to near instant.
     self.webView.scrollView.layer.speed = 9999.0f;
     
-    CGFloat zoomScale = (self.webView.scrollView.minimumZoomScale+self.webView.scrollView.maximumZoomScale) * 0.5f; //zoom into the mid point of the scale. Zooming into either extreme doesn't work.
+    //zoom into the mid point of the scale. Zooming into either extreme doesn't work.
+    CGFloat zoomScale = (self.webView.scrollView.minimumZoomScale+self.webView.scrollView.maximumZoomScale) * 0.5f;
     [self.webView.scrollView setZoomScale:zoomScale animated:YES];
     
     //hide the webview while the snapshot is animating
@@ -1383,7 +1356,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation
 {
-    /// form sheet style controllers' bounds don't change, so implemeting this is rather pointless
+    /// form sheet style controllers' bounds don't change, so implemeting this isn't required
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.modalPresentationStyle == UIModalPresentationFormSheet)
         return;
     
@@ -1456,6 +1429,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         translatedContentOffset.y = MAX(translatedContentOffset.y, self.webView.scrollView.contentInset.top);
         translatedContentOffset.y = MIN(translatedContentOffset.y, contentSize.height - CGRectGetHeight(self.webView.frame));
     }
+    
+    //if there is a content inset applied (ie iOS 7), factor that in as well
+    translatedContentOffset.y -= self.webView.scrollView.contentInset.top;
     
     //apply the translated offset (Thankfully, this one doens't have to be animated in order to work properly)
     [self.webView.scrollView setContentOffset:translatedContentOffset animated:NO];

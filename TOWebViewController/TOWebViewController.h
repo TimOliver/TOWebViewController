@@ -51,12 +51,6 @@
 /* Hide the gray/linin background and all shadows and use the same colour as the current page */
 @property (nonatomic,assign)    BOOL hideWebViewBoundaries;
 
-/* The main navigation bar, containing the page title and dismiss button*/
-@property (nonatomic,strong,readonly) UINavigationBar *navigationBar;
-
-/* On the iPhone, the toolbar displays all of the page navigation buttons */
-@property (nonatomic,strong,readonly) UIToolbar *toolbar;
-
 /* The 'Done' button to dismiss this controller when it's in a modal state */
 @property (nonatomic,strong,readonly) UIBarButtonItem *modalDoneButton;
 

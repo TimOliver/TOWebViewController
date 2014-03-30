@@ -51,7 +51,10 @@
 /* Hide the gray/linin background and all shadows and use the same colour as the current page */
 @property (nonatomic,assign)    BOOL hideWebViewBoundaries;
 
-/* The 'Done' button to dismiss this controller when it's in a modal state */
-@property (nonatomic,strong,readonly) UIBarButtonItem *modalDoneButton;
+/* On iOS 6 or below, this can be used to override the default fill color of the navigation buttons */
+@property (nonatomic,strong)    UIColor *buttonTintColor UI_APPEARANCE_SELECTOR;
+
+/* On iOS 6 or below, this overrides the default opacity level of the bevel around the navigation buttons */
+@property (nonatomic,assign)    CGFloat buttonBevelOpacity UI_APPEARANCE_SELECTOR;
 
 @end

@@ -20,25 +20,8 @@
 		22834A411737B5A50043F7DF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A401737B5A50043F7DF /* UIKit.framework */; };
 		22834A431737B5A50043F7DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A421737B5A50043F7DF /* Foundation.framework */; };
 		22834A451737B5A50043F7DF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A441737B5A50043F7DF /* CoreGraphics.framework */; };
+		22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */; };
 		22F9225E1753B15E0034FEF6 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22F9223A1753B15D0034FEF6 /* TOWebViewControllerLocalizable.strings */; };
-		22F9225F1753B15E0034FEF6 /* TOWebViewControllerActionIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9223F1753B15E0034FEF6 /* TOWebViewControllerActionIcon.png */; };
-		22F922601753B15E0034FEF6 /* TOWebViewControllerActionIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922401753B15E0034FEF6 /* TOWebViewControllerActionIcon@2x.png */; };
-		22F922611753B15E0034FEF6 /* TOWebViewControllerBackIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922411753B15E0034FEF6 /* TOWebViewControllerBackIcon.png */; };
-		22F922621753B15E0034FEF6 /* TOWebViewControllerBackIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922421753B15E0034FEF6 /* TOWebViewControllerBackIcon@2x.png */; };
-		22F922631753B15E0034FEF6 /* TOWebViewControllerButtonBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922431753B15E0034FEF6 /* TOWebViewControllerButtonBG.png */; };
-		22F922641753B15E0034FEF6 /* TOWebViewControllerButtonBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922441753B15E0034FEF6 /* TOWebViewControllerButtonBG@2x.png */; };
-		22F922651753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922451753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed.png */; };
-		22F922661753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922461753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed@2x.png */; };
-		22F922671753B15E0034FEF6 /* TOWebViewControllerForwardIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922471753B15E0034FEF6 /* TOWebViewControllerForwardIcon.png */; };
-		22F922681753B15E0034FEF6 /* TOWebViewControllerForwardIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922481753B15E0034FEF6 /* TOWebViewControllerForwardIcon@2x.png */; };
-		22F922691753B15E0034FEF6 /* TOWebViewControllerIconPressedBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922491753B15E0034FEF6 /* TOWebViewControllerIconPressedBG.png */; };
-		22F9226A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9224A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png */; };
-		22F9226B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9224B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png */; };
-		22F9226C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F9224C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png */; };
-		22F922751753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922551753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png */; };
-		22F922761753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922561753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png */; };
-		22F922771753B15E0034FEF6 /* TOWebViewControllerStopIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922571753B15E0034FEF6 /* TOWebViewControllerStopIcon.png */; };
-		22F922781753B15E0034FEF6 /* TOWebViewControllerStopIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22F922581753B15E0034FEF6 /* TOWebViewControllerStopIcon@2x.png */; };
 		22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -63,27 +46,11 @@
 		22834A401737B5A50043F7DF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		22834A421737B5A50043F7DF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		22834A441737B5A50043F7DF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		22CB13C318E8158000B948D8 /* UIImage+TOWebViewControllerIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+TOWebViewControllerIcons.h"; sourceTree = "<group>"; };
+		22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TOWebViewControllerIcons.m"; sourceTree = "<group>"; };
 		22F9223B1753B15D0034FEF6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		22F9223C1753B15E0034FEF6 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		22F9223D1753B15E0034FEF6 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		22F9223F1753B15E0034FEF6 /* TOWebViewControllerActionIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerActionIcon.png; sourceTree = "<group>"; };
-		22F922401753B15E0034FEF6 /* TOWebViewControllerActionIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerActionIcon@2x.png"; sourceTree = "<group>"; };
-		22F922411753B15E0034FEF6 /* TOWebViewControllerBackIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerBackIcon.png; sourceTree = "<group>"; };
-		22F922421753B15E0034FEF6 /* TOWebViewControllerBackIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerBackIcon@2x.png"; sourceTree = "<group>"; };
-		22F922431753B15E0034FEF6 /* TOWebViewControllerButtonBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerButtonBG.png; sourceTree = "<group>"; };
-		22F922441753B15E0034FEF6 /* TOWebViewControllerButtonBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerButtonBG@2x.png"; sourceTree = "<group>"; };
-		22F922451753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerButtonBGPressed.png; sourceTree = "<group>"; };
-		22F922461753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerButtonBGPressed@2x.png"; sourceTree = "<group>"; };
-		22F922471753B15E0034FEF6 /* TOWebViewControllerForwardIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerForwardIcon.png; sourceTree = "<group>"; };
-		22F922481753B15E0034FEF6 /* TOWebViewControllerForwardIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerForwardIcon@2x.png"; sourceTree = "<group>"; };
-		22F922491753B15E0034FEF6 /* TOWebViewControllerIconPressedBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerIconPressedBG.png; sourceTree = "<group>"; };
-		22F9224A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerIconPressedBG@2x.png"; sourceTree = "<group>"; };
-		22F9224B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerNavigationBarBG.png; sourceTree = "<group>"; };
-		22F9224C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerNavigationBarBG@2x.png"; sourceTree = "<group>"; };
-		22F922551753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerRefreshIcon.png; sourceTree = "<group>"; };
-		22F922561753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerRefreshIcon@2x.png"; sourceTree = "<group>"; };
-		22F922571753B15E0034FEF6 /* TOWebViewControllerStopIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOWebViewControllerStopIcon.png; sourceTree = "<group>"; };
-		22F922581753B15E0034FEF6 /* TOWebViewControllerStopIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TOWebViewControllerStopIcon@2x.png"; sourceTree = "<group>"; };
 		22F922591753B15E0034FEF6 /* TOWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebViewController.h; sourceTree = "<group>"; };
 		22F9225A1753B15E0034FEF6 /* TOWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewController.m; sourceTree = "<group>"; };
 		22F9225D1753B15E0034FEF6 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/TOWebViewControllerLocalizable.strings"; sourceTree = "<group>"; };
@@ -168,38 +135,14 @@
 		22F922391753B15D0034FEF6 /* TOWebViewController */ = {
 			isa = PBXGroup;
 			children = (
-				22F9223A1753B15D0034FEF6 /* TOWebViewControllerLocalizable.strings */,
-				22F9223E1753B15E0034FEF6 /* Resources */,
 				22F922591753B15E0034FEF6 /* TOWebViewController.h */,
 				22F9225A1753B15E0034FEF6 /* TOWebViewController.m */,
+				22CB13C318E8158000B948D8 /* UIImage+TOWebViewControllerIcons.h */,
+				22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */,
+				22F9223A1753B15D0034FEF6 /* TOWebViewControllerLocalizable.strings */,
 			);
 			path = TOWebViewController;
 			sourceTree = SOURCE_ROOT;
-		};
-		22F9223E1753B15E0034FEF6 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				22F9223F1753B15E0034FEF6 /* TOWebViewControllerActionIcon.png */,
-				22F922401753B15E0034FEF6 /* TOWebViewControllerActionIcon@2x.png */,
-				22F922411753B15E0034FEF6 /* TOWebViewControllerBackIcon.png */,
-				22F922421753B15E0034FEF6 /* TOWebViewControllerBackIcon@2x.png */,
-				22F922431753B15E0034FEF6 /* TOWebViewControllerButtonBG.png */,
-				22F922441753B15E0034FEF6 /* TOWebViewControllerButtonBG@2x.png */,
-				22F922451753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed.png */,
-				22F922461753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed@2x.png */,
-				22F922471753B15E0034FEF6 /* TOWebViewControllerForwardIcon.png */,
-				22F922481753B15E0034FEF6 /* TOWebViewControllerForwardIcon@2x.png */,
-				22F922491753B15E0034FEF6 /* TOWebViewControllerIconPressedBG.png */,
-				22F9224A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png */,
-				22F9224B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png */,
-				22F9224C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png */,
-				22F922551753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png */,
-				22F922561753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png */,
-				22F922571753B15E0034FEF6 /* TOWebViewControllerStopIcon.png */,
-				22F922581753B15E0034FEF6 /* TOWebViewControllerStopIcon@2x.png */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -263,24 +206,6 @@
 				225015031737B8B000DF6D7E /* InfoPlist.strings in Resources */,
 				2265F357173FF4CD00A68010 /* Default-568h@2x.png in Resources */,
 				22F9225E1753B15E0034FEF6 /* TOWebViewControllerLocalizable.strings in Resources */,
-				22F9225F1753B15E0034FEF6 /* TOWebViewControllerActionIcon.png in Resources */,
-				22F922601753B15E0034FEF6 /* TOWebViewControllerActionIcon@2x.png in Resources */,
-				22F922611753B15E0034FEF6 /* TOWebViewControllerBackIcon.png in Resources */,
-				22F922621753B15E0034FEF6 /* TOWebViewControllerBackIcon@2x.png in Resources */,
-				22F922631753B15E0034FEF6 /* TOWebViewControllerButtonBG.png in Resources */,
-				22F922641753B15E0034FEF6 /* TOWebViewControllerButtonBG@2x.png in Resources */,
-				22F922651753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed.png in Resources */,
-				22F922661753B15E0034FEF6 /* TOWebViewControllerButtonBGPressed@2x.png in Resources */,
-				22F922671753B15E0034FEF6 /* TOWebViewControllerForwardIcon.png in Resources */,
-				22F922681753B15E0034FEF6 /* TOWebViewControllerForwardIcon@2x.png in Resources */,
-				22F922691753B15E0034FEF6 /* TOWebViewControllerIconPressedBG.png in Resources */,
-				22F9226A1753B15E0034FEF6 /* TOWebViewControllerIconPressedBG@2x.png in Resources */,
-				22F9226B1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG.png in Resources */,
-				22F9226C1753B15E0034FEF6 /* TOWebViewControllerNavigationBarBG@2x.png in Resources */,
-				22F922751753B15E0034FEF6 /* TOWebViewControllerRefreshIcon.png in Resources */,
-				22F922761753B15E0034FEF6 /* TOWebViewControllerRefreshIcon@2x.png in Resources */,
-				22F922771753B15E0034FEF6 /* TOWebViewControllerStopIcon.png in Resources */,
-				22F922781753B15E0034FEF6 /* TOWebViewControllerStopIcon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				227C55FA1750F1F900FC3411 /* TOViewController.m in Sources */,
+				22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */,
 				227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */,
 				227C55FB1750F20700FC3411 /* main.m in Sources */,
 				22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */,

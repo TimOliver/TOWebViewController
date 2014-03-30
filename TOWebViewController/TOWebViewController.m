@@ -25,6 +25,8 @@
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import "TOWebViewController.h"
+#import "UIImage+TOWebViewControllerIcons.h"
+
 #import <QuartzCore/QuartzCore.h>
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
@@ -51,8 +53,8 @@
 /* Navigation Bar Properties */
 #define NAVIGATION_BUTTON_WIDTH             31
 #define NAVIGATION_BUTTON_SIZE              CGSizeMake(31,31)
-#define NAVIGATION_BUTTON_SPACING           35
-#define NAVIGATION_BUTTON_SPACING_IPAD      12
+#define NAVIGATION_BUTTON_SPACING           40
+#define NAVIGATION_BUTTON_SPACING_IPAD      20
 #define NAVIGATION_BAR_HEIGHT               (MINIMAL_UI ? 64.0f : 44.0f)
 #define NAVIGATION_TOGGLE_ANIM_TIME         0.3
 
@@ -224,7 +226,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //Direct ivar reference since we don't want to trigger their actions yet
     _loadingBarTintColor = [UIColor colorWithRed:234/255.0f green:7.0f/255.0f blue:7.0f/255.0f alpha:1.0f];
     _showActionButton = YES;
-    _buttonSpacing = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ? NAVIGATION_BUTTON_SPACING : NAVIGATION_BUTTON_SPACING_IPAD;
+    _buttonSpacing = (IPAD == NO) ? NAVIGATION_BUTTON_SPACING : NAVIGATION_BUTTON_SPACING_IPAD;
     _buttonWidth = NAVIGATION_BUTTON_WIDTH;
     _showLoadingBar = YES;
     
@@ -283,31 +285,39 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //set up the buttons for the navigation bar
     CGRect buttonFrame = CGRectZero; buttonFrame.size = NAVIGATION_BUTTON_SIZE;
     
+    UIButtonType buttonType = UIButtonTypeCustom;
+    if (MINIMAL_UI)
+        buttonType = UIButtonTypeSystem;
+    
     //set up the back button
-    UIImage *backButtonImage = [UIImage imageNamed:@"TOWebViewControllerBackIcon.png"];
-    self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *backButtonImage = [UIImage TOWebViewControllerIcon_backButtonWithAttributes:nil];
+    self.backButton = [UIButton buttonWithType:buttonType];
     [self.backButton setFrame:buttonFrame];
+    [self.backButton setShowsTouchWhenHighlighted:YES];
     [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
     
     //set up the forward button (Don't worry about the frame at this point as it will be hidden by default)
-    UIImage *forwardButtonImage = [UIImage imageNamed:@"TOWebViewControllerForwardIcon.png"];
-    self.forwardButton  = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *forwardButtonImage = [UIImage TOWebViewControllerIcon_forwardButtonWithAttributes:nil];
+    self.forwardButton  = [UIButton buttonWithType:buttonType];
     [self.forwardButton setFrame:buttonFrame];
+    [self.forwardButton setShowsTouchWhenHighlighted:YES];
     [self.forwardButton setImage:forwardButtonImage forState:UIControlStateNormal];
     
     //set up the reload button
-    self.reloadStopButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.reloadStopButton = [UIButton buttonWithType:buttonType];
     [self.reloadStopButton setFrame:buttonFrame];
+    [self.reloadStopButton setShowsTouchWhenHighlighted:YES];
     
-    self.reloadIcon = [UIImage imageNamed:@"TOWebViewControllerRefreshIcon.png"];
-    self.stopIcon   = [UIImage imageNamed:@"TOWebViewControllerStopIcon.png"];
+    self.reloadIcon = [UIImage TOWebViewControllerIcon_refreshButtonWithAttributes:nil];
+    self.stopIcon   = [UIImage TOWebViewControllerIcon_stopButtonWithAttributes:nil];
     [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
     
     //if desired, show the action button
     if (self.showActionButton) {
-        self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.actionButton = [UIButton buttonWithType:buttonType];
         [self.actionButton setFrame:buttonFrame];
-        [self.actionButton setImage:[UIImage imageNamed:@"TOWebViewControllerActionIcon.png"] forState:UIControlStateNormal];
+        [self.actionButton setShowsTouchWhenHighlighted:YES];
+        [self.actionButton setImage:[UIImage TOWebViewControllerIcon_actionButtonWithAttributes:nil] forState:UIControlStateNormal];
     }
 }
 
@@ -379,10 +389,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     // Create the Done button
     if (self.beingPresentedModally && !self.onTopOfNavigationControllerStack) {
         NSString *title = NSLocalizedStringFromTable(@"Done", @"TOWebViewControllerLocalizable", @"Modal Web View Controller Close");
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title
-                                                                                 style:UIBarButtonItemStyleDone
-                                                                                target:self
-                                                                                action:@selector(doneButtonTapped:)];
+        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonTapped:)];
+        if (IPAD)
+            self.navigationItem.leftBarButtonItem = doneButton;
+        else
+            self.navigationItem.rightBarButtonItem = doneButton;
     }
     
     //Set the appropriate actions to the buttons
@@ -397,13 +408,17 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [super viewWillAppear:animated];
     
     //see if we need to show the toolbar
-    if (self.navigationController && IPAD == NO) {
+    if (self.navigationController) {
         self.hideToolbarOnClose = self.navigationController.toolbarHidden;
         
-        if (self.beingPresentedModally  == NO)
-            [self.navigationController setToolbarHidden:NO animated:YES];
+        if (IPAD == NO) {
+            if (self.beingPresentedModally == NO)
+                [self.navigationController setToolbarHidden:NO animated:YES];
+            else
+                self.navigationController.toolbarHidden = NO;
+            }
         else
-            self.navigationController.toolbarHidden = NO;
+            [self.navigationController setToolbarHidden:YES animated:YES];
     }
     
     //reset the gradient layer in case the bounds changed before display
@@ -564,6 +579,16 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         self.reloadStopButton = nil;
         self.actionButton = nil;
     }
+}
+
+- (void)setButtonTintColor:(UIColor *)buttonTintColor
+{
+    if (buttonTintColor == _buttonTintColor)
+        return;
+    
+    _buttonTintColor = buttonTintColor;
+    
+    
 }
 
 #pragma mark -

@@ -8,12 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TOViewController : UIViewController
+@interface TOViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) IBOutlet UIButton *presentModalButton;
-@property (strong, nonatomic) IBOutlet UIButton *pushNavigationControllerButton;
-
-- (IBAction)presentModalButtonTapped:(id)sender;
-- (IBAction)pushToNavigationButtonTapped:(id)sender;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UIView *headerView;
 
 @end

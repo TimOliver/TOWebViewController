@@ -24,28 +24,60 @@
 
 - (void)viewDidLoad
 {
-    self.title = @"TOWebViewController";
+    self.title = @"Navigation Controller";
+    self.tableView.tableHeaderView = self.headerView;
+    self.tableView.backgroundView = [UIView new];
     
     if (MINIMAL_UI) {
         self.view.backgroundColor = [UIColor whiteColor];
-    
-        //Offset the buttons by the height of the navigation bar
-        CGFloat navBarHeight = self.navigationController.navigationBar.frame.size.height;
-        self.presentModalButton.frame = CGRectOffset(self.presentModalButton.frame, 0.0f, navBarHeight);
-        self.pushNavigationControllerButton.frame = CGRectOffset(self.pushNavigationControllerButton.frame, 0.0f, navBarHeight);
+        self.tableView.backgroundView.backgroundColor = [UIColor whiteColor];
     }
+    else {
+        self.tableView.backgroundView.backgroundColor = [UIColor clearColor];
+    }
+    
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backItem];
 }
 
-- (IBAction)presentModalButtonTapped:(id)sender
+#pragma mark - Table View Protocols -
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://google.com/"]];
-    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];
+    return 2;
 }
 
-- (IBAction)pushToNavigationButtonTapped:(id)sender
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://apple.com/"]];
-    [self.navigationController pushViewController:webViewController animated:YES];
+    static NSString *tableCellIdentifier = @"TableViewCell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:tableCellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:tableCellIdentifier];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
+    if (indexPath.row == 0) {
+        cell.textLabel.text = @"Present as Modal View Controller";
+    }
+    else {
+        cell.textLabel.text = @"Push onto Navigation Controller";
+    }
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (indexPath.row == 0) {
+        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://google.com/"]];
+        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];
+    }
+    else {
+        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://apple.com/"]];
+        [self.navigationController pushViewController:webViewController animated:YES];
+    }
 }
 
 @end

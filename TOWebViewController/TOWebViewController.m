@@ -1217,8 +1217,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                 CGFloat topDelta = (scaledHeight*0.5f) - CGRectGetHeight(self.webView.frame)*0.5f;
                 
                 //adjust as needed to fit the top or bottom
-                if (_webViewState.contentOffset.y - topDelta < 0.0f)
-                    frame.origin.y = CGRectGetMinY(self.webView.frame) - _webViewState.contentOffset.y;
+                if (_webViewState.contentOffset.y - topDelta < -_webViewState.topEdgeInset)
+                    frame.origin.y = (CGRectGetMinY(self.webView.frame) - _webViewState.topEdgeInset) - _webViewState.contentOffset.y;
                 else if (_webViewState.contentOffset.y + CGRectGetHeight(self.webView.frame) + topDelta > _webViewState.contentSize.height)
                     frame.origin.y = (CGRectGetMaxY(self.webView.frame) - CGRectGetHeight(frame)) + ((_webViewState.contentSize.height - CGRectGetHeight(self.webView.frame) - _webViewState.contentOffset.y));
                 else //position the webview in the center
@@ -1267,7 +1267,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     {
         BOOL pinnedToBottom = NO;
         CGFloat scale = CGRectGetHeight(self.webViewRotationSnapshot.frame)/CGRectGetWidth(self.webViewRotationSnapshot.frame);
-        frame.size.height = floor(CGRectGetWidth(self.webView.frame) * scale);
+        frame.size.height = CGRectGetWidth(self.webView.frame) * scale;
         
         //If we're sufficiently scrolled down, animate towards the center of the view, not the top
         if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > CONTENT_OFFSET_THRESHOLD)

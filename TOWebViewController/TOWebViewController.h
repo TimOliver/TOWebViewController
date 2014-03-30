@@ -1,7 +1,7 @@
 //
 //  TOWebViewController.h
 //
-//  Copyright 2013 Timothy Oliver. All rights reserved.
+//  Copyright 2014 Timothy Oliver. All rights reserved.
 //
 //  Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress,
 //  also licensed under the MIT License. Re-implemented by Timothy Oliver.
@@ -40,7 +40,7 @@
 @property (nonatomic,copy)      UIColor *loadingBarTintColor;
 
 /* Show all of the navigation/action buttons (ON by default) */
-@property (nonatomic,assign)    BOOL showNavigationButtons;
+@property (nonatomic,assign)    BOOL navigationButtonsHidden;
 
 /* Show the 'Action' button instead of the stop/refresh button (YES by default)*/
 @property (nonatomic,assign)    BOOL showActionButton;

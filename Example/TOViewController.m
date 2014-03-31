@@ -29,8 +29,8 @@
     self.tableView.backgroundView = [UIView new];
     
     if (MINIMAL_UI) {
-        self.view.backgroundColor = [UIColor whiteColor];
-        self.tableView.backgroundView.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = [UIColor colorWithWhite:0.95f alpha:1.0f];
+        self.tableView.backgroundView.backgroundColor = [UIColor colorWithWhite:0.95f alpha:1.0f];
     }
     else {
         self.tableView.backgroundView.backgroundColor = [UIColor clearColor];
@@ -71,7 +71,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (indexPath.row == 0) {
-        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://google.com/"]];
+        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://apple.com/"]];
         [self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];
     }
     else {

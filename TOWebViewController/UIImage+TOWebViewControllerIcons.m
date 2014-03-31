@@ -363,31 +363,31 @@ const NSString *TOWebViewControllerButtonBevelOpacity    = @"TOWebViewController
 {
     UIImage *actionButtonImage = nil;
     if (MINIMAL_UI) {
-        UIGraphicsBeginImageContextWithOptions((CGSize){19,24}, NO, [[UIScreen mainScreen] scale]);
+        UIGraphicsBeginImageContextWithOptions((CGSize){19,25}, NO, [[UIScreen mainScreen] scale]);
         {
             //// Color Declarations
             UIColor* actionColor = [UIColor blackColor];
             
             //// ActionButton Drawing
             UIBezierPath* actionButtonPath = [UIBezierPath bezierPath];
-            [actionButtonPath moveToPoint: CGPointMake(1, 8)];
-            [actionButtonPath addLineToPoint: CGPointMake(1, 23.02)];
-            [actionButtonPath addLineToPoint: CGPointMake(18, 23.02)];
-            [actionButtonPath addLineToPoint: CGPointMake(18, 8)];
+            [actionButtonPath moveToPoint: CGPointMake(1, 9)];
+            [actionButtonPath addLineToPoint: CGPointMake(1, 24.02)];
+            [actionButtonPath addLineToPoint: CGPointMake(18, 24.02)];
+            [actionButtonPath addLineToPoint: CGPointMake(18, 9)];
+            [actionButtonPath addLineToPoint: CGPointMake(12, 9)];
             [actionButtonPath addLineToPoint: CGPointMake(12, 8)];
-            [actionButtonPath addLineToPoint: CGPointMake(12, 7)];
-            [actionButtonPath addLineToPoint: CGPointMake(19, 7)];
-            [actionButtonPath addLineToPoint: CGPointMake(19, 24)];
-            [actionButtonPath addLineToPoint: CGPointMake(0, 24)];
-            [actionButtonPath addLineToPoint: CGPointMake(0, 7)];
-            [actionButtonPath addLineToPoint: CGPointMake(7, 7)];
+            [actionButtonPath addLineToPoint: CGPointMake(19, 8)];
+            [actionButtonPath addLineToPoint: CGPointMake(19, 25)];
+            [actionButtonPath addLineToPoint: CGPointMake(0, 25)];
+            [actionButtonPath addLineToPoint: CGPointMake(0, 8)];
             [actionButtonPath addLineToPoint: CGPointMake(7, 8)];
-            [actionButtonPath addLineToPoint: CGPointMake(1, 8)];
+            [actionButtonPath addLineToPoint: CGPointMake(7, 9)];
+            [actionButtonPath addLineToPoint: CGPointMake(1, 9)];
             [actionButtonPath closePath];
             [actionButtonPath moveToPoint: CGPointMake(9, 0.98)];
             [actionButtonPath addLineToPoint: CGPointMake(10, 0.98)];
-            [actionButtonPath addLineToPoint: CGPointMake(10, 16)];
-            [actionButtonPath addLineToPoint: CGPointMake(9, 16)];
+            [actionButtonPath addLineToPoint: CGPointMake(10, 17)];
+            [actionButtonPath addLineToPoint: CGPointMake(9, 17)];
             [actionButtonPath addLineToPoint: CGPointMake(9, 0.98)];
             [actionButtonPath closePath];
             [actionButtonPath moveToPoint: CGPointMake(13.99, 4.62)];

@@ -459,15 +459,4 @@ const NSString *TOWebViewControllerButtonBevelOpacity    = @"TOWebViewController
     return actionButtonImage;
 }
 
-#pragma mark - UIActivity Buttons -
-+ (instancetype)TOWebViewControllerIcon_openInSafari
-{
-    return nil;
-}
-
-+ (instancetype)TOWebViewControllerIcon_openInChrome
-{
-    return nil;
-}
-
 @end

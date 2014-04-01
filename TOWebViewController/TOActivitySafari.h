@@ -1,5 +1,5 @@
 //
-//  UIImage+TOWebViewControllerIcons.h
+//  TOActivitySafari.h
 //
 //  Copyright 2014 Timothy Oliver. All rights reserved.
 //
@@ -22,17 +22,6 @@
 
 #import <UIKit/UIKit.h>
 
-/* Keys for each of the theming properties */
-extern const NSString *TOWebViewControllerButtonTintColor;
-extern const NSString *TOWebViewControllerButtonBevelOpacity;
-
-@interface UIImage (TOWebViewControllerIcons)
-
-/* Navigtion Buttons */
-+ (instancetype)TOWebViewControllerIcon_backButtonWithAttributes:(NSDictionary *)attributes;
-+ (instancetype)TOWebViewControllerIcon_forwardButtonWithAttributes:(NSDictionary *)attributes;
-+ (instancetype)TOWebViewControllerIcon_refreshButtonWithAttributes:(NSDictionary *)attributes;
-+ (instancetype)TOWebViewControllerIcon_stopButtonWithAttributes:(NSDictionary *)attributes;
-+ (instancetype)TOWebViewControllerIcon_actionButtonWithAttributes:(NSDictionary *)attributes;
+@interface TOActivitySafari : UIActivity
 
 @end

@@ -20,6 +20,8 @@
 		22834A411737B5A50043F7DF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A401737B5A50043F7DF /* UIKit.framework */; };
 		22834A431737B5A50043F7DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A421737B5A50043F7DF /* Foundation.framework */; };
 		22834A451737B5A50043F7DF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A441737B5A50043F7DF /* CoreGraphics.framework */; };
+		22AC285418E98FE1006DB0E9 /* TOActivitySafari.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AC285318E98FE1006DB0E9 /* TOActivitySafari.m */; };
+		22AC285718E9920B006DB0E9 /* TOActivityChrome.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AC285618E9920B006DB0E9 /* TOActivityChrome.m */; };
 		22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */; };
 		22F9225E1753B15E0034FEF6 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22F9223A1753B15D0034FEF6 /* TOWebViewControllerLocalizable.strings */; };
 		22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
@@ -46,6 +48,10 @@
 		22834A401737B5A50043F7DF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		22834A421737B5A50043F7DF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		22834A441737B5A50043F7DF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		22AC285218E98FE1006DB0E9 /* TOActivitySafari.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOActivitySafari.h; sourceTree = "<group>"; };
+		22AC285318E98FE1006DB0E9 /* TOActivitySafari.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOActivitySafari.m; sourceTree = "<group>"; };
+		22AC285518E9920B006DB0E9 /* TOActivityChrome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOActivityChrome.h; sourceTree = "<group>"; };
+		22AC285618E9920B006DB0E9 /* TOActivityChrome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOActivityChrome.m; sourceTree = "<group>"; };
 		22CB13C318E8158000B948D8 /* UIImage+TOWebViewControllerIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+TOWebViewControllerIcons.h"; sourceTree = "<group>"; };
 		22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TOWebViewControllerIcons.m"; sourceTree = "<group>"; };
 		22F9223B1753B15D0034FEF6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
@@ -137,6 +143,10 @@
 			children = (
 				22F922591753B15E0034FEF6 /* TOWebViewController.h */,
 				22F9225A1753B15E0034FEF6 /* TOWebViewController.m */,
+				22AC285218E98FE1006DB0E9 /* TOActivitySafari.h */,
+				22AC285318E98FE1006DB0E9 /* TOActivitySafari.m */,
+				22AC285518E9920B006DB0E9 /* TOActivityChrome.h */,
+				22AC285618E9920B006DB0E9 /* TOActivityChrome.m */,
 				22CB13C318E8158000B948D8 /* UIImage+TOWebViewControllerIcons.h */,
 				22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */,
 				22F9223A1753B15D0034FEF6 /* TOWebViewControllerLocalizable.strings */,
@@ -216,9 +226,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22AC285718E9920B006DB0E9 /* TOActivityChrome.m in Sources */,
 				227C55FA1750F1F900FC3411 /* TOViewController.m in Sources */,
 				22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */,
 				227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */,
+				22AC285418E98FE1006DB0E9 /* TOActivitySafari.m in Sources */,
 				227C55FB1750F20700FC3411 /* main.m in Sources */,
 				22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */,
 			);

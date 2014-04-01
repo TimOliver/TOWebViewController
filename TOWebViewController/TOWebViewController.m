@@ -25,6 +25,8 @@
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import "TOWebViewController.h"
+#import "TOActivitySafari.h"
+#import "TOActivityChrome.h"
 #import "UIImage+TOWebViewControllerIcons.h"
 
 #import <QuartzCore/QuartzCore.h>
@@ -693,7 +695,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     // If we're on iOS 6 or above, we can use the super-duper activity view controller :)
     if (NSClassFromString(@"UIActivityViewController"))
     {
-        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.url] applicationActivities:nil];
+        NSArray *browserActivities = @[[TOActivitySafari new], [TOActivityChrome new]];
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.url] applicationActivities:browserActivities];
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         {

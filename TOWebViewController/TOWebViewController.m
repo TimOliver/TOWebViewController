@@ -41,6 +41,9 @@
 #endif
 #define MINIMAL_UI (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
 
+/* The default blue tint color of iOS 7.0 */
+#define DEFAULT_BAR_TINT_COLOR [UIColor colorWithRed:0.0f green:110.0f/255.0f blue:1.0f alpha:1.0f]
+
 /* Detect which user idiom we're running on */
 #define IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
@@ -140,6 +143,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 /* See if we need to revert the toolbar to 'hidden' when we pop off a navigation controller. */
 @property (nonatomic,assign) BOOL hideToolbarOnClose;
+/* See if we need to revert the navigation bar to 'hidden' when we pop from a navigation controller */
+@property (nonatomic,assign) BOOL hideNavBarOnClose;
 
 /* Perform all common setup steps */
 - (void)setup;
@@ -226,7 +231,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)setup
 {
     //Direct ivar reference since we don't want to trigger their actions yet
-    _loadingBarTintColor = [UIColor colorWithRed:234/255.0f green:7.0f/255.0f blue:7.0f/255.0f alpha:1.0f];
     _showActionButton = YES;
     _buttonSpacing = (IPAD == NO) ? NAVIGATION_BUTTON_SPACING : NAVIGATION_BUTTON_SPACING_IPAD;
     _buttonWidth = NAVIGATION_BUTTON_WIDTH;
@@ -264,10 +268,17 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self.view addSubview:self.webView];
 
     //Set up the loading bar
-    CGFloat maxWidth = MAX(CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
     CGFloat y = self.webView.scrollView.contentInset.top;
-    self.loadingBarView = [[UIView alloc] initWithFrame:CGRectMake(0, y, maxWidth, LOADING_BAR_HEIGHT)];
-    self.loadingBarView.backgroundColor = self.loadingBarTintColor;
+    self.loadingBarView = [[UIView alloc] initWithFrame:CGRectMake(0, y, CGRectGetWidth(self.view.frame), LOADING_BAR_HEIGHT)];
+    self.loadingBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    
+    //set the tint color for the loading bar
+    if (MINIMAL_UI && self.loadingBarTintColor == nil)
+        self.loadingBarView.backgroundColor = self.view.tintColor;
+    else if (self.loadingBarTintColor)
+        self.loadingBarView.backgroundColor = self.loadingBarTintColor;
+    else
+        self.loadingBarView.backgroundColor = DEFAULT_BAR_TINT_COLOR;
     
     //set up a subtle gradient to add over the loading bar
     if (MINIMAL_UI == NO) {
@@ -412,15 +423,21 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //see if we need to show the toolbar
     if (self.navigationController) {
         self.hideToolbarOnClose = self.navigationController.toolbarHidden;
+        self.hideNavBarOnClose  = self.navigationBar.hidden;
         
-        if (IPAD == NO) {
-            if (self.beingPresentedModally == NO)
-                [self.navigationController setToolbarHidden:NO animated:YES];
-            else
+        if (IPAD == NO) { //iPhone
+            if (self.beingPresentedModally == NO) { //being pushed onto a pre-existing stack, so
+                [self.navigationController setToolbarHidden:NO animated:animated];
+                [self.navigationController setNavigationBarHidden:NO animated:animated];
+            }
+            else { //Being presented modally, so control the
                 self.navigationController.toolbarHidden = NO;
             }
-        else
-            [self.navigationController setToolbarHidden:YES animated:YES];
+        }
+        else {
+            [self.navigationController setNavigationBarHidden:NO animated:animated];
+            [self.navigationController setToolbarHidden:YES animated:animated];
+        }
     }
     
     //reset the gradient layer in case the bounds changed before display
@@ -436,7 +453,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [super viewWillDisappear:animated];
     
     if (self.navigationController) {
-        [self.navigationController setToolbarHidden:self.hideToolbarOnClose animated:YES];
+        [self.navigationController setToolbarHidden:self.hideToolbarOnClose animated:animated];
+        [self.navigationController setNavigationBarHidden:self.hideNavBarOnClose animated:animated];
     }
 }
 
@@ -870,6 +888,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //reset the loading bar
         CGRect frame = self.loadingBarView.frame;
         frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame);
+        frame.origin.y = self.webView.scrollView.contentInset.top;
         self.loadingBarView.frame = frame;
         self.loadingBarView.alpha = 1.0f;
         

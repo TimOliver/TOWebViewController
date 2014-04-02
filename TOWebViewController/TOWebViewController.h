@@ -36,7 +36,7 @@
 /* Show the loading progress bar (default YES) */
 @property (nonatomic,assign)    BOOL showLoadingBar;
 
-/* Tint colour for the loading progress bar. Default colour is deep red. */
+/* Tint colour for the loading progress bar. Default colour is iOS system blue. */
 @property (nonatomic,copy)      UIColor *loadingBarTintColor;
 
 /* Show all of the navigation/action buttons (ON by default) */

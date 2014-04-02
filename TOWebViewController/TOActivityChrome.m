@@ -176,7 +176,78 @@
         }
         else { //iPhone
             if (MINIMAL_UI) {
-                
+                UIGraphicsBeginImageContextWithOptions((CGSize){40, 40}, NO, [[UIScreen mainScreen] scale]);
+                {
+                    UIBezierPath* chromePhoneMinimalPath = [UIBezierPath bezierPath];
+                    [chromePhoneMinimalPath moveToPoint: CGPointMake(19.5, 38.97)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.03, 38.95) controlPoint1: CGPointMake(19.34, 38.97) controlPoint2: CGPointMake(19.19, 38.95)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(19, 39)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(18.9, 38.94)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(0, 19.48) controlPoint1: CGPointMake(8.41, 38.62) controlPoint2: CGPointMake(0, 30.04)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.5, 0) controlPoint1: CGPointMake(0, 8.72) controlPoint2: CGPointMake(8.73, 0)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(39, 19.48) controlPoint1: CGPointMake(30.27, 0) controlPoint2: CGPointMake(39, 8.72)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.5, 38.97) controlPoint1: CGPointMake(39, 30.25) controlPoint2: CGPointMake(30.27, 38.97)];
+                    [chromePhoneMinimalPath closePath];
+                    [chromePhoneMinimalPath moveToPoint: CGPointMake(18.44, 37.91)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(24.62, 27.5)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.51, 29) controlPoint1: CGPointMake(23.15, 28.44) controlPoint2: CGPointMake(21.4, 29)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(10.33, 21.93) controlPoint1: CGPointMake(15.1, 29) controlPoint2: CGPointMake(11.41, 26)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(3.85, 9.74)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(1.04, 19.5) controlPoint1: CGPointMake(2.08, 12.57) controlPoint2: CGPointMake(1.04, 15.91)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(18.44, 37.91) controlPoint1: CGPointMake(1.04, 29.33) controlPoint2: CGPointMake(8.74, 37.35)];
+                    [chromePhoneMinimalPath closePath];
+                    [chromePhoneMinimalPath moveToPoint: CGPointMake(11.43, 22.14)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(11.76, 22.76)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(11.67, 22.81)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.51, 28) controlPoint1: CGPointMake(12.96, 25.86) controlPoint2: CGPointMake(15.99, 28)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(26.5, 24.34) controlPoint1: CGPointMake(22.41, 28) controlPoint2: CGPointMake(24.97, 26.55)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(26.99, 23.51)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(27.01, 23.52)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(28.02, 19.5) controlPoint1: CGPointMake(27.65, 22.32) controlPoint2: CGPointMake(28.02, 20.95)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(20.44, 11.05) controlPoint1: CGPointMake(28.02, 15.12) controlPoint2: CGPointMake(24.7, 11.52)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(19.03, 11.05)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(19.03, 11.02)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(11, 19.5) controlPoint1: CGPointMake(14.56, 11.27) controlPoint2: CGPointMake(11, 14.97)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(11.43, 22.14) controlPoint1: CGPointMake(11, 20.42) controlPoint2: CGPointMake(11.16, 21.31)];
+                    [chromePhoneMinimalPath closePath];
+                    [chromePhoneMinimalPath moveToPoint: CGPointMake(19.51, 1.04)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(4.39, 8.91) controlPoint1: CGPointMake(13.26, 1.04) controlPoint2: CGPointMake(7.74, 4.15)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(10.01, 19.46)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.03, 10.02) controlPoint1: CGPointMake(10.02, 14.4) controlPoint2: CGPointMake(14.02, 10.27)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(19.03, 10.01)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(19.21, 10.01)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.51, 10) controlPoint1: CGPointMake(19.31, 10.01) controlPoint2: CGPointMake(19.41, 10)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.81, 10.01) controlPoint1: CGPointMake(19.61, 10) controlPoint2: CGPointMake(19.71, 10.01)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(35.35, 10.01)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.51, 1.04) controlPoint1: CGPointMake(32.11, 4.64) controlPoint2: CGPointMake(26.24, 1.04)];
+                    [chromePhoneMinimalPath closePath];
+                    [chromePhoneMinimalPath moveToPoint: CGPointMake(23.85, 11.05)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(29.02, 19.5) controlPoint1: CGPointMake(26.92, 12.63) controlPoint2: CGPointMake(29.02, 15.82)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(27.87, 24.03) controlPoint1: CGPointMake(29.02, 21.14) controlPoint2: CGPointMake(28.6, 22.68)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(27.89, 24.04)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(19.62, 37.96)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(37.99, 19.5) controlPoint1: CGPointMake(29.78, 37.9) controlPoint2: CGPointMake(37.99, 29.66)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(35.93, 11.05) controlPoint1: CGPointMake(37.99, 16.45) controlPoint2: CGPointMake(37.24, 13.58)];
+                    [chromePhoneMinimalPath addLineToPoint: CGPointMake(23.85, 11.05)];
+                    [chromePhoneMinimalPath closePath];
+                    [chromePhoneMinimalPath moveToPoint: CGPointMake(19.51, 12.01)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(27.01, 19.5) controlPoint1: CGPointMake(23.65, 12.01) controlPoint2: CGPointMake(27.01, 15.36)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.51, 26.99) controlPoint1: CGPointMake(27.01, 23.63) controlPoint2: CGPointMake(23.65, 26.99)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(12.02, 19.5) controlPoint1: CGPointMake(15.37, 26.99) controlPoint2: CGPointMake(12.02, 23.63)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.51, 12.01) controlPoint1: CGPointMake(12.02, 15.36) controlPoint2: CGPointMake(15.37, 12.01)];
+                    [chromePhoneMinimalPath closePath];
+                    [chromePhoneMinimalPath moveToPoint: CGPointMake(19.51, 26.01)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(26.02, 19.5) controlPoint1: CGPointMake(23.11, 26.01) controlPoint2: CGPointMake(26.02, 23.09)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.51, 12.99) controlPoint1: CGPointMake(26.02, 15.91) controlPoint2: CGPointMake(23.11, 12.99)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(13, 19.5) controlPoint1: CGPointMake(15.92, 12.99) controlPoint2: CGPointMake(13, 15.91)];
+                    [chromePhoneMinimalPath addCurveToPoint: CGPointMake(19.51, 26.01) controlPoint1: CGPointMake(13, 23.09) controlPoint2: CGPointMake(15.92, 26.01)];
+                    [chromePhoneMinimalPath closePath];
+                    [fillColor setFill];
+                    [chromePhoneMinimalPath fill];
+                    
+                    sharedActivityImage = UIGraphicsGetImageFromCurrentImageContext();
+                }
+                UIGraphicsEndImageContext();
             }
             else {
                 UIGraphicsBeginImageContextWithOptions((CGSize){40, 40}, NO, [[UIScreen mainScreen] scale]);

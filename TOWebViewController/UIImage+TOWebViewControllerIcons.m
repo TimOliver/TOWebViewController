@@ -363,7 +363,7 @@ const NSString *TOWebViewControllerButtonBevelOpacity    = @"TOWebViewController
 {
     UIImage *actionButtonImage = nil;
     if (MINIMAL_UI) {
-        UIGraphicsBeginImageContextWithOptions((CGSize){19,25}, NO, [[UIScreen mainScreen] scale]);
+        UIGraphicsBeginImageContextWithOptions((CGSize){19,27}, NO, [[UIScreen mainScreen] scale]);
         {
             //// Color Declarations
             UIColor* actionColor = [UIColor blackColor];
@@ -371,14 +371,14 @@ const NSString *TOWebViewControllerButtonBevelOpacity    = @"TOWebViewController
             //// ActionButton Drawing
             UIBezierPath* actionButtonPath = [UIBezierPath bezierPath];
             [actionButtonPath moveToPoint: CGPointMake(1, 9)];
-            [actionButtonPath addLineToPoint: CGPointMake(1, 24.02)];
-            [actionButtonPath addLineToPoint: CGPointMake(18, 24.02)];
+            [actionButtonPath addLineToPoint: CGPointMake(1, 26.02)];
+            [actionButtonPath addLineToPoint: CGPointMake(18, 26.02)];
             [actionButtonPath addLineToPoint: CGPointMake(18, 9)];
             [actionButtonPath addLineToPoint: CGPointMake(12, 9)];
             [actionButtonPath addLineToPoint: CGPointMake(12, 8)];
             [actionButtonPath addLineToPoint: CGPointMake(19, 8)];
-            [actionButtonPath addLineToPoint: CGPointMake(19, 25)];
-            [actionButtonPath addLineToPoint: CGPointMake(0, 25)];
+            [actionButtonPath addLineToPoint: CGPointMake(19, 27)];
+            [actionButtonPath addLineToPoint: CGPointMake(0, 27)];
             [actionButtonPath addLineToPoint: CGPointMake(0, 8)];
             [actionButtonPath addLineToPoint: CGPointMake(7, 8)];
             [actionButtonPath addLineToPoint: CGPointMake(7, 9)];

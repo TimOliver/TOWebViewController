@@ -70,12 +70,14 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
+    NSURL *url = [NSURL URLWithString:@"http://www.apple.com/ios"];
+    
     if (indexPath.row == 0) {
-        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://apple.com/"]];
+        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];
         [self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];
     }
     else {
-        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://apple.com/"]];
+        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];
         [self.navigationController pushViewController:webViewController animated:YES];
     }
 }

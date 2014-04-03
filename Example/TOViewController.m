@@ -70,7 +70,12 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    NSURL *url = [NSURL URLWithString:@"http://www.apple.com/ios"];
+    NSURL *url = nil;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        url = [NSURL URLWithString:@"http://www.apple.com/ipad"];
+    else
+        url = [NSURL URLWithString:@"http://www.apple.com/iphone"];
     
     if (indexPath.row == 0) {
         TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];

@@ -66,11 +66,6 @@
 /* Toolbar Properties */
 #define TOOLBAR_HEIGHT      44.0f
 
-/* The distance down from the top of the scrollview,
- that must be scrolled before the rotation animation
- aligns to the middle, and not along the top */
-#define CONTENT_OFFSET_THRESHOLD    30
-
 /* Hieght of the loading progress bar view */
 #define LOADING_BAR_HEIGHT          2
 
@@ -1205,16 +1200,17 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     _webViewState.topEdgeInset      = self.webView.scrollView.contentInset.top;
     _webViewState.bottomEdgeInset   = self.webView.scrollView.contentInset.bottom;
     
-    UIView  *webContentView   = [self webViewContentView];
-    UIColor *backgroundColor  = [self webViewPageBackgroundColor];
-    CGRect  renderBounds      = [self rectForVisibleRegionOfWebViewAnimatingToOrientation:toOrientation];
+    UIView  *webContentView         = [self webViewContentView];
+    UIColor *pageBackgroundColor    = [self webViewPageBackgroundColor];
+    UIColor *webViewBackgroundColor = [self view].backgroundColor;
+    CGRect  renderBounds            = [self rectForVisibleRegionOfWebViewAnimatingToOrientation:toOrientation];
     
     //generate a snapshot of the webview that we can animate more smoothly
     UIGraphicsBeginImageContextWithOptions(renderBounds.size, YES, 0.0f);
     {
         CGContextRef context = UIGraphicsGetCurrentContext();
-        //fill the who canvas with the web page's background colour (otherwise default colour is black)
-        CGContextSetFillColorWithColor(context, [backgroundColor CGColor]);
+        //fill the whole canvas with the base color background colour
+        CGContextSetFillColorWithColor(context, webViewBackgroundColor.CGColor);
         CGContextFillRect(context, CGRectMake(0,0,CGRectGetWidth(renderBounds),CGRectGetHeight(renderBounds)));
         //offset the scroll view by the necessary amount
         CGContextTranslateCTM(context, -renderBounds.origin.x, -renderBounds.origin.y);
@@ -1234,7 +1230,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //If the current web page zoom is locked (eg, it's a mobile site), set an appropriate background colour and don't zoom the image
         if ([self webViewPageWidthIsDynamic])
         {
-            self.webViewRotationSnapshot.backgroundColor = backgroundColor;
+            self.webViewRotationSnapshot.backgroundColor = pageBackgroundColor;
             self.webViewRotationSnapshot.contentMode = UIViewContentModeTop;
         }
     }
@@ -1243,7 +1239,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //If the current web page zoom is locked like above,
         if ([self webViewPageWidthIsDynamic])
         {
-            self.webViewRotationSnapshot.backgroundColor = backgroundColor;
+            self.webViewRotationSnapshot.backgroundColor = pageBackgroundColor;
             
             //if the landscape scrolloffset is outside the bounds of the portrait mode, animate from the bottom to line it up properly
             CGFloat heightInPortraitMode = CGRectGetWidth(self.webView.frame);
@@ -1256,7 +1252,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         {
             frame.size  = self.webViewRotationSnapshot.image.size;
             
-            if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > CONTENT_OFFSET_THRESHOLD)
+            if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON)
             {
                 //Work out the size we're rotating to
                 CGFloat heightInPortraitMode = CGRectGetWidth(self.webView.frame);
@@ -1307,41 +1303,46 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self.webView.scrollView.layer removeAllAnimations];
     
     //animate the image view rotating to the proper dimensions
-    CGRect frame = self.webView.frame;
+    CGRect frame = self.webView.bounds;
     
     //We only need to scale/translate the image view if the web page has a static width
     if ([self webViewPageWidthIsDynamic] == NO)
     {
-        BOOL pinnedToBottom = NO;
         CGFloat scale = CGRectGetHeight(self.webViewRotationSnapshot.frame)/CGRectGetWidth(self.webViewRotationSnapshot.frame);
-        frame.size.height = CGRectGetWidth(self.webView.frame) * scale;
+        frame.size.height = CGRectGetWidth(frame) * scale;
+        BOOL pinToTop = NO, pinToBottom = NO;
         
         //If we're sufficiently scrolled down, animate towards the center of the view, not the top
-        if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > CONTENT_OFFSET_THRESHOLD)
+        if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON)
         {
             //Work out the offset we're rotating to
             CGFloat heightInPortraitMode = _webViewState.frameSize.width;
             CGFloat scaledHeight = heightInPortraitMode * (_webViewState.frameSize.width / _webViewState.frameSize.height);
-            CGFloat topDelta = (scaledHeight*0.5f) - _webViewState.frameSize.height*0.5f;
+            CGFloat boundsDelta = (scaledHeight*0.5f) - _webViewState.frameSize.height*0.5f;
+            CGFloat bottomOffset = ((_webViewState.contentOffset.y + heightInPortraitMode) - _webViewState.bottomEdgeInset);
             
             //adjust as needed to fit the top or bottom
-            if (_webViewState.contentOffset.y - topDelta < -_webViewState.topEdgeInset) {
+            if (_webViewState.contentOffset.y - boundsDelta < -_webViewState.topEdgeInset) { //re-align to the top
                 frame.origin.y = (CGRectGetMinY(self.webView.frame));
+                pinToTop = YES;
             }
-            else if (_webViewState.contentOffset.y + (CGRectGetHeight(self.webView.frame) - self.webView.scrollView.contentInset.bottom) + topDelta > _webViewState.contentSize.height) {
-                frame.origin.y = (CGRectGetMaxY(self.webView.frame) - (CGRectGetHeight(frame) + self.webView.scrollView.contentInset.bottom));
-                pinnedToBottom = YES;
+            else if (bottomOffset + boundsDelta > _webViewState.contentSize.height) { // re-align along the bottom
+                frame.origin.y = (CGRectGetMaxY(self.webView.frame) - (CGRectGetHeight(frame) + _webViewState.bottomEdgeInset));
+                pinToBottom = YES;
             }
             else { //position the webview in the center
-                frame.origin.y = (CGRectGetHeight(self.webView.frame)*0.5f) - (CGRectGetHeight(frame)*0.5f);
+                frame.origin.y = ((CGRectGetHeight(self.webView.bounds)*0.5f) - (CGRectGetHeight(frame)*0.5f));
             }
         }
+        else {
+            frame.origin.y = (CGRectGetMinY(self.webView.frame));
+            pinToTop = YES;
+        }
         
-        //If the scrollview had a contentinset, it would have been baked into the screenshot (and then scaled with it)
-        //So we'll need to adjust for that
-        if (_webViewState.topEdgeInset > 0.0f + FLT_EPSILON && !pinnedToBottom) {
+        //If the scrollview had a contentinset, and we're locking the scale along the top, we'll have
+        //acount for the fact the contentinset was baked into the screenshot, and will visibly scale along with the rest of the content
+        if (_webViewState.topEdgeInset > 0.0f + FLT_EPSILON && pinToTop) {
             CGFloat webViewScale = CGRectGetWidth(self.webView.frame) / CGRectGetHeight(self.webView.frame);
-            
             CGFloat transformedTopInset = _webViewState.topEdgeInset * webViewScale;
             if (UIInterfaceOrientationIsLandscape(toOrientation))
                 frame.origin.y -= transformedTopInset - self.webView.scrollView.contentInset.top;
@@ -1407,33 +1408,30 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     else //else, determine the magnitude we zoomed in/out by and translate the scroll offset to line it up properly
     {
         CGFloat magnitude = contentSize.width / _webViewState.contentSize.width;
-        
-        //remove the content inset to reset the origin
-        translatedContentOffset.y += _webViewState.topEdgeInset;
 
         //transform the translated offset
         translatedContentOffset.x *= magnitude;
         translatedContentOffset.y *= magnitude;
-        
+
         //if we were sufficiently scrolled from the top, make sure to line up to the middle, not the top
-        if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > CONTENT_OFFSET_THRESHOLD)
+        if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON)
         {
             if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
-                translatedContentOffset.y += ((CGRectGetHeight(self.webViewRotationSnapshot.frame))*0.5f) - (CGRectGetHeight(self.webView.frame)*0.5f);
+                translatedContentOffset.y += (CGRectGetHeight(self.webViewRotationSnapshot.frame)*0.5f) - (CGRectGetHeight(self.webView.frame)*0.5f);
             else
                 translatedContentOffset.y -= (CGRectGetHeight(self.webView.frame)*0.5f) - (((_webViewState.frameSize.height*magnitude)*0.5f));
         }
-        
-        //re-add the content offset
-        translatedContentOffset.y += -self.webView.scrollView.contentInset.top;
-        
-        //clamp it to the actual scroll region
-        translatedContentOffset.x = MAX(translatedContentOffset.x, -self.webView.scrollView.contentInset.left);
-        translatedContentOffset.x = MIN(translatedContentOffset.x, contentSize.width - CGRectGetWidth(self.webView.frame));
-        
-        translatedContentOffset.y = MAX(translatedContentOffset.y, -self.webView.scrollView.contentInset.top);
-        translatedContentOffset.y = MIN(translatedContentOffset.y, contentSize.height - (CGRectGetHeight(self.webView.frame) - self.webView.scrollView.contentInset.bottom));
+        else { //otherwise, just reset the origin to the top
+            translatedContentOffset.y = -self.webView.scrollView.contentInset.top;
+        }
     }
+    
+    //clamp it to the actual scroll region
+    translatedContentOffset.x = MAX(translatedContentOffset.x, -self.webView.scrollView.contentInset.left);
+    translatedContentOffset.x = MIN(translatedContentOffset.x, contentSize.width - CGRectGetWidth(self.webView.frame));
+    
+    translatedContentOffset.y = MAX(translatedContentOffset.y, -self.webView.scrollView.contentInset.top);
+    translatedContentOffset.y = MIN(translatedContentOffset.y, contentSize.height - (CGRectGetHeight(self.webView.frame) - self.webView.scrollView.contentInset.bottom));
     
     //apply the translated offset (Thankfully, this one doens't have to be animated in order to work properly)
     [self.webView.scrollView setContentOffset:translatedContentOffset animated:NO];

@@ -159,6 +159,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)doneButtonTapped:(id)sender;
 
 /* Event handlers for items in the 'action' popup */
+- (void)copyURLToClipboard;
 - (void)openInBrowser;
 - (void)openMailDialog;
 - (void)openMessageDialog;
@@ -738,10 +739,25 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                                                                  delegate:self
                                                         cancelButtonTitle:nil
                                                    destructiveButtonTitle:nil
-                                                        otherButtonTitles:NSLocalizedStringFromTable(@"Mail", @"TOWebViewControllerLocalizable", @"Send Email"), nil];
+                                                        otherButtonTitles:NSLocalizedStringFromTable(@"Copy URL", @"TOWebViewControllerLocalizable", @"Copy the URL"), nil];
 
         NSInteger numberOfButtons = 1;
 
+        //Add Browser
+        BOOL chromeIsInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]];
+        NSString *browserMessage = NSLocalizedStringFromTable(@"Open in Safari", @"TOWebViewControllerLocalizable", @"Open in Safari");
+        if (chromeIsInstalled)
+            browserMessage = NSLocalizedStringFromTable(@"Open in Chrome", @"TOWebViewControllerLocalizable", @"Open in Chrome");
+        
+        [actionSheet addButtonWithTitle:browserMessage];
+        numberOfButtons++;
+        
+        //Add Email
+        if ([MFMailComposeViewController canSendMail]) {
+            [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Mail", @"TOWebViewControllerLocalizable", @"Send Email")];
+            numberOfButtons++;
+        }
+        
         //Add SMS
         if ([MFMessageComposeViewController canSendText]) {
             [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Message", @"TOWebViewControllerLocalizable", @"Send iMessage")];
@@ -750,7 +766,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         
         //Add Twitter
         if ([TWTweetComposeViewController canSendTweet]) {
-            [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Tweet", @"TOWebViewControllerLocalizable", @"Send a Tweet")];
+            [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Twitter", @"TOWebViewControllerLocalizable", @"Send a Tweet")];
             numberOfButtons++;
         }
         
@@ -758,7 +774,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         if (IPAD == NO) {
             [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"TOWebViewControllerLocalizable", @"Cancel")];
             [actionSheet setCancelButtonIndex:numberOfButtons];
-            
             [actionSheet showInView:self.view];
         }
         else {
@@ -771,15 +786,31 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     //Handle whichever button was tapped
     switch (buttonIndex) {
-        case 0: //Email
-            [self openMailDialog];
+        case 0:
+            [self copyURLToClipboard];
             break;
-        case 1: //SMS or Twitter
+        case 1:
+            [self openInBrowser];
+            break;
+        case 2: //Email
+        {
+            if ([MFMailComposeViewController canSendMail])
+                [self openMailDialog];
+            else if ([MFMessageComposeViewController canSendText])
+                [self openMessageDialog];
+            else if ([TWTweetComposeViewController canSendTweet])
+                [self openTwitterDialog];
+        }
+            break;
+        case 3: //SMS or Twitter
+        {
             if ([MFMessageComposeViewController canSendText])
                 [self openMessageDialog];
             else if ([TWTweetComposeViewController canSendTweet])
                 [self openTwitterDialog];
-        case 2: //Twitter (or Cancel)
+        }
+            break;
+        case 4: //Twitter (or Cancel)
             if ([MFMessageComposeViewController canSendText])
                 [self openTwitterDialog];
         default:
@@ -791,6 +822,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     //Once the popover controller is dismissed, we can release our own reference to it
     self.sharingPopoverController = nil;
+}
+
+- (void)copyURLToClipboard
+{
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = self.url.absoluteString;
 }
 
 - (void)openInBrowser

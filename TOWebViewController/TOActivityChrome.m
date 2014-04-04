@@ -105,7 +105,7 @@
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems
 {
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]] == NO)
-        return YES;
+        return NO;
     
     //Check to see if there is an NSURL in the provided items
     BOOL containsURL = NO;
@@ -130,7 +130,73 @@
         
         if (IPAD) { //iPad
             if (MINIMAL_UI) {
-                
+                UIGraphicsBeginImageContextWithOptions((CGSize){53, 53}, NO, [[UIScreen mainScreen] scale]);
+                {
+                    UIBezierPath* chromePadMinimalPath = [UIBezierPath bezierPath];
+                    [chromePadMinimalPath moveToPoint: CGPointMake(26.5, 53)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(0, 26.5) controlPoint1: CGPointMake(11.86, 53) controlPoint2: CGPointMake(0, 41.14)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.5, 0) controlPoint1: CGPointMake(0, 11.86) controlPoint2: CGPointMake(11.86, 0)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(53, 26.5) controlPoint1: CGPointMake(41.14, 0) controlPoint2: CGPointMake(53, 11.86)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.5, 53) controlPoint1: CGPointMake(53, 41.14) controlPoint2: CGPointMake(41.14, 53)];
+                    [chromePadMinimalPath closePath];
+                    [chromePadMinimalPath moveToPoint: CGPointMake(24.88, 51.89)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(34.1, 36.36)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.45, 38.99) controlPoint1: CGPointMake(31.98, 38) controlPoint2: CGPointMake(29.34, 38.99)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(14.92, 31.31) controlPoint1: CGPointMake(21.26, 38.99) controlPoint2: CGPointMake(16.81, 35.82)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(5.03, 12.68)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(0.97, 26.46) controlPoint1: CGPointMake(2.47, 16.66) controlPoint2: CGPointMake(0.97, 21.38)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(24.88, 51.89) controlPoint1: CGPointMake(0.97, 40.01) controlPoint2: CGPointMake(11.54, 51.06)];
+                    [chromePadMinimalPath closePath];
+                    [chromePadMinimalPath moveToPoint: CGPointMake(15.76, 30.77)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(15.92, 31.05)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(15.88, 31.07)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.5, 38.08) controlPoint1: CGPointMake(17.65, 35.19) controlPoint2: CGPointMake(21.73, 38.08)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(38.05, 26.54) controlPoint1: CGPointMake(32.88, 38.08) controlPoint2: CGPointMake(38.05, 32.91)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(27.38, 15.03) controlPoint1: CGPointMake(38.05, 20.46) controlPoint2: CGPointMake(33.35, 15.49)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(25.86, 15.03)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(25.86, 15.02)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(14.95, 26.54) controlPoint1: CGPointMake(19.78, 15.35) controlPoint2: CGPointMake(14.95, 20.37)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(15.76, 30.77) controlPoint1: CGPointMake(14.95, 28.03) controlPoint2: CGPointMake(15.25, 29.46)];
+                    [chromePadMinimalPath closePath];
+                    [chromePadMinimalPath moveToPoint: CGPointMake(26.49, 0.94)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(5.66, 11.74) controlPoint1: CGPointMake(17.88, 0.94) controlPoint2: CGPointMake(10.29, 5.21)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(14, 27.45)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(13.95, 26.49) controlPoint1: CGPointMake(13.98, 27.13) controlPoint2: CGPointMake(13.95, 26.81)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.45, 13.99) controlPoint1: CGPointMake(13.95, 19.59) controlPoint2: CGPointMake(19.55, 13.99)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(27.09, 14.02) controlPoint1: CGPointMake(26.67, 13.99) controlPoint2: CGPointMake(26.88, 14.01)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(48.76, 14.02)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.49, 0.94) controlPoint1: CGPointMake(44.39, 6.22) controlPoint2: CGPointMake(36.06, 0.94)];
+                    [chromePadMinimalPath closePath];
+                    [chromePadMinimalPath moveToPoint: CGPointMake(31.45, 15.03)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(38.95, 26.49) controlPoint1: CGPointMake(35.86, 16.96) controlPoint2: CGPointMake(38.95, 21.36)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(37.46, 32.41) controlPoint1: CGPointMake(38.95, 28.63) controlPoint2: CGPointMake(38.41, 30.65)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(37.46, 32.41)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(37.46, 32.42)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(37.31, 32.66) controlPoint1: CGPointMake(37.41, 32.5) controlPoint2: CGPointMake(37.36, 32.58)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(25.87, 51.94)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.49, 51.97) controlPoint1: CGPointMake(26.08, 51.95) controlPoint2: CGPointMake(26.28, 51.97)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(52, 26.46) controlPoint1: CGPointMake(40.58, 51.97) controlPoint2: CGPointMake(52, 40.55)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(49.28, 15.03) controlPoint1: CGPointMake(52, 22.35) controlPoint2: CGPointMake(51.01, 18.47)];
+                    [chromePadMinimalPath addLineToPoint: CGPointMake(31.45, 15.03)];
+                    [chromePadMinimalPath closePath];
+                    [chromePadMinimalPath moveToPoint: CGPointMake(26.49, 16.01)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(36.98, 26.51) controlPoint1: CGPointMake(32.29, 16.01) controlPoint2: CGPointMake(36.98, 20.71)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.49, 37.02) controlPoint1: CGPointMake(36.98, 32.31) controlPoint2: CGPointMake(32.29, 37.02)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(16.01, 26.51) controlPoint1: CGPointMake(20.7, 37.02) controlPoint2: CGPointMake(16.01, 32.31)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.49, 16.01) controlPoint1: CGPointMake(16.01, 20.71) controlPoint2: CGPointMake(20.7, 16.01)];
+                    [chromePadMinimalPath closePath];
+                    [chromePadMinimalPath moveToPoint: CGPointMake(26.49, 36)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(36.03, 26.47) controlPoint1: CGPointMake(31.76, 36) controlPoint2: CGPointMake(36.03, 31.73)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.49, 16.93) controlPoint1: CGPointMake(36.03, 21.2) controlPoint2: CGPointMake(31.76, 16.93)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(16.96, 26.47) controlPoint1: CGPointMake(21.23, 16.93) controlPoint2: CGPointMake(16.96, 21.2)];
+                    [chromePadMinimalPath addCurveToPoint: CGPointMake(26.49, 36) controlPoint1: CGPointMake(16.96, 31.73) controlPoint2: CGPointMake(21.23, 36)];
+                    [chromePadMinimalPath closePath];
+                    [fillColor setFill];
+                    [chromePadMinimalPath fill];
+                    
+                    sharedActivityImage = UIGraphicsGetImageFromCurrentImageContext();
+                }
+                UIGraphicsEndImageContext();
             }
             else {
                 UIGraphicsBeginImageContextWithOptions((CGSize){50, 50}, NO, [[UIScreen mainScreen] scale]);

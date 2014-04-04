@@ -447,7 +447,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     [super viewWillDisappear:animated];
     
-    if (self.navigationController) {
+    if (self.beingPresentedModally == NO) {
         [self.navigationController setToolbarHidden:self.hideToolbarOnClose animated:animated];
         [self.navigationController setNavigationBarHidden:self.hideNavBarOnClose animated:animated];
     }
@@ -1218,7 +1218,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     CGRect  renderBounds            = [self rectForVisibleRegionOfWebViewAnimatingToOrientation:toOrientation];
     
     //generate a snapshot of the webview that we can animate more smoothly
-    UIGraphicsBeginImageContextWithOptions(renderBounds.size, YES, 0.0f);
+    CGFloat scale = 1.0f;
+    if (UIInterfaceOrientationIsLandscape(toOrientation))
+        scale = 0.0f;
+    
+    UIGraphicsBeginImageContextWithOptions(renderBounds.size, YES, scale);
     {
         CGContextRef context = UIGraphicsGetCurrentContext();
         //fill the whole canvas with the base color background colour
@@ -1444,9 +1448,15 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                 translatedContentOffset.y += (CGRectGetHeight(self.webViewRotationSnapshot.frame)*0.5f) - (CGRectGetHeight(self.webView.frame)*0.5f);
             }
             else {
+                //Work out the offset we're rotating to
+                CGFloat scale = (_webViewState.frameSize.width / _webViewState.frameSize.height);
+                CGFloat destinationBoundsHeight = self.webView.bounds.size.height; //destiantion height we'll be animating to
+                CGFloat destinationHeight = destinationBoundsHeight * scale; //the expected height of the visible bounds (in pre-anim rotation scale)
+                CGFloat webViewOffsetOrigin = (_webViewState.contentOffset.y + _webViewState.frameSize.height * 0.5f); //the content offset of the middle of the web view
+                CGFloat bottomContentOffset = webViewOffsetOrigin + (destinationHeight * 0.5f); // the bottom offset
+                
                 //If our original state meant we clipped the bottom of the scroll view, just clamp it to the bottom
-                CGFloat midBoundsHeight = (_webViewState.frameSize.width*0.5f);
-                if (_webViewState.contentSize.height - (_webViewState.contentOffset.y + midBoundsHeight) <= midBoundsHeight)
+                if (bottomContentOffset > _webViewState.contentSize.height)
                     translatedContentOffset.y = self.webView.scrollView.contentSize.height - (CGRectGetHeight(self.webView.frame)) + self.webView.scrollView.contentInset.top;
                 else
                     translatedContentOffset.y -= (CGRectGetHeight(self.webView.frame)*0.5f) - (((_webViewState.frameSize.height*magnitude)*0.5f));

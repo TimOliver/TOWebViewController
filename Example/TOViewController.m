@@ -24,8 +24,7 @@
 
 - (void)viewDidLoad
 {
-    self.title = @"Navigation Controller";
-    self.tableView.tableHeaderView = self.headerView;
+    self.title = @"TOWebViewController";
     self.tableView.backgroundView = [UIView new];
     
     if (MINIMAL_UI) {
@@ -34,6 +33,7 @@
     }
     else {
         self.tableView.backgroundView.backgroundColor = [UIColor clearColor];
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLineEtched;
     }
     
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:nil action:nil];
@@ -74,6 +74,8 @@
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         url = [NSURL URLWithString:@"http://www.apple.com/ipad"];
+    else if ([[[UIDevice currentDevice] model] rangeOfString:@"iPod"].location != NSNotFound)
+        url = [NSURL URLWithString:@"http://www.apple.com/ipod-touch"];
     else
         url = [NSURL URLWithString:@"http://www.apple.com/iphone"];
     

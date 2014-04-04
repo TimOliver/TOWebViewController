@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		22103AB618ECE336007BCD9A /* Reveal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22103AB518ECE336007BCD9A /* Reveal.framework */; };
 		225014F91737B89100DF6D7E /* TOViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 225014F51737B89100DF6D7E /* TOViewController_iPad.xib */; };
 		225014FA1737B89100DF6D7E /* TOViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 225014F71737B89100DF6D7E /* TOViewController_iPhone.xib */; };
 		225015031737B8B000DF6D7E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 225015011737B8B000DF6D7E /* InfoPlist.strings */; };
@@ -29,7 +28,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		22103AB518ECE336007BCD9A /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reveal.framework; path = "../../../../../Applications/Reveal.app/Contents/SharedSupport/iOS-Libraries/Reveal.framework"; sourceTree = "<group>"; };
 		225014F11737B87600DF6D7E /* TOAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TOAppDelegate.h; path = Example/TOAppDelegate.h; sourceTree = SOURCE_ROOT; };
 		225014F21737B87600DF6D7E /* TOAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TOAppDelegate.m; path = Example/TOAppDelegate.m; sourceTree = SOURCE_ROOT; };
 		225014F31737B87600DF6D7E /* TOViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TOViewController.h; path = Example/TOViewController.h; sourceTree = SOURCE_ROOT; };
@@ -69,7 +67,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22103AB618ECE336007BCD9A /* Reveal.framework in Frameworks */,
 				225F48E917525E8600A3558A /* Twitter.framework in Frameworks */,
 				225F48E717525CC100A3558A /* MessageUI.framework in Frameworks */,
 				225A033D1737E9790086E75F /* QuartzCore.framework in Frameworks */,
@@ -102,7 +99,6 @@
 		22834A3F1737B5A50043F7DF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				22103AB518ECE336007BCD9A /* Reveal.framework */,
 				225F48E817525E8600A3558A /* Twitter.framework */,
 				225F48E617525CC100A3558A /* MessageUI.framework */,
 				225A033C1737E9790086E75F /* QuartzCore.framework */,
@@ -350,11 +346,7 @@
 				GCC_PREFIX_HEADER = "Example/TOWebViewControllerExample-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/TOWebViewControllerExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				"OTHER_LDFLAGS[arch=*]" = (
-					"-ObjC",
-					"-framework",
-					Reveal,
-				);
+				"OTHER_LDFLAGS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

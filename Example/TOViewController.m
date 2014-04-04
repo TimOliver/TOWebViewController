@@ -25,14 +25,19 @@
 - (void)viewDidLoad
 {
     self.title = @"TOWebViewController";
-    self.tableView.backgroundView = [UIView new];
+    
     
     if (MINIMAL_UI) {
+        self.tableView.backgroundView = [UIView new];
         self.view.backgroundColor = [UIColor colorWithWhite:0.95f alpha:1.0f];
         self.tableView.backgroundView.backgroundColor = [UIColor colorWithWhite:0.95f alpha:1.0f];
     }
     else {
-        self.tableView.backgroundView.backgroundColor = [UIColor clearColor];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.tableView.backgroundView = [UIView new];
+            self.tableView.backgroundView.backgroundColor = [UIColor clearColor];
+        }
+        
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLineEtched;
     }
     

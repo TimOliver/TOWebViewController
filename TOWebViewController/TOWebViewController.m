@@ -1122,9 +1122,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark UIWebView Interface Rotation Handler
 - (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    CGRect  rect          = CGRectZero;
-    CGPoint contentOffset = self.webView.scrollView.contentOffset;
-    CGSize  webViewSize   = self.webView.bounds.size;
+    CGRect  rect            = CGRectZero;
+    CGPoint contentOffset   = self.webView.scrollView.contentOffset;
+    CGSize  webViewSize     = self.webView.bounds.size;
+    CGSize  contentSize     = self.webView.scrollView.contentSize;
+    CGFloat topInset        = self.webView.scrollView.contentInset.top;
     
     //we're in portrait now, target orientation is landscape
     //(So since we're zooming in, we don't need to worry about content outside the visible boundaries)
@@ -1133,11 +1135,21 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //save the current scroll offset and size of the web view
         rect.origin = contentOffset;
         rect.size   = webViewSize;
+        
+        //There's no point in capturing content beyond the scroll content bounds (eg edgeInsets)
+        //Clip the rect to the scrollbounds
+        if (contentOffset.y < 0.0f + FLT_EPSILON) {
+            rect.origin.y = 0.0f;
+            rect.size.height -= MAX(contentOffset.y + topInset, 0);
+        }
+        else if (contentOffset.y + CGRectGetHeight(rect) > contentSize.height) {
+            rect.size.height = contentSize.height - contentOffset.y;
+        }
     }
     else //rotating from landscape to portrait. We need to make sure we capture content outside the visible region so it can pan back in
     {
         CGFloat heightInPortraitMode = webViewSize.width;
-        CGFloat topInset = self.webView.scrollView.contentInset.top;
+
         CGSize  contentSize   = self.webView.scrollView.contentSize;
         
         if ([self webViewPageWidthIsDynamic])
@@ -1163,8 +1175,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             rect.origin.y = (contentOffset.y+(webViewSize.height*0.5f)) - (scaledHeight*0.5f);
             
             //if this takes us past the visible region, clamp it
-            if (rect.origin.y < -topInset)
-                rect.origin.y = -topInset;
+            if (rect.origin.y < 0)
+                rect.origin.y = 0;
             else if (rect.origin.y + scaledHeight > contentSize.height)
                 rect.origin.y = contentSize.height - scaledHeight;
             
@@ -1216,13 +1228,15 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         CGContextTranslateCTM(context, -renderBounds.origin.x, -renderBounds.origin.y);
         //render the webview to the context
         [webContentView.layer renderInContext:context];
+        //grab the image
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
         //save the image to the image view
-        self.webViewRotationSnapshot = [[UIImageView alloc] initWithImage:UIGraphicsGetImageFromCurrentImageContext()];
+        self.webViewRotationSnapshot = [[UIImageView alloc] initWithImage:image];
     }
     UIGraphicsEndImageContext();
     
     //work out the starting frame for the snapshot based on page state and current orientation
-    CGRect frame = self.webView.frame;
+    CGRect frame = (CGRect){CGPointZero, renderBounds.size};
     
     //If we're presently portrait, and animating to landscape
     if (UIInterfaceOrientationIsLandscape(toOrientation))
@@ -1232,6 +1246,15 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         {
             self.webViewRotationSnapshot.backgroundColor = pageBackgroundColor;
             self.webViewRotationSnapshot.contentMode = UIViewContentModeTop;
+        }
+        else {
+            self.webViewRotationSnapshot.contentMode = UIViewContentModeScaleAspectFill;
+        }
+        
+        //if we have a content inset along the top, line up the image along the proper inset
+        if (_webViewState.contentOffset.y < 0.0f) {
+            frame.origin.y = _webViewState.topEdgeInset - (_webViewState.topEdgeInset + _webViewState.contentOffset.y);
+            frame.origin.y = MAX(0, frame.origin.y);
         }
     }
     else //if we're currently landscape and we're animating to portrait
@@ -1250,22 +1273,29 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         }
         else
         {
+            self.webViewRotationSnapshot.contentMode = UIViewContentModeScaleAspectFill;
+            
             frame.size  = self.webViewRotationSnapshot.image.size;
             
-            if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON)
-            {
-                //Work out the size we're rotating to
-                CGFloat heightInPortraitMode = CGRectGetWidth(self.webView.frame);
-                CGFloat scaledHeight = heightInPortraitMode * (CGRectGetWidth(self.webView.frame) / CGRectGetHeight(self.webView.frame));
-                CGFloat topDelta = (scaledHeight*0.5f) - CGRectGetHeight(self.webView.frame)*0.5f;
+            if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON) {
+                //Work out the content offset of the snapshot view if we positioned it over the middle of the web view
+                CGFloat webViewMidPoint  = _webViewState.contentOffset.y + (_webViewState.frameSize.height * 0.5f);
+                CGFloat topContentOffset = webViewMidPoint - (renderBounds.size.height * 0.5f);
+                CGFloat bottomContentOffset = webViewMidPoint + (renderBounds.size.height * 0.5f);
                 
-                //adjust as needed to fit the top or bottom
-                if (_webViewState.contentOffset.y - topDelta < -_webViewState.topEdgeInset)
-                    frame.origin.y = (CGRectGetMinY(self.webView.frame) - _webViewState.topEdgeInset) - _webViewState.contentOffset.y;
-                else if (_webViewState.contentOffset.y + CGRectGetHeight(self.webView.frame) + topDelta > _webViewState.contentSize.height)
-                    frame.origin.y = (CGRectGetMaxY(self.webView.frame) - CGRectGetHeight(frame)) + ((_webViewState.contentSize.height - CGRectGetHeight(self.webView.frame) - _webViewState.contentOffset.y));
-                else //position the webview in the center
-                    frame.origin.y = CGRectGetMinY(self.webView.frame) + ((CGRectGetHeight(self.webView.frame)*0.5) - CGRectGetHeight(frame)*0.5);
+                if (topContentOffset < -_webViewState.topEdgeInset) {
+                    frame.origin.y = -_webViewState.contentOffset.y;
+                }
+                else if (bottomContentOffset > _webViewState.contentSize.height) {
+                    CGFloat bottomOfScrollContentView = _webViewState.contentSize.height - (_webViewState.contentOffset.y + _webViewState.frameSize.height);
+                    frame.origin.y = (_webViewState.frameSize.height + bottomOfScrollContentView) - CGRectGetHeight(frame);
+                }
+                else {
+                    frame.origin.y = ((CGRectGetHeight(self.webView.frame)*0.5) - CGRectGetHeight(frame)*0.5);
+                }
+            }
+            else {
+                frame.origin.y = _webViewState.topEdgeInset;
             }
         }
     }
@@ -1310,44 +1340,38 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     {
         CGFloat scale = CGRectGetHeight(self.webViewRotationSnapshot.frame)/CGRectGetWidth(self.webViewRotationSnapshot.frame);
         frame.size.height = CGRectGetWidth(frame) * scale;
-        BOOL pinToTop = NO, pinToBottom = NO;
         
-        //If we're sufficiently scrolled down, animate towards the center of the view, not the top
-        if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON)
-        {
+        //If we're not scrolled at the very top, animate towards the center of the view.
+        //If we're at either extreme (top or bottom) where rotating from the centre would
+        //push us past oour scroll bounds, lock the snapshot to the necessary edge
+        if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON) {
             //Work out the offset we're rotating to
-            CGFloat heightInPortraitMode = _webViewState.frameSize.width;
-            CGFloat scaledHeight = heightInPortraitMode * (_webViewState.frameSize.width / _webViewState.frameSize.height);
-            CGFloat boundsDelta = (scaledHeight*0.5f) - _webViewState.frameSize.height*0.5f;
-            CGFloat bottomOffset = ((_webViewState.contentOffset.y + heightInPortraitMode) - _webViewState.bottomEdgeInset);
+            CGFloat scale = (_webViewState.frameSize.width / _webViewState.frameSize.height);
+            CGFloat destinationBoundsHeight = self.webView.bounds.size.height; //destiantion height we'll be animating to
+            CGFloat destinationHeight = destinationBoundsHeight * scale; //the expected height of the visible bounds (in pre-anim rotation scale)
+            CGFloat webViewOffsetOrigin = (_webViewState.contentOffset.y + _webViewState.frameSize.height * 0.5f); //the content offset of the middle of the web view
+            CGFloat topContentOffset = webViewOffsetOrigin - (destinationHeight * 0.5f); // in the pre-animated space, the top content offset
+            CGFloat bottomContentOffset = webViewOffsetOrigin + (destinationHeight * 0.5f); // the bottom offset
             
             //adjust as needed to fit the top or bottom
-            if (_webViewState.contentOffset.y - boundsDelta < -_webViewState.topEdgeInset) { //re-align to the top
-                frame.origin.y = (CGRectGetMinY(self.webView.frame));
-                pinToTop = YES;
+            if (topContentOffset < -_webViewState.topEdgeInset) { //re-align to the top
+                frame.origin.y = self.webView.scrollView.contentInset.top;
             }
-            else if (bottomOffset + boundsDelta > _webViewState.contentSize.height) { // re-align along the bottom
-                frame.origin.y = (CGRectGetMaxY(self.webView.frame) - (CGRectGetHeight(frame) + _webViewState.bottomEdgeInset));
-                pinToBottom = YES;
+            else if (bottomContentOffset > _webViewState.contentSize.height) { // re-align along the bottom
+                frame.origin.y = (CGRectGetMaxY(self.webView.frame) - (CGRectGetHeight(frame) + self.webView.scrollView.contentInset.bottom));
             }
             else { //position the webview in the center
                 frame.origin.y = ((CGRectGetHeight(self.webView.bounds)*0.5f) - (CGRectGetHeight(frame)*0.5f));
+                
+                //If we're partially scrolled below zero, then the snapshot will need to be offset to account for its smaller size
+                if (_webViewState.contentOffset.y < 0.0f) {
+                    CGFloat delta = _webViewState.topEdgeInset - (_webViewState.topEdgeInset + _webViewState.contentOffset.y);
+                    frame.origin.y += (delta * (_webViewState.frameSize.height/_webViewState.frameSize.width));
+                }
             }
         }
         else {
-            frame.origin.y = (CGRectGetMinY(self.webView.frame));
-            pinToTop = YES;
-        }
-        
-        //If the scrollview had a contentinset, and we're locking the scale along the top, we'll have
-        //acount for the fact the contentinset was baked into the screenshot, and will visibly scale along with the rest of the content
-        if (_webViewState.topEdgeInset > 0.0f + FLT_EPSILON && pinToTop) {
-            CGFloat webViewScale = CGRectGetWidth(self.webView.frame) / CGRectGetHeight(self.webView.frame);
-            CGFloat transformedTopInset = _webViewState.topEdgeInset * webViewScale;
-            if (UIInterfaceOrientationIsLandscape(toOrientation))
-                frame.origin.y -= transformedTopInset - self.webView.scrollView.contentInset.top;
-            else
-                frame.origin.y += self.webView.scrollView.contentInset.top - transformedTopInset;
+            frame.origin.y = self.webView.scrollView.contentInset.top;
         }
     }
     
@@ -1416,10 +1440,17 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //if we were sufficiently scrolled from the top, make sure to line up to the middle, not the top
         if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON)
         {
-            if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
+            if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
                 translatedContentOffset.y += (CGRectGetHeight(self.webViewRotationSnapshot.frame)*0.5f) - (CGRectGetHeight(self.webView.frame)*0.5f);
-            else
-                translatedContentOffset.y -= (CGRectGetHeight(self.webView.frame)*0.5f) - (((_webViewState.frameSize.height*magnitude)*0.5f));
+            }
+            else {
+                //If our original state meant we clipped the bottom of the scroll view, just clamp it to the bottom
+                CGFloat midBoundsHeight = (_webViewState.frameSize.width*0.5f);
+                if (_webViewState.contentSize.height - (_webViewState.contentOffset.y + midBoundsHeight) <= midBoundsHeight)
+                    translatedContentOffset.y = self.webView.scrollView.contentSize.height - (CGRectGetHeight(self.webView.frame)) + self.webView.scrollView.contentInset.top;
+                else
+                    translatedContentOffset.y -= (CGRectGetHeight(self.webView.frame)*0.5f) - (((_webViewState.frameSize.height*magnitude)*0.5f));
+            }
         }
         else { //otherwise, just reset the origin to the top
             translatedContentOffset.y = -self.webView.scrollView.contentInset.top;

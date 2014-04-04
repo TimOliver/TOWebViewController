@@ -21,9 +21,9 @@ TOWebViewController is an open-source `UIViewController` subclass designed to fu
 iOS 5.0 or above.
 
 Necessary frameworks:
-*Twitter.framework
-*MessageUI.framework
-*QuartzCore.framework
+* Twitter.framework
+* MessageUI.framework
+* QuartzCore.framework
 
 ## License
 

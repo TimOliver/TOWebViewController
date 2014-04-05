@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
   s.name     = 'TOWebViewController'
   s.version  = '2.0.1'
   s.license  =  { :type => 'MIT', :file => 'LICENSE' }
-  s.summary  = 'A view controller for iOS that allows users to quickly view web sites without needing to open Safari/Chrome.'
+  s.summary  = 'A view controller for iOS that allows users to quickly open and navigate web pages.'
   s.homepage = 'https://github.com/TimOliver/TOWebViewController'
   s.author   = 'Tim Oliver'
   s.source   = { :git => 'https://github.com/TimOliver/TOWebViewController.git', :tag => '2.0.1' }

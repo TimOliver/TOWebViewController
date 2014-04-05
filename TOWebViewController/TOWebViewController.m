@@ -270,7 +270,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //set the tint color for the loading bar
     if (MINIMAL_UI && self.loadingBarTintColor == nil)
-        self.loadingBarView.backgroundColor = self.view.tintColor;
+        self.loadingBarView.backgroundColor = self.navigationController ? self.navigationController.view.window.tintColor : self.view.window.tintColor;
     else if (self.loadingBarTintColor)
         self.loadingBarView.backgroundColor = self.loadingBarTintColor;
     else
@@ -1415,6 +1415,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             frame.origin.y = self.webView.scrollView.contentInset.top;
         }
     }
+    else {
+        if (UIInterfaceOrientationIsLandscape(toOrientation))
+            frame.origin.y = self.webView.scrollView.contentInset.top;
+    }
+    
     
     self.webViewRotationSnapshot.frame = frame;
 }

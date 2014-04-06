@@ -104,12 +104,12 @@
     else
         url = [NSURL URLWithString:@"http://www.apple.com/iphone"];
     
+    TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];
+    
     if (indexPath.row == 0) {
-        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];
         [self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];
     }
     else {
-        TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];
         [self.navigationController pushViewController:webViewController animated:YES];
     }
 }

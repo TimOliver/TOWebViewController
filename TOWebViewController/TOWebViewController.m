@@ -133,6 +133,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 @property (nonatomic,strong) UIImage *reloadIcon;
 @property (nonatomic,strong) UIImage *stopIcon;
 
+/* Theming attributes for generating navigation button art. */
+@property (nonatomic,strong) NSMutableDictionary *buttonThemeAttributes;
+
 /* Popover View Controller Handlers */
 @property (nonatomic,strong) UIPopoverController *sharingPopoverController;
 
@@ -299,34 +302,43 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         buttonType = UIButtonTypeSystem;
     
     //set up the back button
-    UIImage *backButtonImage = [UIImage TOWebViewControllerIcon_backButtonWithAttributes:nil];
-    self.backButton = [UIButton buttonWithType:buttonType];
-    [self.backButton setFrame:buttonFrame];
-    [self.backButton setShowsTouchWhenHighlighted:YES];
+    UIImage *backButtonImage = [UIImage TOWebViewControllerIcon_backButtonWithAttributes:self.buttonThemeAttributes];
+    if (self.backButton == nil) {
+        self.backButton = [UIButton buttonWithType:buttonType];
+        [self.backButton setFrame:buttonFrame];
+        [self.backButton setShowsTouchWhenHighlighted:YES];
+    }
     [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
     
     //set up the forward button (Don't worry about the frame at this point as it will be hidden by default)
-    UIImage *forwardButtonImage = [UIImage TOWebViewControllerIcon_forwardButtonWithAttributes:nil];
-    self.forwardButton  = [UIButton buttonWithType:buttonType];
-    [self.forwardButton setFrame:buttonFrame];
-    [self.forwardButton setShowsTouchWhenHighlighted:YES];
+    UIImage *forwardButtonImage = [UIImage TOWebViewControllerIcon_forwardButtonWithAttributes:self.buttonThemeAttributes];
+    if (self.forwardButton == nil) {
+        self.forwardButton  = [UIButton buttonWithType:buttonType];
+        [self.forwardButton setFrame:buttonFrame];
+        [self.forwardButton setShowsTouchWhenHighlighted:YES];
+    }
     [self.forwardButton setImage:forwardButtonImage forState:UIControlStateNormal];
     
     //set up the reload button
-    self.reloadStopButton = [UIButton buttonWithType:buttonType];
-    [self.reloadStopButton setFrame:buttonFrame];
-    [self.reloadStopButton setShowsTouchWhenHighlighted:YES];
+    if (self.reloadStopButton == nil) {
+        self.reloadStopButton = [UIButton buttonWithType:buttonType];
+        [self.reloadStopButton setFrame:buttonFrame];
+        [self.reloadStopButton setShowsTouchWhenHighlighted:YES];
+    }
     
-    self.reloadIcon = [UIImage TOWebViewControllerIcon_refreshButtonWithAttributes:nil];
-    self.stopIcon   = [UIImage TOWebViewControllerIcon_stopButtonWithAttributes:nil];
+    self.reloadIcon = [UIImage TOWebViewControllerIcon_refreshButtonWithAttributes:self.buttonThemeAttributes];
+    self.stopIcon   = [UIImage TOWebViewControllerIcon_stopButtonWithAttributes:self.buttonThemeAttributes];
     [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
     
     //if desired, show the action button
     if (self.showActionButton) {
-        self.actionButton = [UIButton buttonWithType:buttonType];
-        [self.actionButton setFrame:buttonFrame];
-        [self.actionButton setShowsTouchWhenHighlighted:YES];
-        [self.actionButton setImage:[UIImage TOWebViewControllerIcon_actionButtonWithAttributes:nil] forState:UIControlStateNormal];
+        if (self.actionButton == nil) {
+            self.actionButton = [UIButton buttonWithType:buttonType];
+            [self.actionButton setFrame:buttonFrame];
+            [self.actionButton setShowsTouchWhenHighlighted:YES];
+        }
+        
+        [self.actionButton setImage:[UIImage TOWebViewControllerIcon_actionButtonWithAttributes:self.buttonThemeAttributes] forState:UIControlStateNormal];
     }
 }
 
@@ -604,7 +616,25 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     _buttonTintColor = buttonTintColor;
     
+    if (self.buttonThemeAttributes == nil)
+        self.buttonThemeAttributes = [NSMutableDictionary dictionary];
     
+    self.buttonThemeAttributes[TOWebViewControllerButtonTintColor] = _buttonTintColor;
+    [self setUpNavigationButtons];
+}
+
+- (void)setButtonBevelOpacity:(CGFloat)buttonBevelOpacity
+{
+    if (buttonBevelOpacity == _buttonBevelOpacity)
+        return;
+    
+    _buttonBevelOpacity = buttonBevelOpacity;
+    
+    if (self.buttonThemeAttributes == nil)
+        self.buttonThemeAttributes = [NSMutableDictionary dictionary];
+    
+    self.buttonThemeAttributes[TOWebViewControllerButtonBevelOpacity] = @(_buttonBevelOpacity);
+    [self setUpNavigationButtons];
 }
 
 #pragma mark -
@@ -1186,7 +1216,19 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     else //rotating from landscape to portrait. We need to make sure we capture content outside the visible region so it can pan back in
     {
         CGFloat heightInPortraitMode = webViewSize.width;
-
+        //dirty hack for pre-iOS 7 devices, where we can't derive the target
+        //height of the webview with the UINavigationController changing the bounds
+        if (MINIMAL_UI == NO) {
+            if (self.navigationBar)
+                heightInPortraitMode -= 44.0f;
+            
+            if (self.toolbar)
+                heightInPortraitMode -= 44.0f;
+            
+            if ([UIApplication sharedApplication].statusBarHidden == NO)
+                heightInPortraitMode -= [[UIApplication sharedApplication] statusBarFrame].size.width;
+        }
+        
         CGSize  contentSize   = self.webView.scrollView.contentSize;
         
         if ([self webViewPageWidthIsDynamic])
@@ -1205,7 +1247,19 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             rect.origin = contentOffset;
             
             //The height of the region we're animating to, in the same space as the current content
-            CGFloat scaledHeight = heightInPortraitMode * (webViewSize.width / webViewSize.height);
+            CGFloat portraitWidth = webViewSize.height;
+            if (MINIMAL_UI == NO) {
+                if (self.navigationBar)
+                    portraitWidth += CGRectGetHeight(self.navigationBar.frame);
+                
+                if (self.toolbar)
+                    portraitWidth += CGRectGetHeight(self.toolbar.frame);
+                
+                if ([UIApplication sharedApplication].statusBarHidden == NO)
+                    heightInPortraitMode -= [[UIApplication sharedApplication] statusBarFrame].size.width;
+            }
+            
+            CGFloat scaledHeight = heightInPortraitMode * (webViewSize.width / portraitWidth);
             
             //assume we're animating outwards with the visible region being the center.
             //so make sure to capture everything above and below it
@@ -1387,10 +1441,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //push us past oour scroll bounds, lock the snapshot to the necessary edge
         if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON) {
             //Work out the offset we're rotating to
-            CGFloat scale = (_webViewState.frameSize.width / _webViewState.frameSize.height);
+            CGFloat scale = (CGRectGetHeight(self.webView.frame) / CGRectGetWidth(self.webView.frame));
             CGFloat destinationBoundsHeight = self.webView.bounds.size.height; //destiantion height we'll be animating to
             CGFloat destinationHeight = destinationBoundsHeight * scale; //the expected height of the visible bounds (in pre-anim rotation scale)
-            CGFloat webViewOffsetOrigin = (_webViewState.contentOffset.y + _webViewState.frameSize.height * 0.5f); //the content offset of the middle of the web view
+            CGFloat webViewOffsetOrigin = (_webViewState.contentOffset.y + (_webViewState.frameSize.height * 0.5f)); //the content offset of the middle of the web view
             CGFloat topContentOffset = webViewOffsetOrigin - (destinationHeight * 0.5f); // in the pre-animated space, the top content offset
             CGFloat bottomContentOffset = webViewOffsetOrigin + (destinationHeight * 0.5f); // the bottom offset
             
@@ -1402,7 +1456,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                 frame.origin.y = (CGRectGetMaxY(self.webView.frame) - (CGRectGetHeight(frame) + self.webView.scrollView.contentInset.bottom));
             }
             else { //position the webview in the center
-                frame.origin.y = ((CGRectGetHeight(self.webView.bounds)*0.5f) - (CGRectGetHeight(frame)*0.5f));
+                frame.origin.y = ((destinationBoundsHeight*0.5f) - (CGRectGetHeight(frame)*0.5f));
                 
                 //If we're partially scrolled below zero, then the snapshot will need to be offset to account for its smaller size
                 if (_webViewState.contentOffset.y < 0.0f) {
@@ -1416,8 +1470,15 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         }
     }
     else {
-        if (UIInterfaceOrientationIsLandscape(toOrientation))
-            frame.origin.y = self.webView.scrollView.contentInset.top;
+        //If we're partially scrolled below zero, then the snapshot will need to be offset to account for its smaller size
+        if (_webViewState.contentOffset.y < 0.0f) {
+            CGFloat delta = _webViewState.topEdgeInset - (_webViewState.topEdgeInset + _webViewState.contentOffset.y);
+            
+            if (UIInterfaceOrientationIsLandscape(toOrientation))
+                frame.origin.y += delta - (_webViewState.topEdgeInset - self.webView.scrollView.contentInset.top);
+            else
+                frame.origin.y -= (_webViewState.topEdgeInset - self.webView.scrollView.contentInset.top);
+        }
     }
     
     
@@ -1471,9 +1532,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //if the page is a mobile site, just re-add the original content offset. It'll size itself properly
     if ([self webViewPageWidthIsDynamic])
     {
-        //if the content offset expands beyond the new boundary of the view, reset it
-        translatedContentOffset.y = MIN(_webViewState.contentOffset.y, (contentSize.height - CGRectGetHeight(self.webView.frame)));
-        translatedContentOffset.y = MAX(_webViewState.contentOffset.y, -self.webView.scrollView.contentInset.top);
+        //adjust the offset for any UINavigationBar size changess
+        CGFloat delta = (_webViewState.topEdgeInset - self.webView.scrollView.contentInset.top);
+        translatedContentOffset.y += delta;
     }
     else //else, determine the magnitude we zoomed in/out by and translate the scroll offset to line it up properly
     {

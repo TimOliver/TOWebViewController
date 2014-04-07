@@ -272,8 +272,14 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.loadingBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     //set the tint color for the loading bar
-    if (MINIMAL_UI && self.loadingBarTintColor == nil)
-        self.loadingBarView.backgroundColor = self.navigationController ? self.navigationController.view.window.tintColor : self.view.window.tintColor;
+    if (MINIMAL_UI && self.loadingBarTintColor == nil) {
+        if (self.navigationController && self.navigationController.view.window.tintColor)
+            self.loadingBarView.backgroundColor = self.navigationController.view.window.tintColor;
+        else if (self.view.window.tintColor)
+            self.loadingBarView.backgroundColor = self.view.window.tintColor;
+        else
+            self.loadingBarView.backgroundColor = DEFAULT_BAR_TINT_COLOR;
+    }
     else if (self.loadingBarTintColor)
         self.loadingBarView.backgroundColor = self.loadingBarTintColor;
     else
@@ -938,7 +944,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark Page Load Progress Tracking Handlers
 - (void)resetLoadProgress
 {
-    memset( &_loadingProgressState, 0, sizeof(_loadingProgressState));
+    memset(&_loadingProgressState, 0, sizeof(_loadingProgressState));
     [self setLoadingProgress:0.0f];
 }
 

@@ -78,6 +78,15 @@ static const float kBeforeInteractiveMaxProgressValue   = 0.5f;
 static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 #pragma mark -
+#pragma mark Loading Bar Private Interface
+@interface TOWebLoadingView : UIView
+@end
+
+@implementation TOWebLoadingView
+- (void)tintColorDidChange { self.backgroundColor = self.tintColor; }
+@end
+
+#pragma mark -
 #pragma mark Hidden Properties/Methods
 @interface TOWebViewController () <UIWebViewDelegate, UIActionSheetDelegate,
                                     UIPopoverControllerDelegate,
@@ -114,7 +123,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 @property (nonatomic,readonly)  UINavigationBar *navigationBar;          /* Navigation bar shown along the top of the view */
 @property (nonatomic,readonly)  UIToolbar *toolbar;                      /* Toolbar shown along the bottom */
 @property (nonatomic,strong)    UIWebView *webView;                      /* The web view, where all the magic happens */
-@property (nonatomic,strong)    UIView *loadingBarView;                  /* The loading bar, displayed when a page is being loaded */
+@property (nonatomic,strong)    TOWebLoadingView *loadingBarView;        /* The loading bar, displayed when a page is being loaded */
 @property (nonatomic,strong)    UIImageView *webViewRotationSnapshot;    /* A snapshot of the web view, shown when rotating */
 
 @property (nonatomic,strong) CAGradientLayer *gradientLayer;             /* Gradient effect for the background view behind the web view. */
@@ -195,7 +204,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark Class Implementation
 @implementation TOWebViewController
 
-- (id)init
+- (instancetype)init
 {
     if (self = [super init])
         [self setup];
@@ -203,7 +212,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     if (self = [super initWithCoder:aDecoder])
         [self setup];
@@ -211,7 +220,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     return self;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])
         [self setup];
@@ -219,12 +228,17 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     return self;
 }
 
-- (id)initWithURL:(NSURL *)url
+- (instancetype)initWithURL:(NSURL *)url
 {
     if (self = [self init])
         _url = url;
     
     return self;
+}
+
+- (instancetype)initWithURLString:(NSString *)urlString
+{
+    return [self initWithURL:[NSURL URLWithString:urlString]];
 }
 
 - (void)setup
@@ -268,7 +282,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
     //Set up the loading bar
     CGFloat y = self.webView.scrollView.contentInset.top;
-    self.loadingBarView = [[UIView alloc] initWithFrame:CGRectMake(0, y, CGRectGetWidth(self.view.frame), LOADING_BAR_HEIGHT)];
+    self.loadingBarView = [[TOWebLoadingView alloc] initWithFrame:CGRectMake(0, y, CGRectGetWidth(self.view.frame), LOADING_BAR_HEIGHT)];
     self.loadingBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     //set the tint color for the loading bar
@@ -458,7 +472,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.gradientLayer.frame = self.view.bounds;
     
     //start loading the initial page
-    if (self.url)
+    if (self.url && self.webView.request == nil)
         [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
@@ -478,8 +492,19 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
+- (BOOL)shouldAutorotate
+{
+    if (self.webViewRotationSnapshot)
+        return NO;
+    
+    return YES;
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
+    if (self.webViewRotationSnapshot)
+        return NO;
+    
     return YES;
 }
 
@@ -544,7 +569,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     _url = url;
     
-    [self.webView stopLoading];
+    if (self.webView.loading)
+        [self.webView stopLoading];
+    
     [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
@@ -735,7 +762,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)doneButtonTapped:(id)sender
 {
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:self.modalCompletionHandler];
 }
 
 #pragma mark -
@@ -1592,6 +1619,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //remove the rotation screenshot
     [self.webViewRotationSnapshot removeFromSuperview];
     self.webViewRotationSnapshot = nil;
+    
+    //Slight hack to jump start orientation detection again
+    UIViewController *dummyController = [UIViewController new];
+    [self presentViewController:dummyController animated:NO completion:^{
+        [self dismissViewControllerAnimated:NO completion:nil];
+    }];
 }
 
 @end

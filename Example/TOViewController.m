@@ -98,11 +98,11 @@
     NSURL *url = nil;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        url = [NSURL URLWithString:@"http://www.apple.com/ipad"];
+        url = [NSURL URLWithString:@"www.apple.com/ipad"];
     else if ([[[UIDevice currentDevice] model] rangeOfString:@"iPod"].location != NSNotFound)
-        url = [NSURL URLWithString:@"http://www.apple.com/ipod-touch"];
+        url = [NSURL URLWithString:@"www.apple.com/ipod-touch"];
     else
-        url = [NSURL URLWithString:@"http://www.apple.com/iphone"];
+        url = [NSURL URLWithString:@"www.apple.com/iphone"];
     
     TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];
     

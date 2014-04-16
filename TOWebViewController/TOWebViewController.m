@@ -156,6 +156,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 /* Perform all common setup steps */
 - (void)setup;
 
+- (NSURL *)cleanURL:(NSURL *)url;
+
 /* Init and configure various sections of the controller */
 - (void)setUpNavigationButtons;
 - (UIView *)containerViewWithNavigationButtons;
@@ -231,7 +233,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (instancetype)initWithURL:(NSURL *)url
 {
     if (self = [self init])
-        _url = url;
+        _url = [self cleanURL:url];
     
     return self;
 }
@@ -239,6 +241,16 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (instancetype)initWithURLString:(NSString *)urlString
 {
     return [self initWithURL:[NSURL URLWithString:urlString]];
+}
+
+- (NSURL *)cleanURL:(NSURL *)url
+{
+    //If no URL scheme was supplied, defer back to HTTP.
+    if (url.scheme.length == 0) {
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", [url absoluteString]]];
+    }
+    
+    return url;
 }
 
 - (void)setup
@@ -567,7 +579,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     if (self.url == url)
         return;
     
-    _url = url;
+    _url = [self cleanURL:url];
     
     if (self.webView.loading)
         [self.webView stopLoading];

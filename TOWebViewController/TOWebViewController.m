@@ -269,7 +269,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     //Create the all-encompassing container view
     UIView *view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     view.backgroundColor = (self.hideWebViewBoundaries ? [UIColor whiteColor] : BACKGROUND_COLOR);
+#pragma clang diagnostic pop
     view.opaque = YES;
     view.clipsToBounds = YES;
     self.view = view;
@@ -840,10 +843,13 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         }
         
         //Add Twitter
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         if ([TWTweetComposeViewController canSendTweet]) {
             [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Twitter", @"TOWebViewControllerLocalizable", @"Send a Tweet")];
             numberOfButtons++;
         }
+#pragma clang diagnostic pop
         
         //Add a cancel button if on iPhone
         if (IPAD == NO) {
@@ -873,16 +879,22 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                 [self openMailDialog];
             else if ([MFMessageComposeViewController canSendText])
                 [self openMessageDialog];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             else if ([TWTweetComposeViewController canSendTweet])
                 [self openTwitterDialog];
+#pragma clang diagnostic pop
         }
             break;
         case 3: //SMS or Twitter
         {
             if ([MFMessageComposeViewController canSendText])
                 [self openMessageDialog];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             else if ([TWTweetComposeViewController canSendTweet])
                 [self openTwitterDialog];
+#pragma clang diagnostic pop
         }
             break;
         case 4: //Twitter (or Cancel)
@@ -950,7 +962,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     MFMailComposeViewController *mailViewController = [[MFMailComposeViewController alloc] init];
     mailViewController.mailComposeDelegate = self;
     [mailViewController setMessageBody:[self.url absoluteString] isHTML:NO];
-    [self presentModalViewController:mailViewController animated:YES];
+    [self presentViewController:mailViewController animated:YES completion:nil];
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
@@ -963,7 +975,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     MFMessageComposeViewController *messageViewController = [[MFMessageComposeViewController alloc] init];
     messageViewController.messageComposeDelegate = self;
     [messageViewController setBody:[self.url absoluteString]];
-    [self presentModalViewController:messageViewController animated:YES];
+    [self presentViewController:messageViewController animated:YES completion:nil];
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result
@@ -973,9 +985,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)openTwitterDialog
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     TWTweetComposeViewController *tweetComposer = [[TWTweetComposeViewController alloc] init];
     [tweetComposer addURL:self.url];
-    [self presentModalViewController:tweetComposer animated:YES];
+    [self presentViewController:tweetComposer animated:YES completion:nil];
+#pragma clang diagnostic pop
 }
 
 

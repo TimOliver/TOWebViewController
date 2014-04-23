@@ -37,6 +37,9 @@
 /* Show the loading progress bar (default YES) */
 @property (nonatomic,assign)    BOOL showLoadingBar;
 
+/* Show the URL while loading the page, i.e. before the page's <title> tag is available (default YES) */
+@property (nonatomic,assign)    BOOL showUrlWhileLoading;
+
 /* Tint colour for the loading progress bar. Default colour is iOS system blue. */
 @property (nonatomic,copy)      UIColor *loadingBarTintColor;
 

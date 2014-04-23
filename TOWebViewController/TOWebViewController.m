@@ -260,6 +260,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     _buttonSpacing = (IPAD == NO) ? NAVIGATION_BUTTON_SPACING : NAVIGATION_BUTTON_SPACING_IPAD;
     _buttonWidth = NAVIGATION_BUTTON_WIDTH;
     _showLoadingBar = YES;
+    _showUrlWhileLoading = YES;
     
     //Set the initial default style as full screen (But this can be easily overwritten)
     self.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -1025,10 +1026,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         
         //set the title to the URL until we load the page properly
-        NSString *url = [self.url absoluteString];
-        url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
-        url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
-        self.title = url;
+        if (self.showUrlWhileLoading) {
+            NSString *url = [self.url absoluteString];
+            url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+            url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+            self.title = url;
+        } 
         
         if (self.reloadStopButton)
             [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];

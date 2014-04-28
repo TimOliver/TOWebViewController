@@ -702,6 +702,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
     
     //If the URL contrains a fragement jump (eg an anchor tag), check to see if it relates to the current page, or another
+    //If we're merely jumping around the same page, don't perform a new loading bar sequence
     BOOL isFragmentJump = NO;
     if (request.URL.fragment)
     {
@@ -710,7 +711,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
     
     BOOL isTopLevelNavigation = [request.mainDocumentURL isEqual:request.URL];
-    
     BOOL isHTTP = [request.URL.scheme isEqualToString:@"http"] || [request.URL.scheme isEqualToString:@"https"];
     if (shouldStart && !isFragmentJump && isHTTP && isTopLevelNavigation && navigationType != UIWebViewNavigationTypeBackForward)
     {
@@ -1010,7 +1010,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     {
         //reset the loading bar
         CGRect frame = self.loadingBarView.frame;
-        frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame);
+        frame.size.width = CGRectGetWidth(self.view.bounds);
+        frame.origin.x = -frame.size.width;
         frame.origin.y = self.webView.scrollView.contentInset.top;
         self.loadingBarView.frame = frame;
         self.loadingBarView.alpha = 1.0f;
@@ -1132,8 +1133,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             [self.webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
     }
     
-    BOOL isNotRedirect = self.url && [self.url isEqual:self.webView.request.mainDocumentURL];
-    
+    BOOL isNotRedirect = self.url && [self.url isEqual:self.webView.request.URL];
     BOOL complete = [readyState isEqualToString:@"complete"];
     if (complete && isNotRedirect)
         [self finishLoadProgress];

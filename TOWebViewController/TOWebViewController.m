@@ -58,7 +58,7 @@
 /* Navigation Bar Properties */
 #define NAVIGATION_BUTTON_WIDTH             31
 #define NAVIGATION_BUTTON_SIZE              CGSizeMake(31,31)
-#define NAVIGATION_BUTTON_SPACING           60
+#define NAVIGATION_BUTTON_SPACING           58
 #define NAVIGATION_BUTTON_SPACING_IPAD      20
 #define NAVIGATION_BAR_HEIGHT               (MINIMAL_UI ? 64.0f : 44.0f)
 #define NAVIGATION_TOGGLE_ANIM_TIME         0.3

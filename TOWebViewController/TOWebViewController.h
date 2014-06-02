@@ -34,6 +34,9 @@
 /* Get/set the current URL being displayed. (Will automatically start loading) */
 @property (nonatomic,strong)    NSURL *url;
 
+/* The web view used to display the web content. */
+@property (nonatomic,readonly)  UIWebView *webView;
+
 /* Show the loading progress bar (default YES) */
 @property (nonatomic,assign)    BOOL showLoadingBar;
 

@@ -120,11 +120,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 @property (nonatomic,readonly) BOOL onTopOfNavigationControllerStack;   /* We're in, and not the root of a UINavigationController (eg, 'Back' button)*/
 
 /* The main view components of the controller */
-@property (nonatomic,readonly)  UINavigationBar *navigationBar;          /* Navigation bar shown along the top of the view */
-@property (nonatomic,readonly)  UIToolbar *toolbar;                      /* Toolbar shown along the bottom */
-@property (nonatomic,strong)    UIWebView *webView;                      /* The web view, where all the magic happens */
-@property (nonatomic,strong)    TOWebLoadingView *loadingBarView;        /* The loading bar, displayed when a page is being loaded */
-@property (nonatomic,strong)    UIImageView *webViewRotationSnapshot;    /* A snapshot of the web view, shown when rotating */
+@property (nonatomic,strong, readwrite) UIWebView *webView;                      /* The web view, where all the magic happens */
+@property (nonatomic,readonly) UINavigationBar *navigationBar;          /* Navigation bar shown along the top of the view */
+@property (nonatomic,readonly) UIToolbar *toolbar;                      /* Toolbar shown along the bottom */
+@property (nonatomic,strong)   TOWebLoadingView *loadingBarView;        /* The loading bar, displayed when a page is being loaded */
+@property (nonatomic,strong)   UIImageView *webViewRotationSnapshot;    /* A snapshot of the web view, shown when rotating */
 
 @property (nonatomic,strong) CAGradientLayer *gradientLayer;             /* Gradient effect for the background view behind the web view. */
 
@@ -556,10 +556,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark State Tracking
 - (BOOL)beingPresentedModally
 {
-    // Check if we have a parentl navigation controller being presented modally
-    if (self.navigationController)
-        return ([self.navigationController presentingViewController] != nil);
-    else // Check if we're directly being presented modally
+    // Check if we have a parent navigation controller, it's being presented modally,
+    // and if it is, that we are its root view controller
+    if (self.navigationController && self.navigationController.presentingViewController)
+        return ([self.navigationController.viewControllers indexOfObject:self] == 0);
+    else // Check if we're being presented modally directly
         return ([self presentingViewController] != nil);
 
     return NO;

@@ -61,7 +61,7 @@
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLineEtched;
     }
     
-    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:nil action:nil];
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backItem];
 }
 

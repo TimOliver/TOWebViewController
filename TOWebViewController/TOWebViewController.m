@@ -35,11 +35,10 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <Twitter/Twitter.h>
 
-/* Detect if we're running iOS 7.0 or higher */
-#ifndef NSFoundationVersionNumber_iOS_6_1
-#define NSFoundationVersionNumber_iOS_6_1  993.00
-#endif
-#define MINIMAL_UI (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
+/* Detect if we're running iOS 7.0 or higher (With the new minimal UI) */
+#define MINIMAL_UI      ([[UIViewController class] instancesRespondToSelector:@selector(edgesForExtendedLayout)])
+/* Detect if we're running iOS 8.0 (With the new device rotation system) */
+#define NEW_ROTATIONS   ([[UIViewController class] instancesRespondToSelector:@selector(viewWillTransitionToSize:withTransitionCoordinator:)])
 
 /* The default blue tint color of iOS 7.0 */
 #define DEFAULT_BAR_TINT_COLOR [UIColor colorWithRed:0.0f green:110.0f/255.0f blue:1.0f alpha:1.0f]
@@ -206,14 +205,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 #pragma mark Class Implementation
 @implementation TOWebViewController
 
-- (instancetype)init
-{
-    if (self = [super init])
-        [self setup];
-    
-    return self;
-}
-
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     if (self = [super initWithCoder:aDecoder])
@@ -262,7 +253,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     _showLoadingBar = YES;
     _showUrlWhileLoading = YES;
     
-    //Set the initial default style as full screen (But this can be easily overwritten)
+    //Set the initial default style as full screen (But this can be easily overridden)
     self.modalPresentationStyle = UIModalPresentationFullScreen;
 }
 
@@ -1460,7 +1451,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
     
     self.webViewRotationSnapshot.frame = frame;
-    [self.view insertSubview:self.webViewRotationSnapshot belowSubview:self.navigationBar];
+    [self.view insertSubview:self.webViewRotationSnapshot aboveSubview:self.webView];
+    
     
     //This is a dirty, dirty, DIRTY hack. When a UIWebView's frame changes (At least on iOS 6), in certain conditions,
     //the content view will NOT resize with it. This can result in visual artifacts, such as black bars up the side,
@@ -1469,13 +1461,17 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //trip the webview into redrawing its content.
     //Once the view has finished rotating, we'll figure out the proper placement + zoom scale and reset it.
     
-    //This animation must be complete by the time the view rotation animation is complete, else we'll have incorrect bounds data. This will speed it up to near instant.
-    self.webView.scrollView.layer.speed = 9999.0f;
+    //UPDATE: Looks like it's no longer necessary in iOS 8! :)
     
-    //zoom into the mid point of the scale. Zooming into either extreme doesn't work.
-    CGFloat zoomScale = (self.webView.scrollView.minimumZoomScale+self.webView.scrollView.maximumZoomScale) * 0.5f;
-    [self.webView.scrollView setZoomScale:zoomScale animated:YES];
-    
+    if (NEW_ROTATIONS == NO) {
+        //This animation must be complete by the time the view rotation animation is complete, else we'll have incorrect bounds data. This will speed it up to near instant.
+        self.webView.scrollView.layer.speed = 9999.0f;
+        
+        //zoom into the mid point of the scale. Zooming into either extreme doesn't work.
+        CGFloat zoomScale = (self.webView.scrollView.minimumZoomScale+self.webView.scrollView.maximumZoomScale) * 0.5f;
+        [self.webView.scrollView setZoomScale:zoomScale animated:YES];
+    }
+        
     //hide the webview while the snapshot is animating
     self.webView.hidden = YES;
 }
@@ -1569,20 +1565,27 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     if (translatedScale > self.webView.scrollView.maximumZoomScale)
         self.webView.scrollView.maximumZoomScale = translatedScale;
     
-    [self.webView.scrollView.layer removeAllAnimations];
-    self.webView.scrollView.layer.speed = 9999.0f;
-    [self.webView.scrollView setZoomScale:translatedScale animated:YES];
-    
-    //Pull out the animation and attach a delegate so we can receive an event when it's finished, to clean it up properly
-    CABasicAnimation *anim = [[self.webView.scrollView.layer animationForKey:@"bounds"] mutableCopy];
-    if (anim == nil) { //anim may be nil if the zoomScale wasn't sufficiently different to warrant an animation
-        [self animationDidStop:nil finished:YES];
-        return;
+    if (NEW_ROTATIONS == NO) {
+        [self.webView.scrollView.layer removeAllAnimations];
+        self.webView.scrollView.layer.speed = 9999.0f;
+        [self.webView.scrollView setZoomScale:translatedScale animated:YES];
+        
+        //Pull out the animation and attach a delegate so we can receive an event when it's finished, to clean it up properly
+        NSString *key = @"bounds";
+        CABasicAnimation *anim = [[self.webView.scrollView.layer animationForKey:key] mutableCopy];
+        if (anim == nil) { //anim may be nil if the zoomScale wasn't sufficiently different to warrant an animation
+            [self animationDidStop:nil finished:YES];
+            return;
+        }
+        
+        [self.webView.scrollView.layer removeAnimationForKey:key];
+        [anim setDelegate:self];
+        [self.webView.scrollView.layer addAnimation:anim forKey:key];
     }
-    
-    [self.webView.scrollView.layer removeAnimationForKey:@"bounds"];
-    [anim setDelegate:self];
-    [self.webView.scrollView.layer addAnimation:anim forKey:@"bounds"];
+    else {
+        [self.webView.scrollView setZoomScale:translatedScale animated:NO];
+        [self animationDidStop:nil finished:YES];
+    }
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
@@ -1651,11 +1654,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self.webViewRotationSnapshot removeFromSuperview];
     self.webViewRotationSnapshot = nil;
     
-    //Slight hack to jump start orientation detection again
-    UIViewController *dummyController = [UIViewController new];
-    [self presentViewController:dummyController animated:NO completion:^{
-        [self dismissViewControllerAnimated:NO completion:nil];
-    }];
+    //Try and restart device rotation
+    [UIViewController attemptRotationToDeviceOrientation];
 }
 
 @end

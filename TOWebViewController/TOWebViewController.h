@@ -67,7 +67,7 @@
 @property (nonatomic,assign)    BOOL showLoadingBar;
 
 /** 
- Shows the URL of the web request currently being loaded, before the page's <title> attribute becomes available.
+ Shows the URL of the web request currently being loaded, before the page's title attribute becomes available.
  
  Default value is YES.
  */

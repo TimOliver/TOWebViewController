@@ -28,43 +28,104 @@
 
 @interface TOWebViewController : UIViewController
 
+/**
+ Initializes a new `TOWebViewController` object with the specified URL.
+ 
+ @param url The URL to the web page that the controller will initially display.
+ 
+ @return The newly initialized `TOWebViewController` object.
+ */
 - (instancetype)initWithURL:(NSURL *)url;
+
+/**
+ Initializes a new `TOWebViewController` object with the specified URL string.
+ 
+ @param url The URL as a string, of the web page that the controller will initially display.
+ 
+ @return The newly initialized `TOWebViewController` object.
+ */
 - (instancetype)initWithURLString:(NSString *)urlString;
 
-/* Get/set the current URL being displayed. (Will automatically start loading) */
+/** 
+ Get/set the current URL being displayed. (Will automatically start loading) 
+ */
 @property (nonatomic,strong)    NSURL *url;
 
-/* The web view used to display the web content. */
+/**
+ The web view used to display the HTML content. You can access it through this
+ read-only property if you need to anything specific, such as having it execute arbitrary JS code.
+ 
+ @warning Usage of the web view's delegate property is reserved by this view controller. Do not set it to another object.
+ */
 @property (nonatomic,readonly)  UIWebView *webView;
 
-/* Show the loading progress bar (default YES) */
+/** 
+ Shows a loading progress bar underneath the top navigation bar. 
+ 
+ Default value is YES.
+ */
 @property (nonatomic,assign)    BOOL showLoadingBar;
 
-/* Show the URL while loading the page, i.e. before the page's <title> tag is available (default YES) */
+/** 
+ Shows the URL of the web request currently being loaded, before the page's <title> attribute becomes available.
+ 
+ Default value is YES.
+ */
 @property (nonatomic,assign)    BOOL showUrlWhileLoading;
 
-/* Tint colour for the loading progress bar. Default colour is iOS system blue. */
+/** 
+ The tint colour of the page loading progress bar.
+ If not set on iOS 7 and above, the loading bar will defer to the app's global UIView tint color.
+ If not set on iOS 6 or below, it will default to the standard system blue tint color.
+ 
+ Default value is nil.
+ */
 @property (nonatomic,copy)      UIColor *loadingBarTintColor;
 
-/* Show all of the navigation/action buttons (ON by default) */
+/**
+ Hides all of the page navigation buttons, and on iPhone, hides the bottom toolbar.
+ 
+ Default value is NO.
+ */
 @property (nonatomic,assign)    BOOL navigationButtonsHidden;
 
-/* Show the 'Action' button instead of the stop/refresh button (YES by default)*/
+/**
+ Shows the iOS 'Activty' button, which when tapped, presents a series of actions the user may
+ take, including copying the page URL, tweeting the URL, or switching to Safari or Chrome.
+ 
+ Default value is YES.
+ */
 @property (nonatomic,assign)    BOOL showActionButton;
 
-/* Disable the contextual popup that appears if the user taps and holds on a link. */
+/** 
+ Disables the contextual popups that can appear when the user taps and holds on a page link.
+ 
+ Default value is NO.
+ */
 @property (nonatomic,assign)    BOOL disableContextualPopupMenu;
 
-/* Hide the gray/linin background and all shadows and use the same colour as the current page */
+/** 
+ Hides the default system background behind the outer bounds of the webview, and replaces it with
+ a background color derived from the the page content currently being displayed by the web view.
+ 
+ Default value is NO.
+ */
 @property (nonatomic,assign)    BOOL hideWebViewBoundaries;
 
-/* When being presented as modal, this optional block can be performed after the users dismisses the controller. */
+/** 
+ When the view controller is being presented as a modal popup, this block will be automatically performed
+ right after the view controller is dismissed.
+ */
 @property (nonatomic,copy)      void (^modalCompletionHandler)(void);
 
-/* On iOS 6 or below, this can be used to override the default fill color of the navigation button icons */
+/** 
+ On iOS 6 or below, this can be used to override the default fill color of the navigation button icons.
+ */
 @property (nonatomic,strong)    UIColor *buttonTintColor UI_APPEARANCE_SELECTOR;
 
-/* On iOS 6 or below, this overrides the default opacity level of the bevel around the navigation buttons */
+/** 
+ On iOS 6 or below, this overrides the default opacity level of the bevel around the navigation buttons.
+ */
 @property (nonatomic,assign)    CGFloat buttonBevelOpacity UI_APPEARANCE_SELECTOR;
 
 @end

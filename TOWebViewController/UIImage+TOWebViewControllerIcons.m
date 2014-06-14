@@ -363,7 +363,7 @@ const NSString *TOWebViewControllerButtonBevelOpacity    = @"TOWebViewController
 {
     UIImage *actionButtonImage = nil;
     if (MINIMAL_UI) {
-        UIGraphicsBeginImageContextWithOptions((CGSize){19,27}, NO, [[UIScreen mainScreen] scale]);
+        UIGraphicsBeginImageContextWithOptions((CGSize){19,30}, NO, [[UIScreen mainScreen] scale]);
         {
             //// Color Declarations
             UIColor* actionColor = [UIColor blackColor];

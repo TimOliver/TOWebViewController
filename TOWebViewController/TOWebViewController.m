@@ -291,6 +291,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     CGFloat y = self.webView.scrollView.contentInset.top;
     self.loadingBarView = [[TOWebLoadingView alloc] initWithFrame:CGRectMake(0, y, CGRectGetWidth(self.view.frame), LOADING_BAR_HEIGHT)];
     self.loadingBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    if (self.loadingBarTintColor && [self.loadingBarView respondsToSelector:@selector(setTintColor:)])
+        self.loadingBarView.tintColor = self.loadingBarTintColor;
     
     //set the tint color for the loading bar
     if (MINIMAL_UI && self.loadingBarTintColor == nil) {
@@ -591,6 +593,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     _loadingBarTintColor = loadingBarTintColor;
     
     self.loadingBarView.backgroundColor = self.loadingBarTintColor;
+    
+    if ([self.loadingBarView respondsToSelector:@selector(setTintColor:)])
+        self.loadingBarView.tintColor = self.loadingBarTintColor;
 }
 
 - (UINavigationBar *)navigationBar

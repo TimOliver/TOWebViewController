@@ -412,6 +412,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     [super viewDidLoad];
     
+    if (self.navigationController) {
+        self.hideToolbarOnClose = self.navigationController.toolbarHidden;
+        self.hideNavBarOnClose  = self.navigationBar.hidden;
+    }
+    
     //remove the shadow that lines the bottom of the webview
     if (MINIMAL_UI == NO) {
         for (UIView *view in self.webView.scrollView.subviews) {
@@ -459,9 +464,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //see if we need to show the toolbar
     if (self.navigationController) {
-        self.hideToolbarOnClose = self.navigationController.toolbarHidden;
-        self.hideNavBarOnClose  = self.navigationBar.hidden;
-        
         if (IPAD == NO) { //iPhone
             if (self.beingPresentedModally == NO) { //being pushed onto a pre-existing stack, so
                 [self.navigationController setToolbarHidden:NO animated:animated];

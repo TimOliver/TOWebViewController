@@ -22,6 +22,8 @@
 
 #import "TOActivityChrome.h"
 
+NSString *const TOActivityTypeChrome = @"au.com.timoliver.TOActivityTypeChrome";
+
 /* Detect if we're running iOS 7.0 or higher */
 #ifndef NSFoundationVersionNumber_iOS_6_1
 #define NSFoundationVersionNumber_iOS_6_1  993.00
@@ -43,6 +45,11 @@
 @implementation TOActivityChrome
 
 #pragma mark - Activity Display Properties -
+- (NSString *)activityType
+{
+    return TOActivityTypeChrome;
+}
+
 - (NSString *)activityTitle
 {
     return NSLocalizedStringFromTable(@"Chrome", @"TOWebViewControllerLocalizable", @"Open in Chrome Action");

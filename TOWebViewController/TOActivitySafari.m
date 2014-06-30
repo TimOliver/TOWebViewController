@@ -22,6 +22,8 @@
 
 #import "TOActivitySafari.h"
 
+NSString *const TOActivityTypeSafari = @"au.com.timoliver.TOActivityTypeSafari";
+
 /* Detect if we're running iOS 7.0 or higher */
 #ifndef NSFoundationVersionNumber_iOS_6_1
 #define NSFoundationVersionNumber_iOS_6_1  993.00
@@ -43,6 +45,11 @@
 @implementation TOActivitySafari
 
 #pragma mark - Activity Display Properties -
+- (NSString *)activityType
+{
+    return TOActivityTypeSafari;
+}
+
 - (NSString *)activityTitle
 {
     return NSLocalizedStringFromTable(@"Safari", @"TOWebViewControllerLocalizable", @"Open in Safari Action");

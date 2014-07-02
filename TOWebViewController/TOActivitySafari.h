@@ -22,6 +22,8 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString *const TOActivityTypeSafari;
+
 @interface TOActivitySafari : UIActivity
 
 @end

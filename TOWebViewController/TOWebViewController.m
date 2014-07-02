@@ -747,6 +747,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
+    self.loadingBarView.alpha = 0.0f;
     [self handleLoadRequestCompletion];
     [self refreshButtonsState];
 }
@@ -767,11 +768,30 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)reloadStopButtonTapped:(id)sender
 {
-    if (self.webView.isLoading)
-        [self.webView stopLoading];
-    else
-        [self.webView reload];
+    //regardless of reloading, or stopping, halt the webview
+    [self.webView stopLoading];
     
+    if (self.webView.isLoading) {
+        //if we were loading, hide the load bar for now
+        self.loadingBarView.alpha = 0.0f;
+    }
+    else {
+        //In certain cases, if the connection drops out preload or midload,
+        //it nullifies webView.request, which causes [webView reload] to stop working.
+        //This checks to see if the webView request URL is nullified, and if so, tries to load
+        //off our stored self.url property instead
+        NSURLRequest *request = self.webView.request;
+        if (self.webView.request.URL.absoluteString.length == 0 && self.url)
+        {
+            request = [NSURLRequest requestWithURL:self.url];
+            [self.webView loadRequest:request];
+        }
+        else {
+            [self.webView reload];
+        }
+    }
+    
+    //refresh the buttons
     [self refreshButtonsState];
 }
 
@@ -1004,6 +1024,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)startLoadProgress
 {
+    if (self.webView.isLoading == NO)
+        return;
+    
     //If we haven't started loading yet, set the progress to small, but visible value
     if (_loadingProgressState.loadingProgress < kInitialProgressValue)
     {
@@ -1051,9 +1074,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)finishLoadProgress
 {
-    //hide the activity indicator in the status bar
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    
     //reset the load progress
     [self refreshButtonsState];
     [self setLoadingProgress:1.0f];
@@ -1152,6 +1172,15 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         [self.forwardButton setEnabled:YES];
     else
         [self.forwardButton setEnabled:NO];
+    
+    if (self.webView.isLoading) {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
+    }
+    else {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+    }
 }
 
 #pragma mark -

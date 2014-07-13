@@ -1575,6 +1575,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             else
                 frame.origin.y -= (_webViewState.topEdgeInset - self.webView.scrollView.contentInset.top);
         }
+        
+        //ensure the image view stays horizontally aligned to the center when we rotate back to portrait
+        if (UIInterfaceOrientationIsPortrait(toOrientation))
+            frame.origin.x = floor(CGRectGetWidth(self.view.bounds) * 0.5f) - (CGRectGetWidth(self.webViewRotationSnapshot.frame) * 0.5f);
     }
     
     

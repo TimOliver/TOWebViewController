@@ -87,10 +87,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 #pragma mark -
 #pragma mark Hidden Properties/Methods
-@interface TOWebViewController () <UIWebViewDelegate, UIActionSheetDelegate,
-                                    UIPopoverControllerDelegate,
-                                    MFMailComposeViewControllerDelegate,
-                                    MFMessageComposeViewControllerDelegate>
+@interface TOWebViewController () <UIActionSheetDelegate,
+                                   UIPopoverControllerDelegate,
+                                   MFMailComposeViewControllerDelegate,
+                                   MFMessageComposeViewControllerDelegate>
 {
     
     //The state of the UIWebView's scroll view before the rotation animation has started

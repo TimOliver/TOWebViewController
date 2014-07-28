@@ -26,7 +26,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TOWebViewController : UIViewController
+@interface TOWebViewController : UIViewController <UIWebViewDelegate>
 
 /**
  Initializes a new `TOWebViewController` object with the specified URL.

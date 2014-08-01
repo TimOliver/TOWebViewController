@@ -742,7 +742,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self refreshButtonsState];
 
     //see if we can set the proper page title at this point
-    self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    // if title have not been set, set it as page title
+    self.title = (self.defaultTitle) ?: [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -1053,8 +1054,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             NSString *url = [self.url absoluteString];
             url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
             url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
-            self.title = url;
-        } 
+            self.title = (self.defaultTitle) ?: url;
+        }
         
         if (self.reloadStopButton)
             [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
@@ -1079,7 +1080,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self setLoadingProgress:1.0f];
     
     //in case it didn't succeed yet, try setting the page title again
-    self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    self.title = (self.defaultTitle) ?: [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     
     if (self.reloadStopButton)
         [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
@@ -1141,7 +1142,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         [self.webView stringByEvaluatingJavaScriptFromString:waitForCompleteJS];
         
         //see if we can set the proper page title yet
-        self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        self.title = (self.defaultTitle) ?: [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
         
         //if we're matching the view BG to the web view, update the background colour now
         if (self.hideWebViewBoundaries)

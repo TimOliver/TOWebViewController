@@ -132,4 +132,8 @@
  */
 @property (nonatomic,assign)    CGFloat buttonBevelOpacity; //UI_APPEARANCE_SELECTOR
 
+/**
+ A optional default title, this will be applied instead of title by each page's title.
+ */
+@property (nonatomic, strong)   NSString *defaultTitle;
 @end

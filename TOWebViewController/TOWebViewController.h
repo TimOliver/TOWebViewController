@@ -97,6 +97,14 @@
  */
 @property (nonatomic,assign)    BOOL showActionButton;
 
+/**
+ When web pages are loaded, the view controller's title property will be set to the page's
+ HTML title attribute.
+ 
+ Default value is YES.
+ */
+@property (nonatomic,assign)    BOOL showPageTitles;
+
 /** 
  Disables the contextual popups that can appear when the user taps and holds on a page link.
  

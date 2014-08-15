@@ -127,8 +127,7 @@
 @property (nonatomic,copy)      void (^modalCompletionHandler)(void);
 
 /**
- When the view controller is being presented as a modal popup, this block will be automatically performed
- right after the view controller is dismissed.
+ Managing queries and navigation
  */
 @property (nonatomic,copy)      BOOL (^shouldStartLoadRequestHandler)(NSURLRequest *request, UIWebViewNavigationType navigationType);
 

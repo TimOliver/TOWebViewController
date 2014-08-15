@@ -126,6 +126,11 @@
  */
 @property (nonatomic,copy)      void (^modalCompletionHandler)(void);
 
+/**
+ Managing queries and navigation
+ */
+@property (nonatomic,copy)      BOOL (^shouldStartLoadRequestHandler)(NSURLRequest *request, UIWebViewNavigationType navigationType);
+
 /** 
  On iOS 6 or below, this can be used to override the default fill color of the navigation button icons.
  

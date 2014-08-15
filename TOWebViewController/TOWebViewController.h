@@ -127,7 +127,8 @@
 @property (nonatomic,copy)      void (^modalCompletionHandler)(void);
 
 /**
- Managing queries and navigation
+ An optional block that when set, will have each incoming web load request forwarded to it, and can
+ determine whether to let them proceed or not.
  */
 @property (nonatomic,copy)      BOOL (^shouldStartLoadRequestHandler)(NSURLRequest *request, UIWebViewNavigationType navigationType);
 

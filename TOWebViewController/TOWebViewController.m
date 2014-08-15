@@ -692,16 +692,14 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     BOOL shouldStart = YES;
     
+    //If a request handler has been set, check to see if we should go ahead
     if (self.shouldStartLoadRequestHandler)
-    {
-        shouldStart     = self.shouldStartLoadRequestHandler(request, navigationType);
-    }
+        shouldStart = self.shouldStartLoadRequestHandler(request, navigationType);
     
     //TODO: Implement TOModalWebViewController Delegate callback
     
     //if the URL is the load completed notification from JavaScript
-    if ([request.URL.absoluteString isEqualToString:kCompleteRPCURL] || !shouldStart)
-    {
+    if ([request.URL.absoluteString isEqualToString:kCompleteRPCURL] || !shouldStart) {
         [self finishLoadProgress];
         return NO;
     }

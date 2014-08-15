@@ -126,6 +126,12 @@
  */
 @property (nonatomic,copy)      void (^modalCompletionHandler)(void);
 
+/**
+ When the view controller is being presented as a modal popup, this block will be automatically performed
+ right after the view controller is dismissed.
+ */
+@property (nonatomic,copy)      BOOL (^shouldStartLoadRequestHandler)(NSURLRequest *request, UIWebViewNavigationType navigationType);
+
 /** 
  On iOS 6 or below, this can be used to override the default fill color of the navigation button icons.
  

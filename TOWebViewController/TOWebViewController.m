@@ -753,6 +753,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     self.loadingBarView.alpha = 0.0f;
+    webView.scrollView.scrollEnabled = NO;
+    webView.scrollView.bounces = NO;
     [self handleLoadRequestCompletion];
     [self refreshButtonsState];
 }

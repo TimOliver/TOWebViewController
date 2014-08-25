@@ -132,6 +132,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 @property (nonatomic,strong) UIButton *forwardButton;                    /* Moves the web view one page forward */
 @property (nonatomic,strong) UIButton *reloadStopButton;                 /* Reload / Stop buttons */
 @property (nonatomic,strong) UIButton *actionButton;                     /* Shows the UIActivityViewController */
+@property (nonatomic,strong) UIView   *buttonsContainerView;              /* The container view that holds all of the navigation buttons. */
 
 /* Button placement metrics */
 @property (nonatomic,assign) CGFloat buttonWidth;                        /* The size of each button */
@@ -433,14 +434,18 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         self.gradientLayer.hidden = YES;
     
     //create the buttons view and add them to either the navigation bar or toolbar
-    UIView *iconsContainerView = [self containerViewWithNavigationButtons];
+    self.buttonsContainerView = [self containerViewWithNavigationButtons];
     if (IPAD) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.buttonsContainerView];
     }
     else {
-        NSArray *items = @[BLANK_BARBUTTONITEM, [[UIBarButtonItem alloc] initWithCustomView:iconsContainerView], BLANK_BARBUTTONITEM];
+        NSArray *items = @[BLANK_BARBUTTONITEM, [[UIBarButtonItem alloc] initWithCustomView:self.buttonsContainerView], BLANK_BARBUTTONITEM];
         self.toolbarItems = items;
     }
+    
+    //override the tint color of the buttons, if desired.
+    if (MINIMAL_UI)
+        self.buttonsContainerView.tintColor = self.buttonTintColor;
     
     // Create the Done button
     if (self.beingPresentedModally && !self.onTopOfNavigationControllerStack) {
@@ -665,11 +670,16 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     _buttonTintColor = buttonTintColor;
     
-    if (self.buttonThemeAttributes == nil)
-        self.buttonThemeAttributes = [NSMutableDictionary dictionary];
-    
-    self.buttonThemeAttributes[TOWebViewControllerButtonTintColor] = _buttonTintColor;
-    [self setUpNavigationButtons];
+    if (MINIMAL_UI) {
+        self.buttonsContainerView.tintColor = _buttonTintColor;
+    }
+    else {
+        if (self.buttonThemeAttributes == nil)
+            self.buttonThemeAttributes = [NSMutableDictionary dictionary];
+        
+        self.buttonThemeAttributes[TOWebViewControllerButtonTintColor] = _buttonTintColor;
+        [self setUpNavigationButtons];
+    }
 }
 
 - (void)setButtonBevelOpacity:(CGFloat)buttonBevelOpacity

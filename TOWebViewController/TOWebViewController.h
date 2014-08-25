@@ -133,17 +133,13 @@
 @property (nonatomic,copy)      BOOL (^shouldStartLoadRequestHandler)(NSURLRequest *request, UIWebViewNavigationType navigationType);
 
 /** 
- On iOS 6 or below, this can be used to override the default fill color of the navigation button icons.
- 
- Conforms to the iOS UIAppearance protocol.
+ This can be used to override the default tint color of the navigation button icons.
  */
-@property (nonatomic,strong)    UIColor *buttonTintColor; //UI_APPEARANCE_SELECTOR
+@property (nonatomic,strong)    UIColor *buttonTintColor;
 
 /** 
  On iOS 6 or below, this overrides the default opacity level of the bevel around the navigation buttons.
- 
- Conforms to the iOS UIAppearance protocol.
  */
-@property (nonatomic,assign)    CGFloat buttonBevelOpacity; //UI_APPEARANCE_SELECTOR
+@property (nonatomic,assign)    CGFloat buttonBevelOpacity;
 
 @end

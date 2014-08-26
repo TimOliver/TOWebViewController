@@ -38,7 +38,7 @@
 /* Detect if we're running iOS 7.0 or higher (With the new minimal UI) */
 #define MINIMAL_UI      ([[UIViewController class] instancesRespondToSelector:@selector(edgesForExtendedLayout)])
 /* Detect if we're running iOS 8.0 (With the new device rotation system) */
-#define NEW_ROTATIONS   ([[UIViewController class] instancesRespondToSelector:@selector(viewWillTransitionToSize:withTransitionCoordinator:)])
+#define NEW_ROTATIONS   ([[UIViewController class] instancesRespondToSelector:NSSelectorFromString(@"viewWillTransitionToSize:withTransitionCoordinator:")])
 
 /* The default blue tint color of iOS 7.0 */
 #define DEFAULT_BAR_TINT_COLOR [UIColor colorWithRed:0.0f green:110.0f/255.0f blue:1.0f alpha:1.0f]

@@ -472,11 +472,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     if (self.navigationController) {
         if (IPAD == NO) { //iPhone
             if (self.beingPresentedModally == NO) { //being pushed onto a pre-existing stack, so
-                [self.navigationController setToolbarHidden:NO animated:animated];
+                [self.navigationController setToolbarHidden:self.navigationButtonsHidden animated:animated];
                 [self.navigationController setNavigationBarHidden:NO animated:animated];
             }
             else { //Being presented modally, so control the
-                self.navigationController.toolbarHidden = NO;
+                self.navigationController.toolbarHidden = self.navigationButtonsHidden;
             }
         }
         else {

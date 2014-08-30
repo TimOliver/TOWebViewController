@@ -249,6 +249,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     //Direct ivar reference since we don't want to trigger their actions yet
     _showActionButton = YES;
+    _showDoneButton   = YES;
     _buttonSpacing    = (IPAD == NO) ? NAVIGATION_BUTTON_SPACING : NAVIGATION_BUTTON_SPACING_IPAD;
     _buttonWidth      = NAVIGATION_BUTTON_WIDTH;
     _showLoadingBar   = YES;
@@ -448,7 +449,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         self.buttonsContainerView.tintColor = self.buttonTintColor;
     
     // Create the Done button
-    if (self.beingPresentedModally && !self.onTopOfNavigationControllerStack) {
+    if (self.showDoneButton && self.beingPresentedModally && !self.onTopOfNavigationControllerStack) {
         NSString *title = NSLocalizedStringFromTable(@"Done", @"TOWebViewControllerLocalizable", @"Modal Web View Controller Close");
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonTapped:)];
         if (IPAD)

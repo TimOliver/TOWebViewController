@@ -61,10 +61,12 @@
 @property (nonatomic,readonly)  UIWebView *webView;
 
 /**
- The WKWebView used to display HTML content on an iOS 8 device. It can be accessed through the read-only
- property if you need to do anything specific. Experiemental at the moment.
+ The WKWebView used to display HTML content on an iOS 8+ device. It can be accessed through the read-only
+ property if you need to do anything specific.
  
- @warning I have no idea what I'm doing
+ Unike webView, this uses none of the delegates specifically for this class. 
+ @warning It uses standard configuration.
+ @warning If presented modally, swipe gestures for back/forward are enabled. Otherwise, they are off.
  */
 @property (nonatomic, readonly) WKWebView *wkWebView;
 

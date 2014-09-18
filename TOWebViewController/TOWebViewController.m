@@ -297,13 +297,17 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     if (WKWEBVIEW_NSCLASS) {
         //todo: Add Configuration options
+        
         self.wkWebView = [[WKWebView alloc] initWithFrame:CGRectZero];
         [self.wkWebView setTranslatesAutoresizingMaskIntoConstraints:NO];
         self.wkWebView.backgroundColor = [UIColor clearColor];
         self.wkWebView.contentMode = UIViewContentModeRedraw;
         self.wkWebView.opaque = YES;
         [self.view addSubview:self.wkWebView];
-        y = self.wkWebView.scrollView.contentInset.top;
+        
+        if (self.beingPresentedModally) {
+            self.wkWebView.allowsBackForwardNavigationGestures = YES;
+        }
         
         [self.wkWebView addObserver:self forKeyPath:@"loading" options:(NSKeyValueObservingOptions)0 context:WebViewControllerObservationContext];
         [self.wkWebView addObserver:self forKeyPath:@"title" options:(NSKeyValueObservingOptions)0 context:WebViewControllerObservationContext];
@@ -325,7 +329,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //Add Progress view.
         self.wkProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
         self.wkProgressView.frame = CGRectZero;
-//        self.wkProgressView.progress = 1.0;
         [self.wkProgressView setTranslatesAutoresizingMaskIntoConstraints:NO];
         [self.view addSubview:self.wkProgressView];
         [self.view bringSubviewToFront:self.wkProgressView];
@@ -342,7 +345,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                                                              multiplier:1
                                                                constant:0]];
         
-
+        y = self.wkWebView.scrollView.contentInset.top;
     }
     else {
         //Create the web view
@@ -1887,12 +1890,18 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+   
+    //If the title changes - change the title
     if (context == WebViewControllerObservationContext && [keyPath isEqualToString:@"title"]) {
         self.title = self.wkWebView.title;
     }
+    
+    //Set the state of the back button when it changes
     else if (context == WebViewControllerObservationContext && [keyPath isEqualToString:@"canGoBack"]) {
         self.backButton.enabled = self.wkWebView.canGoBack;
     }
+    
+    //Set the state of the forward button when it changes
     else if (context == WebViewControllerObservationContext && [keyPath isEqualToString:@"canGoForward"]) {
         self.forwardButton.enabled = self.wkWebView.canGoForward;
     }
@@ -1917,10 +1926,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
 
 }
-
-#pragma mark - WKWebView Setters
-
-
 
 
 @end

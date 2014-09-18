@@ -71,10 +71,21 @@
 /* Unique URL triggered when JavaScript reports page load is complete */
 NSString *kCompleteRPCURL = @"webviewprogress:///complete";
 
+static void* WebViewControllerObservationContext = &WebViewControllerObservationContext;
+
+
 /* Default load values to defer to during the load process */
 static const float kInitialProgressValue                = 0.1f;
 static const float kBeforeInteractiveMaxProgressValue   = 0.5f;
 static const float kAfterInteractiveMaxProgressValue    = 0.9f;
+
+/*
+ *  System Versioning Preprocessor Macros
+ */
+
+#define WKWEBVIEW_NSCLASS NSClassFromString(@"WKWebView")
+
+
 
 #pragma mark -
 #pragma mark Loading Bar Private Interface
@@ -120,6 +131,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 /* The main view components of the controller */
 @property (nonatomic,strong, readwrite) UIWebView *webView;                      /* The web view, where all the magic happens */
+@property (nonatomic, strong, readwrite) WKWebView *wkWebView;
+@property (nonatomic, strong) UIProgressView *wkProgressView;
 @property (nonatomic,readonly) UINavigationBar *navigationBar;          /* Navigation bar shown along the top of the view */
 @property (nonatomic,readonly) UIToolbar *toolbar;                      /* Toolbar shown along the bottom */
 @property (nonatomic,strong)   TOWebLoadingView *loadingBarView;        /* The loading bar, displayed when a page is being loaded */
@@ -279,19 +292,74 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         self.gradientLayer.frame = self.view.bounds;
         [self.view.layer addSublayer:self.gradientLayer];
     }
+
+    CGFloat y = 0.0f;
     
-    //Create the web view
-    self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
-    self.webView.delegate = self;
-    self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    self.webView.backgroundColor = [UIColor clearColor];
-    self.webView.scalesPageToFit = YES;
-    self.webView.contentMode = UIViewContentModeRedraw;
-    self.webView.opaque = YES;
-    [self.view addSubview:self.webView];
+    if (WKWEBVIEW_NSCLASS) {
+        //todo: Add Configuration options
+        self.wkWebView = [[WKWebView alloc] initWithFrame:CGRectZero];
+        [self.wkWebView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        self.wkWebView.backgroundColor = [UIColor clearColor];
+        self.wkWebView.contentMode = UIViewContentModeRedraw;
+        self.wkWebView.opaque = YES;
+        [self.view addSubview:self.wkWebView];
+        y = self.wkWebView.scrollView.contentInset.top;
+        
+        [self.wkWebView addObserver:self forKeyPath:@"loading" options:(NSKeyValueObservingOptions)0 context:WebViewControllerObservationContext];
+        [self.wkWebView addObserver:self forKeyPath:@"title" options:(NSKeyValueObservingOptions)0 context:WebViewControllerObservationContext];
+        [self.wkWebView addObserver:self forKeyPath:@"canGoBack" options:(NSKeyValueObservingOptions)0 context:WebViewControllerObservationContext];
+        [self.wkWebView addObserver:self forKeyPath:@"canGoForward" options:(NSKeyValueObservingOptions)0 context:WebViewControllerObservationContext];
+        [self.wkWebView addObserver:self forKeyPath:@"estimatedProgress" options:(NSKeyValueObservingOptions)0 context:WebViewControllerObservationContext];
+        
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[wkWebView]|"
+                                                options:0x00
+                                                metrics:nil
+                                                  views:@{@"wkWebView":self.wkWebView}]];
+        
+        
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[wkWebView]|"
+                                                                          options:0x00
+                                                                          metrics:nil
+                                                                            views:@{@"wkWebView":self.wkWebView}]];
+        
+        //Add Progress view.
+        self.wkProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+        self.wkProgressView.frame = CGRectZero;
+//        self.wkProgressView.progress = 1.0;
+        [self.wkProgressView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [self.view addSubview:self.wkProgressView];
+        [self.view bringSubviewToFront:self.wkProgressView];
+        
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[wkProgressView]|"
+                                                                          options:0x00
+                                                                          metrics:nil
+                                                                            views:@{@"wkProgressView":self.wkProgressView}]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.wkProgressView
+                                                              attribute:NSLayoutAttributeTop
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.topLayoutGuide
+                                                              attribute:NSLayoutAttributeBottom
+                                                             multiplier:1
+                                                               constant:0]];
+        
+
+    }
+    else {
+        //Create the web view
+        self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+        self.webView.delegate = self;
+        self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.webView.backgroundColor = [UIColor clearColor];
+        self.webView.scalesPageToFit = YES;
+        self.webView.contentMode = UIViewContentModeRedraw;
+        self.webView.opaque = YES;
+        [self.view addSubview:self.webView];
+        y = self.webView.scrollView.contentInset.top;
+    }
+    
+    
 
     //Set up the loading bar
-    CGFloat y = self.webView.scrollView.contentInset.top;
     self.loadingBarView = [[TOWebLoadingView alloc] initWithFrame:CGRectMake(0, y, CGRectGetWidth(self.view.frame), LOADING_BAR_HEIGHT)];
     self.loadingBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     if (self.loadingBarTintColor && [self.loadingBarView respondsToSelector:@selector(setTintColor:)])
@@ -320,6 +388,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
 
     //only load the buttons if we need to
+    
     if (self.navigationButtonsHidden == NO)
         [self setUpNavigationButtons];
 }
@@ -371,6 +440,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         }
         
         [self.actionButton setImage:[UIImage TOWebViewControllerIcon_actionButtonWithAttributes:self.buttonThemeAttributes] forState:UIControlStateNormal];
+    }
+    
+    if (WKWEBVIEW_NSCLASS) {
+        self.backButton.enabled = self.wkWebView.canGoBack;
+        self.forwardButton.enabled = self.wkWebView.canGoForward;
     }
 }
 
@@ -459,10 +533,20 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
     
     //Set the appropriate actions to the buttons
-    [self.backButton        addTarget:self action:@selector(backButtonTapped:)          forControlEvents:UIControlEventTouchUpInside];
-    [self.forwardButton     addTarget:self action:@selector(forwardButtonTapped:)       forControlEvents:UIControlEventTouchUpInside];
-    [self.reloadStopButton  addTarget:self action:@selector(reloadStopButtonTapped:)    forControlEvents:UIControlEventTouchUpInside];
-    [self.actionButton      addTarget:self action:@selector(actionButtonTapped:)        forControlEvents:UIControlEventTouchUpInside];
+    if (WKWEBVIEW_NSCLASS) {
+        [self.backButton        addTarget:self.wkWebView action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+        [self.forwardButton     addTarget:self.wkWebView action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
+        [self.actionButton      addTarget:self action:@selector(actionButtonTapped:)        forControlEvents:UIControlEventTouchUpInside];
+        [self.reloadStopButton  addTarget:self action:@selector(reloadStopButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+
+    }
+    else {
+        [self.backButton        addTarget:self action:@selector(backButtonTapped:)          forControlEvents:UIControlEventTouchUpInside];
+        [self.forwardButton     addTarget:self action:@selector(forwardButtonTapped:)       forControlEvents:UIControlEventTouchUpInside];
+        [self.reloadStopButton  addTarget:self action:@selector(reloadStopButtonTapped:)    forControlEvents:UIControlEventTouchUpInside];
+        [self.actionButton      addTarget:self action:@selector(actionButtonTapped:)        forControlEvents:UIControlEventTouchUpInside];
+    }
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -489,10 +573,22 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //reset the gradient layer in case the bounds changed before display
     self.gradientLayer.frame = self.view.bounds;
     
-    //start loading the initial page
-    if (self.url && self.webView.request == nil)
-        [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+    if (WKWEBVIEW_NSCLASS) {
+        if (self.url && self.wkWebView.loading == NO) {
+            [self.wkWebView loadRequest:[NSURLRequest requestWithURL:self.url]];
+        }
+    }
+    else {
+        //start loading the initial page
+        if (self.url && self.webView.request == nil) {
+            
+            [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+            
+        }
+    }
+    
 }
+
 
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -508,6 +604,15 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     [super viewDidDisappear:animated];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
+
+- (void)dealloc {
+    [self.wkWebView removeObserver:self forKeyPath:@"canGoBack" context:WebViewControllerObservationContext];
+    [self.wkWebView removeObserver:self forKeyPath:@"canGoForward" context:WebViewControllerObservationContext];
+    [self.wkWebView removeObserver:self forKeyPath:@"loading" context:WebViewControllerObservationContext];
+    [self.wkWebView removeObserver:self forKeyPath:@"title" context:WebViewControllerObservationContext];
+    [self.wkWebView removeObserver:self forKeyPath:@"estimatedProgress" context:WebViewControllerObservationContext];
+
 }
 
 - (BOOL)shouldAutorotate
@@ -528,6 +633,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
+    if (WKWEBVIEW_NSCLASS) {
+        [self.view setNeedsUpdateConstraints];
+        [self.wkWebView setNeedsUpdateConstraints];
+
+        return;
+    }
     //get the web view ready for rotation
     [self setUpWebViewForRotationToOrientation:toInterfaceOrientation withDuration:duration];
 }
@@ -540,10 +651,14 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //update the loading bar to match the proper bounds
     self.loadingBarView.frame = ({
         CGRect frame = self.loadingBarView.frame;
-        frame.origin.y = self.webView.scrollView.contentInset.top;
+        frame.origin.y = self.webView == nil ? self.wkWebView.scrollView.contentInset.top : self.webView.scrollView.contentInset.top;
         frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame) + (CGRectGetWidth(self.view.bounds) * _loadingProgressState.loadingProgress);
         frame;
     });
+    
+    if (WKWEBVIEW_NSCLASS) {
+        return;
+    }
     
     //animate the web view snapshot into the proper place
     [self animateWebViewRotationToOrientation:toInterfaceOrientation withDuration:duration];
@@ -551,7 +666,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    [self restoreWebViewFromRotationFromOrientation:fromInterfaceOrientation];
+    if (WKWEBVIEW_NSCLASS) {
+        return;
+    } else {
+        [self restoreWebViewFromRotationFromOrientation:fromInterfaceOrientation];
+    }
 }
 
 #pragma mark -
@@ -588,10 +707,19 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     _url = [self cleanURL:url];
     
-    if (self.webView.loading)
-        [self.webView stopLoading];
+    if (WKWEBVIEW_NSCLASS){
+        if (self.wkWebView.loading)
+            [self.wkWebView stopLoading];
+        
+        [self.wkWebView loadRequest:[NSURLRequest requestWithURL:self.url]];
+    }
+    else {
+        if (self.webView.loading)
+            [self.webView stopLoading];
+        
+        [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+    }
     
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
 - (void)setLoadingBarTintColor:(UIColor *)loadingBarTintColor
@@ -784,31 +912,52 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)reloadStopButtonTapped:(id)sender
 {
-    //regardless of reloading, or stopping, halt the webview
-    [self.webView stopLoading];
-    
-    if (self.webView.isLoading) {
-        //if we were loading, hide the load bar for now
-        self.loadingBarView.alpha = 0.0f;
-    }
-    else {
-        //In certain cases, if the connection drops out preload or midload,
-        //it nullifies webView.request, which causes [webView reload] to stop working.
-        //This checks to see if the webView request URL is nullified, and if so, tries to load
-        //off our stored self.url property instead
-        NSURLRequest *request = self.webView.request;
-        if (self.webView.request.URL.absoluteString.length == 0 && self.url)
-        {
-            request = [NSURLRequest requestWithURL:self.url];
-            [self.webView loadRequest:request];
+    if (WKWEBVIEW_NSCLASS) {
+        //regardless of reloading, or stopping, halt the webview
+        [self.wkWebView stopLoading];
+        
+        if (self.wkWebView.isLoading) {
+            //if we were loading, hide the load bar for now
+            self.loadingBarView.alpha = 0.0f;
         }
         else {
-            [self.webView reload];
+            //In certain cases, if the connection drops out preload or midload,
+            //it nullifies webView.request, which causes [webView reload] to stop working.
+            //This checks to see if the webView request URL is nullified, and if so, tries to load
+            //off our stored self.url property instead
+            [self.wkWebView reloadFromOrigin];
         }
+
+    }
+    else {
+        //regardless of reloading, or stopping, halt the webview
+        [self.webView stopLoading];
+        
+        if (self.webView.isLoading) {
+            //if we were loading, hide the load bar for now
+            self.loadingBarView.alpha = 0.0f;
+        }
+        else {
+            //In certain cases, if the connection drops out preload or midload,
+            //it nullifies webView.request, which causes [webView reload] to stop working.
+            //This checks to see if the webView request URL is nullified, and if so, tries to load
+            //off our stored self.url property instead
+            NSURLRequest *request = self.webView.request;
+            if (self.webView.request.URL.absoluteString.length == 0 && self.url)
+            {
+                request = [NSURLRequest requestWithURL:self.url];
+                [self.webView loadRequest:request];
+            }
+            else {
+                [self.webView reload];
+            }
+        }
+        
+        //refresh the buttons
+        [self refreshButtonsState];
     }
     
-    //refresh the buttons
-    [self refreshButtonsState];
+    
 }
 
 - (void)doneButtonTapped:(id)sender
@@ -1040,7 +1189,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)startLoadProgress
 {
-    if (self.webView.isLoading == NO)
+    if (self.wkWebView.loading == NO && self.webView.isLoading == NO)
         return;
     
     //If we haven't started loading yet, set the progress to small, but visible value
@@ -1095,11 +1244,18 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     [self setLoadingProgress:1.0f];
     
     //in case it didn't succeed yet, try setting the page title again
-    if (self.showPageTitles)
-        self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    if (self.showPageTitles) {
+        if (WKWEBVIEW_NSCLASS) {
+            self.title = self.wkWebView.title;
+        }
+        else {
+            self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        }
+    }
     
-    if (self.reloadStopButton)
+    if (self.reloadStopButton) {
         [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+    }
 }
 
 - (void)setLoadingProgress:(CGFloat)loadingProgress
@@ -1181,24 +1337,38 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)refreshButtonsState
 {
     //update the state for the back button
-    if (self.webView.canGoBack)
-        [self.backButton setEnabled:YES];
-    else
-        [self.backButton setEnabled:NO];
-    
-    if (self.webView.canGoForward)
-        [self.forwardButton setEnabled:YES];
-    else
-        [self.forwardButton setEnabled:NO];
-    
-    if (self.webView.isLoading) {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
+
+    if (WKWEBVIEW_NSCLASS) {
+        if (self.wkWebView.isLoading) {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
+        }
+        else {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+        }
     }
     else {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+        if (self.webView.canGoBack)
+            [self.backButton setEnabled:YES];
+        else
+            [self.backButton setEnabled:NO];
+        
+        if (self.webView.canGoForward)
+            [self.forwardButton setEnabled:YES];
+        else
+            [self.forwardButton setEnabled:NO];
+        
+        if (self.webView.isLoading) {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [self.reloadStopButton setImage:self.stopIcon forState:UIControlStateNormal];
+        }
+        else {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            [self.reloadStopButton setImage:self.reloadIcon forState:UIControlStateNormal];
+        }
     }
+
 }
 
 #pragma mark -
@@ -1715,5 +1885,42 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     //Try and restart device rotation
     [UIViewController attemptRotationToDeviceOrientation];
 }
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == WebViewControllerObservationContext && [keyPath isEqualToString:@"title"]) {
+        self.title = self.wkWebView.title;
+    }
+    else if (context == WebViewControllerObservationContext && [keyPath isEqualToString:@"canGoBack"]) {
+        self.backButton.enabled = self.wkWebView.canGoBack;
+    }
+    else if (context == WebViewControllerObservationContext && [keyPath isEqualToString:@"canGoForward"]) {
+        self.forwardButton.enabled = self.wkWebView.canGoForward;
+    }
+    else if (context == WebViewControllerObservationContext && [keyPath isEqualToString:@"loading"]) {
+        if (self.wkWebView.loading == YES) {
+            [UIView animateWithDuration:0.4 animations:^{
+                [self.wkProgressView setAlpha:1];
+            }];
+        }
+        else {
+            [UIView animateWithDuration:0.4 animations:^{
+                [self.wkProgressView setAlpha:0];
+
+            } completion:^(BOOL finished) {
+                [self.wkProgressView setProgress:0];
+            }];
+        }
+        [self refreshButtonsState];
+    }
+    else if (context == WebViewControllerObservationContext && [keyPath isEqualToString:@"estimatedProgress"]) {
+        [self.wkProgressView setProgress:self.wkWebView.estimatedProgress > kInitialProgressValue ? self.wkWebView.estimatedProgress : kInitialProgressValue animated:YES];
+    }
+
+}
+
+#pragma mark - WKWebView Setters
+
+
+
 
 @end

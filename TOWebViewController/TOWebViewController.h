@@ -25,6 +25,7 @@
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
 @interface TOWebViewController : UIViewController <UIWebViewDelegate>
 
@@ -58,6 +59,14 @@
  @warning Usage of the web view's delegate property is reserved by this view controller. Do not set it to another object.
  */
 @property (nonatomic,readonly)  UIWebView *webView;
+
+/**
+ The WKWebView used to display HTML content on an iOS 8 device. It can be accessed through the read-only
+ property if you need to do anything specific. Experiemental at the moment.
+ 
+ @warning I have no idea what I'm doing
+ */
+@property (nonatomic, readonly) WKWebView *wkWebView;
 
 /** 
  Shows a loading progress bar underneath the top navigation bar. 

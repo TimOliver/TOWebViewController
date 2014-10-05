@@ -801,7 +801,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //it nullifies webView.request, which causes [webView reload] to stop working.
         //This checks to see if the webView request URL is nullified, and if so, tries to load
         //off our stored self.url property instead
-        NSURLRequest *request = self.webView.request;
         if (self.webView.request.URL.absoluteString.length == 0 && self.url)
         {
             request = [NSURLRequest requestWithURL:self.url];

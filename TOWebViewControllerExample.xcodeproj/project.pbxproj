@@ -32,6 +32,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07939D881A524F2A00A59174 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		07939D891A524F8300A59174 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		221CE5CE18EEFC76002D89F5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		221CE5D118EEFC76002D89F5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		221CE5D418EEFC76002D89F5 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
@@ -287,6 +289,8 @@
 				es,
 				ko,
 				"zh-Hant",
+				ru,
+				uk,
 			);
 			mainGroup = 22834A341737B5A50043F7DF;
 			productRefGroup = 22834A3E1737B5A50043F7DF /* Products */;
@@ -347,6 +351,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				221CE5D118EEFC76002D89F5 /* en */,
+				07939D881A524F2A00A59174 /* ru */,
+				07939D891A524F8300A59174 /* uk */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";

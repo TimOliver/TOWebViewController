@@ -29,6 +29,7 @@
 		22AC285718E9920B006DB0E9 /* TOActivityChrome.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AC285618E9920B006DB0E9 /* TOActivityChrome.m */; };
 		22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */; };
 		22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
+		BFC1B82C19CACC3B0061E8A7 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFC1B82B19CACC3B0061E8A7 /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,7 @@
 		22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TOWebViewControllerIcons.m"; sourceTree = "<group>"; };
 		22F922591753B15E0034FEF6 /* TOWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebViewController.h; sourceTree = "<group>"; };
 		22F9225A1753B15E0034FEF6 /* TOWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewController.m; sourceTree = "<group>"; };
+		BFC1B82B19CACC3B0061E8A7 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFC1B82C19CACC3B0061E8A7 /* WebKit.framework in Frameworks */,
 				225F48E917525E8600A3558A /* Twitter.framework in Frameworks */,
 				225F48E717525CC100A3558A /* MessageUI.framework in Frameworks */,
 				225A033D1737E9790086E75F /* QuartzCore.framework in Frameworks */,
@@ -193,6 +196,7 @@
 		22834A3F1737B5A50043F7DF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BFC1B82B19CACC3B0061E8A7 /* WebKit.framework */,
 				225F48E817525E8600A3558A /* Twitter.framework */,
 				225F48E617525CC100A3558A /* MessageUI.framework */,
 				225A033C1737E9790086E75F /* QuartzCore.framework */,

@@ -7,14 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		221CE5E418EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 221CE5CD18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */; };
 		221CE5E518EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 221CE5D018EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */; };
-		221CE5E618EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 221CE5D318EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */; };
-		221CE5E718EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 221CE5D618EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */; };
-		221CE5E818EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 221CE5D918EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */; };
-		221CE5E918EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 221CE5DC18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */; };
-		221CE5EA18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 221CE5DF18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */; };
-		221CE5EB18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 221CE5E218EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */; };
 		225A033D1737E9790086E75F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225A033C1737E9790086E75F /* QuartzCore.framework */; };
 		225F48E717525CC100A3558A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225F48E617525CC100A3558A /* MessageUI.framework */; };
 		225F48E917525E8600A3558A /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225F48E817525E8600A3558A /* Twitter.framework */; };
@@ -67,6 +60,7 @@
 		22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TOWebViewControllerIcons.m"; sourceTree = "<group>"; };
 		22F922591753B15E0034FEF6 /* TOWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebViewController.h; sourceTree = "<group>"; };
 		22F9225A1753B15E0034FEF6 /* TOWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewController.m; sourceTree = "<group>"; };
+		762BBB941A5DB8CF00FF22FC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +158,7 @@
 				221CE5CC18EEFC76002D89F5 /* de.lproj */,
 				221CE5CF18EEFC76002D89F5 /* en.lproj */,
 				221CE5D218EEFC76002D89F5 /* es.lproj */,
+				762BBB921A5DB8CF00FF22FC /* fr.lproj */,
 				221CE5D518EEFC76002D89F5 /* ja.lproj */,
 				221CE5D818EEFC76002D89F5 /* ko.lproj */,
 				221CE5DB18EEFC76002D89F5 /* pl.lproj */,
@@ -245,6 +240,15 @@
 			path = TOWebViewController;
 			sourceTree = SOURCE_ROOT;
 		};
+		762BBB921A5DB8CF00FF22FC /* fr.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				762BBB931A5DB8CF00FF22FC /* TOWebViewControllerLocalizable.strings */,
+			);
+			name = fr.lproj;
+			path = TOWebViewController/fr.lproj;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -291,6 +295,7 @@
 				"zh-Hant",
 				ru,
 				uk,
+				fr,
 			);
 			mainGroup = 22834A341737B5A50043F7DF;
 			productRefGroup = 22834A3E1737B5A50043F7DF /* Products */;
@@ -307,14 +312,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				221CE5EA18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5E818EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5E618EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5EB18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5E918EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5E718EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
 				221CE5E518EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5E418EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
 				2265F357173FF4CD00A68010 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -401,6 +399,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				221CE5E318EEFC76002D89F5 /* zh-Hant */,
+			);
+			name = TOWebViewControllerLocalizable.strings;
+			sourceTree = "<group>";
+		};
+		762BBB931A5DB8CF00FF22FC /* TOWebViewControllerLocalizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				762BBB941A5DB8CF00FF22FC /* fr */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";

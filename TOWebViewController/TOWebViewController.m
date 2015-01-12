@@ -1110,7 +1110,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)setLoadingProgress:(CGFloat)loadingProgress
 {
     // progress should be incremental only
-    if (loadingProgress > _loadingProgressState.loadingProgress || loadingProgress == 0)
+    if (loadingProgress > _loadingProgressState.loadingProgress)
     {
         _loadingProgressState.loadingProgress = loadingProgress;
         
@@ -1131,6 +1131,16 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                     }];
                 }
             }];
+        }
+    }
+    else if (loadingProgress == 0)
+    {
+        _loadingProgressState.loadingProgress = loadingProgress;
+        if (self.showLoadingBar)
+        {
+            CGRect frame = self.loadingBarView.frame;
+            frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame);
+            self.loadingBarView.frame = frame;
         }
     }
 }

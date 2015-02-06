@@ -1687,7 +1687,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //if we were sufficiently scrolled from the top, make sure to line up to the middle, not the top
         if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON)
         {
-            if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+            
+            if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
                 translatedContentOffset.y += (CGRectGetHeight(self.webViewRotationSnapshot.frame)*0.5f) - (CGRectGetHeight(self.webView.frame)*0.5f);
             }
             else {

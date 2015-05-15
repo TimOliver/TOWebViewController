@@ -801,10 +801,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //it nullifies webView.request, which causes [webView reload] to stop working.
         //This checks to see if the webView request URL is nullified, and if so, tries to load
         //off our stored self.url property instead
-        NSURLRequest *request = self.webView.request;
         if (self.webView.request.URL.absoluteString.length == 0 && self.url)
         {
-            request = [NSURLRequest requestWithURL:self.url];
+            NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
             [self.webView loadRequest:request];
         }
         else {
@@ -1110,7 +1109,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)setLoadingProgress:(CGFloat)loadingProgress
 {
     // progress should be incremental only
-    if (loadingProgress > _loadingProgressState.loadingProgress || loadingProgress == 0)
+    if (loadingProgress > _loadingProgressState.loadingProgress)
     {
         _loadingProgressState.loadingProgress = loadingProgress;
         
@@ -1131,6 +1130,16 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                     }];
                 }
             }];
+        }
+    }
+    else if (loadingProgress == 0)
+    {
+        _loadingProgressState.loadingProgress = loadingProgress;
+        if (self.showLoadingBar)
+        {
+            CGRect frame = self.loadingBarView.frame;
+            frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame);
+            self.loadingBarView.frame = frame;
         }
     }
 }
@@ -1677,7 +1686,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //if we were sufficiently scrolled from the top, make sure to line up to the middle, not the top
         if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON)
         {
-            if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+            
+            if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
                 translatedContentOffset.y += (CGRectGetHeight(self.webViewRotationSnapshot.frame)*0.5f) - (CGRectGetHeight(self.webView.frame)*0.5f);
             }
             else {

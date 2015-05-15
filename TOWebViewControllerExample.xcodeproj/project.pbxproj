@@ -168,11 +168,13 @@
 				221CE5E118EEFC76002D89F5 /* zh-Hant.lproj */,
 			);
 			name = Localizations;
-			sourceTree = "<group>";
+			path = TOWebViewControllerExample;
+			sourceTree = SOURCE_ROOT;
 		};
 		22834A341737B5A50043F7DF = {
 			isa = PBXGroup;
 			children = (
+				22F922391753B15D0034FEF6 /* TOWebViewController */,
 				22834A461737B5A50043F7DF /* TOWebViewControllerExample */,
 				22834A3F1737B5A50043F7DF /* Frameworks */,
 				22834A3E1737B5A50043F7DF /* Products */,
@@ -203,7 +205,6 @@
 		22834A461737B5A50043F7DF /* TOWebViewControllerExample */ = {
 			isa = PBXGroup;
 			children = (
-				22F922391753B15D0034FEF6 /* TOWebViewController */,
 				225014F11737B87600DF6D7E /* TOAppDelegate.h */,
 				225014F21737B87600DF6D7E /* TOAppDelegate.m */,
 				225014F31737B87600DF6D7E /* TOViewController.h */,
@@ -216,7 +217,6 @@
 		22834A471737B5A50043F7DF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				221CE5EC18EEFC84002D89F5 /* Localizations */,
 				2265F356173FF4CD00A68010 /* Default-568h@2x.png */,
 				225014FC1737B8A200DF6D7E /* Default.png */,
 				225014FD1737B8A200DF6D7E /* Default@2x.png */,
@@ -231,6 +231,7 @@
 		22F922391753B15D0034FEF6 /* TOWebViewController */ = {
 			isa = PBXGroup;
 			children = (
+				221CE5EC18EEFC84002D89F5 /* Localizations */,
 				22F922591753B15E0034FEF6 /* TOWebViewController.h */,
 				22F9225A1753B15E0034FEF6 /* TOWebViewController.m */,
 				22AC285218E98FE1006DB0E9 /* TOActivitySafari.h */,
@@ -315,16 +316,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-<<<<<<< HEAD
 				22E060791A3FD0C2001273DF /* LaunchScreen.xib in Resources */,
-				221CE5EA18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5E818EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5E618EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5EB18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5E918EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-				221CE5E718EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
-=======
->>>>>>> 9c598e56d76e6f9e13db39659b75c2caf55e2fb9
 				221CE5E518EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
 				2265F357173FF4CD00A68010 /* Default-568h@2x.png in Resources */,
 			);

@@ -224,7 +224,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (instancetype)initWithURL:(NSURL *)url
 {
-    if (self = [self init])
+    if (self = [super init])
         _url = [self cleanURL:url];
     
     return self;

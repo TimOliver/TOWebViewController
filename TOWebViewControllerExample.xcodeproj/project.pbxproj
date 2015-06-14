@@ -280,7 +280,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = TO;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Tim Oliver";
 			};
 			buildConfigurationList = 22834A381737B5A50043F7DF /* Build configuration list for PBXProject "TOWebViewControllerExample" */;
@@ -433,6 +433,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -480,15 +481,13 @@
 		22834A641737B5A50043F7DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example/TOWebViewControllerExample-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/TOWebViewControllerExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				"OTHER_LDFLAGS[arch=*]" = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.timoliver.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -497,14 +496,12 @@
 		22834A651737B5A50043F7DF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example/TOWebViewControllerExample-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/TOWebViewControllerExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.timoliver.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

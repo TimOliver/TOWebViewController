@@ -1,0 +1,3 @@
+language: objective-c
+xcode_project: TOWebViewControllerExample.xcodeproj
+xcode_scheme: TOWebViewControllerTests

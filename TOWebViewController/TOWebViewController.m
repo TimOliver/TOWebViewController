@@ -1,7 +1,7 @@
 //
 //  TOWebViewController.m
 //
-//  Copyright 2014 Timothy Oliver. All rights reserved.
+//  Copyright 2013-2015 Timothy Oliver. All rights reserved.
 //
 //  Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress,
 //  also licensed under the MIT License. Re-implemented by Timothy Oliver.

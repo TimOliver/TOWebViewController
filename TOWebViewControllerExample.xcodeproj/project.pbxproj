@@ -15,6 +15,7 @@
 		227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F21737B87600DF6D7E /* TOAppDelegate.m */; };
 		227C55FA1750F1F900FC3411 /* TOViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F41737B87600DF6D7E /* TOViewController.m */; };
 		227C55FB1750F20700FC3411 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014FE1737B8A200DF6D7E /* main.m */; };
+		2282AEEC1B2E473900BD92FC /* TOWebViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282AEEB1B2E473900BD92FC /* TOWebViewControllerTests.m */; };
 		22834A411737B5A50043F7DF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A401737B5A50043F7DF /* UIKit.framework */; };
 		22834A431737B5A50043F7DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A421737B5A50043F7DF /* Foundation.framework */; };
 		22834A451737B5A50043F7DF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A441737B5A50043F7DF /* CoreGraphics.framework */; };
@@ -24,6 +25,16 @@
 		22E060791A3FD0C2001273DF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22E060781A3FD0C2001273DF /* LaunchScreen.xib */; };
 		22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2282AEED1B2E473900BD92FC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22834A351737B5A50043F7DF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22834A3C1737B5A50043F7DF;
+			remoteInfo = TOWebViewControllerExample;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		07939D881A524F2A00A59174 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
@@ -49,6 +60,9 @@
 		225F48E617525CC100A3558A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		225F48E817525E8600A3558A /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		2265F356173FF4CD00A68010 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Example/Default-568h@2x.png"; sourceTree = SOURCE_ROOT; };
+		2282AEE71B2E473900BD92FC /* TOWebViewControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TOWebViewControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2282AEEA1B2E473900BD92FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2282AEEB1B2E473900BD92FC /* TOWebViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOWebViewControllerTests.m; sourceTree = "<group>"; };
 		22834A3D1737B5A50043F7DF /* TOWebViewControllerExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TOWebViewControllerExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22834A401737B5A50043F7DF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		22834A421737B5A50043F7DF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -66,6 +80,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2282AEE41B2E473900BD92FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22834A3A1737B5A50043F7DF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -171,11 +192,29 @@
 			path = TOWebViewControllerExample;
 			sourceTree = SOURCE_ROOT;
 		};
+		2282AEE81B2E473900BD92FC /* TOWebViewControllerTests */ = {
+			isa = PBXGroup;
+			children = (
+				2282AEEB1B2E473900BD92FC /* TOWebViewControllerTests.m */,
+				2282AEE91B2E473900BD92FC /* Supporting Files */,
+			);
+			path = TOWebViewControllerTests;
+			sourceTree = "<group>";
+		};
+		2282AEE91B2E473900BD92FC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2282AEEA1B2E473900BD92FC /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		22834A341737B5A50043F7DF = {
 			isa = PBXGroup;
 			children = (
 				22F922391753B15D0034FEF6 /* TOWebViewController */,
 				22834A461737B5A50043F7DF /* TOWebViewControllerExample */,
+				2282AEE81B2E473900BD92FC /* TOWebViewControllerTests */,
 				22834A3F1737B5A50043F7DF /* Frameworks */,
 				22834A3E1737B5A50043F7DF /* Products */,
 			);
@@ -185,6 +224,7 @@
 			isa = PBXGroup;
 			children = (
 				22834A3D1737B5A50043F7DF /* TOWebViewControllerExample.app */,
+				2282AEE71B2E473900BD92FC /* TOWebViewControllerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -256,6 +296,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2282AEE61B2E473900BD92FC /* TOWebViewControllerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2282AEF11B2E473900BD92FC /* Build configuration list for PBXNativeTarget "TOWebViewControllerTests" */;
+			buildPhases = (
+				2282AEE31B2E473900BD92FC /* Sources */,
+				2282AEE41B2E473900BD92FC /* Frameworks */,
+				2282AEE51B2E473900BD92FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2282AEEE1B2E473900BD92FC /* PBXTargetDependency */,
+			);
+			name = TOWebViewControllerTests;
+			productName = TOWebViewControllerTests;
+			productReference = 2282AEE71B2E473900BD92FC /* TOWebViewControllerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		22834A3C1737B5A50043F7DF /* TOWebViewControllerExample */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22834A631737B5A50043F7DF /* Build configuration list for PBXNativeTarget "TOWebViewControllerExample" */;
@@ -282,6 +340,12 @@
 				CLASSPREFIX = TO;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Tim Oliver";
+				TargetAttributes = {
+					2282AEE61B2E473900BD92FC = {
+						CreatedOnToolsVersion = 6.3.2;
+						TestTargetID = 22834A3C1737B5A50043F7DF;
+					};
+				};
 			};
 			buildConfigurationList = 22834A381737B5A50043F7DF /* Build configuration list for PBXProject "TOWebViewControllerExample" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -307,11 +371,19 @@
 			projectRoot = "";
 			targets = (
 				22834A3C1737B5A50043F7DF /* TOWebViewControllerExample */,
+				2282AEE61B2E473900BD92FC /* TOWebViewControllerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2282AEE51B2E473900BD92FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22834A3B1737B5A50043F7DF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -325,6 +397,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2282AEE31B2E473900BD92FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2282AEEC1B2E473900BD92FC /* TOWebViewControllerTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22834A391737B5A50043F7DF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -340,6 +420,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2282AEEE1B2E473900BD92FC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22834A3C1737B5A50043F7DF /* TOWebViewControllerExample */;
+			targetProxy = 2282AEED1B2E473900BD92FC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		221CE5CD18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */ = {
@@ -419,6 +507,72 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		2282AEEF1B2E473900BD92FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = TOWebViewControllerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TOWebViewControllerExample.app/TOWebViewControllerExample";
+			};
+			name = Debug;
+		};
+		2282AEF01B2E473900BD92FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = TOWebViewControllerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TOWebViewControllerExample.app/TOWebViewControllerExample";
+			};
+			name = Release;
+		};
 		22834A611737B5A50043F7DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -485,7 +639,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example/TOWebViewControllerExample-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/TOWebViewControllerExample-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				"OTHER_LDFLAGS[arch=*]" = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.timoliver.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -500,7 +654,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example/TOWebViewControllerExample-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/TOWebViewControllerExample-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.timoliver.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -510,6 +664,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2282AEF11B2E473900BD92FC /* Build configuration list for PBXNativeTarget "TOWebViewControllerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2282AEEF1B2E473900BD92FC /* Debug */,
+				2282AEF01B2E473900BD92FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		22834A381737B5A50043F7DF /* Build configuration list for PBXProject "TOWebViewControllerExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

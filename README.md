@@ -17,6 +17,18 @@ TOWebViewController is an open-source `UIViewController` subclass designed to fu
 * (TODO) A proper delegate system to allow external classes to interact with this controller.
 * (TODO) A rudimentary bookmark system.
 
+## Installation
+
+### [Cocoapods](https://cocoapods.org/)
+
+``` ruby
+pod 'TOWebViewController'
+```
+
+### Manual
+
+Add the files in the TOWebViewController to your Xcode project.
+
 ## Technical Requirements
 iOS 5.0 or above.
 

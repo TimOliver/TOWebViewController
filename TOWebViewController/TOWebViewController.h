@@ -51,6 +51,11 @@
  */
 @property (nonatomic,strong)    NSURL *url;
 
+/** 
+ Get/set the request
+ */
+@property (nonatomic,strong)    NSMutableURLRequest *urlRequest;
+
 /**
  The web view used to display the HTML content. You can access it through this
  read-only property if you need to anything specific, such as having it execute arbitrary JS code.

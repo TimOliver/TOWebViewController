@@ -258,6 +258,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //Set the initial default style as full screen (But this can be easily overridden)
     self.modalPresentationStyle = UIModalPresentationFullScreen;
+
+    //Set the URL request
+    self.urlRequest = [[NSMutableURLRequest alloc] init];
 }
 
 - (void)loadView
@@ -491,7 +494,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //start loading the initial page
     if (self.url && self.webView.request == nil)
-        [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+    {
+        [self.urlRequest setURL:self.url];
+        [self.webView loadRequest:self.urlRequest];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -596,7 +602,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     if (self.webView.loading)
         [self.webView stopLoading];
     
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+    [self.urlRequest setURL:self.url];
+    [self.webView loadRequest:self.urlRequest];
 }
 
 - (void)setLoadingBarTintColor:(UIColor *)loadingBarTintColor
@@ -803,8 +810,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         //off our stored self.url property instead
         if (self.webView.request.URL.absoluteString.length == 0 && self.url)
         {
-            NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
-            [self.webView loadRequest:request];
+            [self.webView loadRequest:self.urlRequest];
         }
         else {
             [self.webView reload];

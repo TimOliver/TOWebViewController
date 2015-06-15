@@ -1,6 +1,11 @@
 # TOWebViewController
 
-<img src="https://raw.github.com/TimOliver/TOWebViewController/master/Screenshots/TOWebViewController.jpg" alt="TOWebViewController on the latest iOS devices" style="max-width:730px;" />
+[![CI Status](http://img.shields.io/travis/TimOliver/TOWebViewController.svg?style=flat)](http://api.travis-ci.org/TimOliver/TOWebViewController.svg)
+[![Version](https://img.shields.io/cocoapods/v/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)
+[![License](https://img.shields.io/cocoapods/l/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)
+[![Platform](https://img.shields.io/cocoapods/p/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)
+
+![TOCropViewController](Screenshots/TOWebViewController.jpg)
 
 TOWebViewController is an open-source `UIViewController` subclass designed to fulfill one goal: to be able to quickly present a web page to the user, without needing to leave the current app. TOWebViewController has been designed from the ground up to be easily integrated into existing projects, and to optionally be backwards compatible with earlier versions of iOS.
 

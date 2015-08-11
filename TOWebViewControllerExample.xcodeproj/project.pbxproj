@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		221CE5E518EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 221CE5D018EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */; };
 		225A033D1737E9790086E75F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225A033C1737E9790086E75F /* QuartzCore.framework */; };
 		225F48E717525CC100A3558A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225F48E617525CC100A3558A /* MessageUI.framework */; };
 		225F48E917525E8600A3558A /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 225F48E817525E8600A3558A /* Twitter.framework */; };
@@ -37,10 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		07939D881A524F2A00A59174 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		07939D891A524F8300A59174 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		221CE5CE18EEFC76002D89F5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		221CE5D118EEFC76002D89F5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		221CE5D418EEFC76002D89F5 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		221CE5D718EEFC76002D89F5 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		221CE5DA18EEFC76002D89F5 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
@@ -77,6 +73,9 @@
 		22F922591753B15E0034FEF6 /* TOWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebViewController.h; sourceTree = "<group>"; };
 		22F9225A1753B15E0034FEF6 /* TOWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewController.m; sourceTree = "<group>"; };
 		762BBB941A5DB8CF00FF22FC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		F66F5CB41B79DAFB0051B142 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		F66F5CB71B79DB080051B142 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		F66F5CBA1B79DB080051B142 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,15 +109,6 @@
 			);
 			name = de.lproj;
 			path = TOWebViewController/de.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		221CE5CF18EEFC76002D89F5 /* en.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				221CE5D018EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = en.lproj;
-			path = TOWebViewController/en.lproj;
 			sourceTree = SOURCE_ROOT;
 		};
 		221CE5D218EEFC76002D89F5 /* es.lproj */ = {
@@ -179,12 +169,14 @@
 			isa = PBXGroup;
 			children = (
 				221CE5CC18EEFC76002D89F5 /* de.lproj */,
-				221CE5CF18EEFC76002D89F5 /* en.lproj */,
+				F66F5CB21B79DAFB0051B142 /* en.lproj */,
 				221CE5D218EEFC76002D89F5 /* es.lproj */,
 				762BBB921A5DB8CF00FF22FC /* fr.lproj */,
 				221CE5D518EEFC76002D89F5 /* ja.lproj */,
 				221CE5D818EEFC76002D89F5 /* ko.lproj */,
 				221CE5DB18EEFC76002D89F5 /* pl.lproj */,
+				F66F5CB51B79DB080051B142 /* ru.lproj */,
+				F66F5CB81B79DB080051B142 /* uk.lproj */,
 				221CE5DE18EEFC76002D89F5 /* zh-Hans.lproj */,
 				221CE5E118EEFC76002D89F5 /* zh-Hant.lproj */,
 			);
@@ -293,6 +285,33 @@
 			path = TOWebViewController/fr.lproj;
 			sourceTree = SOURCE_ROOT;
 		};
+		F66F5CB21B79DAFB0051B142 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				F66F5CB31B79DAFB0051B142 /* TOWebViewControllerLocalizable.strings */,
+			);
+			name = en.lproj;
+			path = TOWebViewController/en.lproj;
+			sourceTree = SOURCE_ROOT;
+		};
+		F66F5CB51B79DB080051B142 /* ru.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				F66F5CB61B79DB080051B142 /* TOWebViewControllerLocalizable.strings */,
+			);
+			name = ru.lproj;
+			path = TOWebViewController/ru.lproj;
+			sourceTree = SOURCE_ROOT;
+		};
+		F66F5CB81B79DB080051B142 /* uk.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				F66F5CB91B79DB080051B142 /* TOWebViewControllerLocalizable.strings */,
+			);
+			name = uk.lproj;
+			path = TOWebViewController/uk.lproj;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -389,7 +408,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				22E060791A3FD0C2001273DF /* LaunchScreen.xib in Resources */,
-				221CE5E518EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings in Resources */,
 				2265F357173FF4CD00A68010 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -434,16 +452,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				221CE5CE18EEFC76002D89F5 /* de */,
-			);
-			name = TOWebViewControllerLocalizable.strings;
-			sourceTree = "<group>";
-		};
-		221CE5D018EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				221CE5D118EEFC76002D89F5 /* en */,
-				07939D881A524F2A00A59174 /* ru */,
-				07939D891A524F8300A59174 /* uk */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
@@ -500,6 +508,30 @@
 			isa = PBXVariantGroup;
 			children = (
 				762BBB941A5DB8CF00FF22FC /* fr */,
+			);
+			name = TOWebViewControllerLocalizable.strings;
+			sourceTree = "<group>";
+		};
+		F66F5CB31B79DAFB0051B142 /* TOWebViewControllerLocalizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F66F5CB41B79DAFB0051B142 /* en */,
+			);
+			name = TOWebViewControllerLocalizable.strings;
+			sourceTree = "<group>";
+		};
+		F66F5CB61B79DB080051B142 /* TOWebViewControllerLocalizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F66F5CB71B79DB080051B142 /* ru */,
+			);
+			name = TOWebViewControllerLocalizable.strings;
+			sourceTree = "<group>";
+		};
+		F66F5CB91B79DB080051B142 /* TOWebViewControllerLocalizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F66F5CBA1B79DB080051B142 /* uk */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
@@ -671,6 +703,7 @@
 				2282AEF01B2E473900BD92FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		22834A381737B5A50043F7DF /* Build configuration list for PBXProject "TOWebViewControllerExample" */ = {
 			isa = XCConfigurationList;

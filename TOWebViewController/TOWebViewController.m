@@ -491,7 +491,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //reset the gradient layer in case the bounds changed before display
     self.gradientLayer.frame = self.view.bounds;
-    
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     //start loading the initial page
     if (self.url && self.webView.request == nil)
     {

@@ -381,36 +381,39 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     CGRect buttonFrame = CGRectZero;
     buttonFrame.size = NAVIGATION_BUTTON_SIZE;
-    
-    CGFloat width = (self.buttonWidth*3)+(self.buttonSpacing*2);
-    if (self.showActionButton)
-        width = (self.buttonWidth*4)+(self.buttonSpacing*3);
-    
+
     //set up the icons for the navigation bar
-    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, self.buttonWidth)];
+    UIView *iconsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, self.buttonWidth)];
     iconsContainerView.backgroundColor = [UIColor clearColor];
-    
+
     //add the back button
     self.backButton.frame = buttonFrame;
     [iconsContainerView addSubview:self.backButton];
-    
+
     //add the forward button too, but keep it hidden for now
-    buttonFrame.origin.x = self.buttonWidth + self.buttonSpacing;
     self.forwardButton.frame = buttonFrame;
     [iconsContainerView addSubview:self.forwardButton];
-    buttonFrame.origin.x += (self.buttonWidth + self.buttonSpacing);
-    
+
     //add the reload button if the action button is hidden
     self.reloadStopButton.frame = buttonFrame;
     [iconsContainerView addSubview:self.reloadStopButton];
-    buttonFrame.origin.x += (self.buttonWidth + self.buttonSpacing);
-    
+
     //add the action button
     if (self.showActionButton) {
         self.actionButton.frame = buttonFrame;
         [iconsContainerView addSubview:self.actionButton];
     }
 
+    //layout buttons
+    NSUInteger count = iconsContainerView.subviews.count;
+    if(count){
+        CGRect newFrame = iconsContainerView.frame;
+        CGFloat newWidth = newFrame.size.width = (self.buttonWidth*count)+(self.buttonSpacing*count-1);
+        iconsContainerView.frame = newFrame;
+        [iconsContainerView.subviews enumerateObjectsUsingBlock:^(UIView *subview, NSUInteger index, BOOL *stop) {
+            subview.center = CGPointMake((newWidth/count)*index + (self.buttonSpacing + self.buttonWidth)/2, subview.center.y);
+        }];
+    }
     return iconsContainerView;
 }
 

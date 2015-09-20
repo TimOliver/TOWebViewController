@@ -1651,26 +1651,25 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     if (translatedScale > self.webView.scrollView.maximumZoomScale)
         self.webView.scrollView.maximumZoomScale = translatedScale;
     
+    //Pull out the animation and attach a delegate so we can receive an event when it's finished, to clean it up properly
+    CABasicAnimation *anim = [[self.webView.scrollView.layer animationForKey:@"bounds"] mutableCopy];
     if (NEW_ROTATIONS == NO) {
         [self.webView.scrollView.layer removeAllAnimations];
         self.webView.scrollView.layer.speed = 9999.0f;
         [self.webView.scrollView setZoomScale:translatedScale animated:YES];
         
-        //Pull out the animation and attach a delegate so we can receive an event when it's finished, to clean it up properly
-        NSString *key = @"bounds";
-        CABasicAnimation *anim = [[self.webView.scrollView.layer animationForKey:key] mutableCopy];
         if (anim == nil) { //anim may be nil if the zoomScale wasn't sufficiently different to warrant an animation
-            [self animationDidStop:nil finished:YES];
+            [self animationDidStop:anim finished:YES];
             return;
         }
         
-        [self.webView.scrollView.layer removeAnimationForKey:key];
+        [self.webView.scrollView.layer removeAnimationForKey:@"bounds"];
         [anim setDelegate:self];
-        [self.webView.scrollView.layer addAnimation:anim forKey:key];
+        [self.webView.scrollView.layer addAnimation:anim forKey:@"bounds"];
     }
     else {
         [self.webView.scrollView setZoomScale:translatedScale animated:NO];
-        [self animationDidStop:nil finished:YES];
+        [self animationDidStop:anim finished:YES];
     }
 }
 
@@ -1678,7 +1677,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     //when the rotation and animation is complete, FINALLY unhide the web view
     self.webView.hidden = NO;
-    
+
     CGSize contentSize = self.webView.scrollView.contentSize;
     CGPoint translatedContentOffset = _webViewState.contentOffset;
     

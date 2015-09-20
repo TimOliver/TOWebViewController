@@ -146,7 +146,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 @property (nonatomic,strong) NSMutableDictionary *buttonThemeAttributes;
 
 /* Popover View Controller Handlers */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 @property (nonatomic,strong) UIPopoverController *sharingPopoverController;
+#pragma GCC diagnostic pop
 
 /* See if we need to revert the toolbar to 'hidden' when we pop off a navigation controller. */
 @property (nonatomic,assign) BOOL hideToolbarOnClose;
@@ -266,7 +269,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)loadView
 {
     //Create the all-encompassing container view
-    UIView *view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    UIView *view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     view.backgroundColor = (self.hideWebViewBoundaries ? [UIColor whiteColor] : BACKGROUND_COLOR);
@@ -456,9 +459,19 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     // Create the Done button
     if (self.showDoneButton && self.beingPresentedModally && !self.onTopOfNavigationControllerStack) {
-        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                    target:self
-                                                                                    action:@selector(doneButtonTapped:)];
+        UIBarButtonItem *doneButton = nil;
+        
+        if (self.doneButtonTitle) {
+            doneButton = [[UIBarButtonItem alloc] initWithTitle:self.doneButtonTitle style:UIBarButtonItemStyleDone
+                                                         target:self
+                                                         action:@selector(doneButtonTapped:)];
+        }
+        else {
+            doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                        target:self
+                                                                                        action:@selector(doneButtonTapped:)];
+        }
+        
         if (IPAD)
             self.navigationItem.leftBarButtonItem = doneButton;
         else
@@ -839,7 +852,15 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)actionButtonTapped:(id)sender
 {
     // If we're on iOS 6 or above, we can use the super-duper activity view controller :)
-    if (NSClassFromString(@"UIActivityViewController"))
+    if (NSClassFromString(@"UIPresentationController")) {
+        NSArray *browserActivities = @[[TOActivitySafari new], [TOActivityChrome new]];
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.url] applicationActivities:browserActivities];
+        activityViewController.modalPresentationStyle = UIModalPresentationPopover;
+        activityViewController.popoverPresentationController.sourceRect = self.actionButton.frame;
+        activityViewController.popoverPresentationController.sourceView = self.actionButton.superview;
+        [self presentViewController:activityViewController animated:YES completion:nil];
+    }
+    else if (NSClassFromString(@"UIActivityViewController"))
     {
         NSArray *browserActivities = @[[TOActivitySafari new], [TOActivityChrome new]];
         UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.url] applicationActivities:browserActivities];
@@ -859,14 +880,22 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                 self.sharingPopoverController = nil;
             }
             
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+            
             //Create the sharing popover controller
             self.sharingPopoverController = [[UIPopoverController alloc] initWithContentViewController:activityViewController];
             self.sharingPopoverController.delegate = self;
             [self.sharingPopoverController presentPopoverFromRect:self.actionButton.frame inView:self.actionButton.superview permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+
+#pragma GCC diagnostic pop
         }
     }
     else //We must be on iOS 5
     {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                                  delegate:self
                                                         cancelButtonTitle:nil
@@ -897,13 +926,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         }
         
         //Add Twitter
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         if ([TWTweetComposeViewController canSendTweet]) {
             [actionSheet addButtonWithTitle:NSLocalizedStringFromTable(@"Twitter", @"TOWebViewControllerLocalizable", @"Send a Tweet")];
             numberOfButtons++;
         }
-#pragma clang diagnostic pop
+
         
         //Add a cancel button if on iPhone
         if (IPAD == NO) {
@@ -914,6 +941,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         else {
             [actionSheet showFromRect:[(UIView *)sender frame] inView:[(UIView *)sender superview] animated:YES];
         }
+        
+        #pragma clang diagnostic pop
     }
 }
 

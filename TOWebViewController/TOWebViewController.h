@@ -109,6 +109,13 @@
  */
 @property (nonatomic,assign)    BOOL showDoneButton;
 
+/** 
+ If desired, override the title of the system 'Done' button to this string.
+ 
+ Default value is nil.
+ */
+@property (nonatomic,copy)    NSString *doneButtonTitle;
+
 /**
  When web pages are loaded, the view controller's title property will be set to the page's
  HTML title attribute.

@@ -9,6 +9,6 @@ Pod::Spec.new do |s|
   s.platform = :ios, '5.0'
 
   s.source_files = 'TOWebViewController/**/*.{h,m}'
-  s.resources = 'TOWebViewController/**/*.lproj'
+  s.resource_bundles = {'TOWebViewControllerLocalizable' => 'TOWebViewController/**/*.lproj'}
   s.requires_arc = true
 end

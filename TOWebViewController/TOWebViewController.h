@@ -153,6 +153,8 @@
 
 /** 
  This can be used to override the default tint color of the navigation button icons.
+ This property is mainly for iOS 6 and lower. Where possible, you should use iOS 7's proper color styling
+ system instead.
  */
 @property (nonatomic,strong)    UIColor *buttonTintColor;
 

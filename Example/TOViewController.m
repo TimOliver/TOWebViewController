@@ -32,19 +32,12 @@
     self.tableView.dataSource = self;
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.tableView.frame = ({
-            CGRect frame = self.tableView.frame;
-            frame.size.width = CGRectGetWidth(frame) * 0.65f;
-            frame.origin.x = CGRectGetMidX(self.view.frame) - (CGRectGetWidth(frame) *0.5f);
-            frame;
-        });
-    }
 }
 
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     self.title = @"TOWebViewController";
     
     if (MINIMAL_UI) {

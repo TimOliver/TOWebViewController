@@ -44,7 +44,7 @@
 #define DEFAULT_BAR_TINT_COLOR [UIColor colorWithRed:0.0f green:110.0f/255.0f blue:1.0f alpha:1.0f]
 
 /* View Controller Theming Properties */
-#define BACKGROUND_COLOR_MINIMAL    [UIColor colorWithRed:0.741f green:0.741 blue:0.76f alpha:1.0f]
+#define BACKGROUND_COLOR_MINIMAL    [UIColor whiteColor]
 #define BACKGROUND_COLOR_CLASSIC    [UIColor scrollViewTexturedBackgroundColor]
 #define BACKGROUND_COLOR            ((MINIMAL_UI) ? BACKGROUND_COLOR_MINIMAL : BACKGROUND_COLOR_CLASSIC)
 
@@ -109,6 +109,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 @property (nonatomic,readonly) BOOL compactPresentation;              /* In iOS 8 or above, whether we're being presented in 'iPhone mode' or not */
 @property (nonatomic,readonly) BOOL beingPresentedModally;            /* The controller was presented as a modal popup (eg, 'Done' button) */
 @property (nonatomic,readonly) BOOL onTopOfNavigationControllerStack; /* We're in, and not the root of a UINavigationController (eg, 'Back' button)*/
+@property (nonatomic,readonly) BOOL splitScreenEnabled;               /* Used to detect if the app is presented in split screen mode for performance reasons. */
 
 /* The main view components of the controller */
 @property (nonatomic,strong, readwrite) UIWebView *webView;           /* The web view, where all the magic happens */
@@ -155,6 +156,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 /* Review the current state of the web view and update the UI controls in the nav bar to match it */
 - (void)refreshButtonsState;
 - (void)layoutButtonsForCurrentSizeClass;
+- (void)layoutLoadingBar;
 
 /* Event callbacks for button taps */
 - (void)backButtonTapped:(id)sender;
@@ -441,6 +443,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     return UIStatusBarStyleDefault;
 }
 
+#pragma mark - Screen Rotation Interface -
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     if (self.webViewRotationSnapshot)
@@ -461,12 +464,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.gradientLayer.frame = self.view.bounds;
     
     //update the loading bar to match the proper bounds
-    self.loadingBarView.frame = ({
-        CGRect frame = self.loadingBarView.frame;
-        frame.origin.y = self.webView.scrollView.contentInset.top;
-        frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame) + (CGRectGetWidth(self.view.bounds) * _loadingProgressState.loadingProgress);
-        frame;
-    });
+    [self layoutLoadingBar];
     
     //animate the web view snapshot into the proper place
     [self animateWebViewRotationToOrientation:toInterfaceOrientation withDuration:duration];
@@ -509,6 +507,17 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         return YES;
     
     return NO;
+}
+
+- (BOOL)splitScreenEnabled
+{
+    //Work out the width in portrait mode
+    CGSize viewSize = self.view.frame.size;
+    
+    //Screen width
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    
+    return floorf(viewSize.width) < (screenSize.width);
 }
 
 #pragma mark - View Layout/Transitions -
@@ -570,6 +579,16 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.navigationItem.leftBarButtonItems = leftItems;
     self.navigationItem.leftItemsSupplementBackButton = YES;
     self.navigationItem.rightBarButtonItems = rightItems;
+}
+
+- (void)layoutLoadingBar
+{
+    self.loadingBarView.frame = ({
+        CGRect frame = self.loadingBarView.frame;
+        frame.origin.y = self.webView.scrollView.contentInset.top;
+        frame.origin.x = -CGRectGetWidth(self.loadingBarView.frame) + (CGRectGetWidth(self.view.bounds) * _loadingProgressState.loadingProgress);
+        frame;
+    });
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
@@ -906,6 +925,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     //Handle whichever button was tapped
@@ -922,22 +943,18 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
                 [self openMailDialog];
             else if ([MFMessageComposeViewController canSendText])
                 [self openMessageDialog];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
             else if ([TWTweetComposeViewController canSendTweet])
                 [self openTwitterDialog];
-#pragma clang diagnostic pop
+
         }
             break;
         case 3: //SMS or Twitter
         {
             if ([MFMessageComposeViewController canSendText])
                 [self openMessageDialog];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             else if ([TWTweetComposeViewController canSendTweet])
                 [self openTwitterDialog];
-#pragma clang diagnostic pop
         }
             break;
         case 4: //Twitter (or Cancel)
@@ -947,12 +964,16 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
             break;
     }
 }
+#pragma clang diagnostic pop
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
     //Once the popover controller is dismissed, we can release our own reference to it
     self.sharingPopoverController = nil;
 }
+#pragma clang diagnostic pop
 
 - (void)copyURLToClipboard
 {
@@ -1410,6 +1431,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 /* Called outside of the animation block. All of the views are currently in their 'before' state. */
 - (void)setUpWebViewForRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration
 {
+    // Don't perform this if split screen is active
+    if (self.splitScreenEnabled) {
+        return;
+    }
+    
     // form sheet style controllers' bounds don't change, so none of this is necessary
     if (!self.compactPresentation && self.modalPresentationStyle == UIModalPresentationFormSheet)
         return;
@@ -1550,7 +1576,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 /* Called within the animation block. All views will be set to their 'destination' state. */
 - (void)animateWebViewRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration
 {
-    /// form sheet style controllers' bounds don't change, so implemeting this is rather pointless
+    //Don't bother when split screen is active
+    if (self.splitScreenEnabled) {
+        return;
+    }
+    
+    // form sheet style controllers' bounds don't change, so implemeting this is rather pointless
     if (!self.compactPresentation && self.modalPresentationStyle == UIModalPresentationFormSheet)
         return;
     
@@ -1622,6 +1653,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 
 - (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation
 {
+    // Don't perform this if split screen is active
+    if (self.splitScreenEnabled) {
+        return;
+    }
+    
     /// form sheet style controllers' bounds don't change, so implemeting this isn't required
     if (!self.compactPresentation && self.modalPresentationStyle == UIModalPresentationFormSheet)
         return;

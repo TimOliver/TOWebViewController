@@ -36,6 +36,7 @@ iOS 5.0 or above
 
 #### As a Cocoapods Dependency
 
+Add the following to your Podfile:
 ``` ruby
 pod 'TOWebViewController'
 ```

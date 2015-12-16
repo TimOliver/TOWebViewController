@@ -643,7 +643,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (UIToolbar *)toolbar
 {
     if (!self.compactPresentation)
-        return NO;
+        return nil;
     
     if (self.navigationController)
         return self.navigationController.toolbar;

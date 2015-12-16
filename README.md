@@ -1,6 +1,6 @@
 # TOWebViewController
 
-![TOCropViewController](Screenshots/TOWebViewController.jpg)
+![TOCropViewController](Screenshots/TOWebViewController-2015.jpg)
 
 [![CI Status](http://img.shields.io/travis/TimOliver/TOWebViewController.svg?style=flat)](http://api.travis-ci.org/TimOliver/TOWebViewController.svg)
 [![Version](https://img.shields.io/cocoapods/v/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)

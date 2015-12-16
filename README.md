@@ -59,7 +59,7 @@ While `WKWebView` does look much nicer than `UIWebView`, it has several show-sto
 ## What about `SFSafariViewController`?
 Starting from iOS 9, Apple now provides a built-in web view controller of similar functionality named [`SFSafariViewController`](https://developer.apple.com/library/ios/documentation/SafariServices/Reference/SFSafariViewController_Ref/). If your app is only targeting iOS 9, and it completely fills your requirements, then it is absolutely recommended that you adopt `SFSafariViewController` instead of `TOWebViewController`.
 
-That being said, if you are still targeting lower iOS versions, or require more customisability than `SFSafariViewController` provides, then `TOWebViewController` should still serve as a viable alternative.
+That being said, if you are still targeting lower iOS versions, or require more customisability than `SFSafariViewController` provides, then `TOWebViewController` can still serve as a viable alternative.
 
 ## License
 

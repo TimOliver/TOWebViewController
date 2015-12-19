@@ -355,11 +355,6 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     [super viewDidLoad];
     
-    if (self.navigationController) {
-        self.hideToolbarOnClose = self.navigationController.toolbarHidden;
-        self.hideNavBarOnClose  = self.navigationBar.hidden;
-    }
-    
     //remove the shadow that lines the bottom of the webview
     if (MINIMAL_UI == NO) {
         for (UIView *view in self.webView.scrollView.subviews) {
@@ -395,6 +390,12 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    //Capture the present navigation controller state to restore at the end
+    if (self.navigationController) {
+        self.hideToolbarOnClose = self.navigationController.toolbarHidden;
+        self.hideNavBarOnClose  = self.navigationBar.hidden;
+    }
     
     //reset the gradient layer in case the bounds changed before display
     self.gradientLayer.frame = self.view.bounds;
@@ -872,6 +873,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     }
     else //We must be on iOS 5
     {
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         

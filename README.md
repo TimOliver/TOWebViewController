@@ -1,5 +1,5 @@
 # TOWebViewController
-### An In-line Web Browser for iOS Apps
+### An Inline Web Browser for iOS Apps
 
 ![TOCropViewController](Screenshots/TOWebViewController-2015.jpg)
 
@@ -25,9 +25,22 @@
 * **(TODO)** A rudimentary bookmark system.
 
 ## Example
+`TOWebViewController` is smart enough to be able to tell when it's being presented as a modal popup, and when it's being pushed onto a `UINavigationController` and to change its button layout accordingly. 
+
+### Presenting as a Modal Dialog
+
+When presenting as a modal popup, it is still necessary to create a parent `UINavigationController` in order for the buttons to display properly:
+
 ```objc
 TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://www.apple.com/"];
-[self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];
+UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
+[self presentViewController:navigationController animated:YES completion:nil];
+```
+
+### Pushing onto a `UINavigationController`
+```objc
+TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://www.apple.com/"];
+[self.navigationController pushViewController:webViewController animated:YES];
 ```
 
 ## System Requirements
@@ -61,6 +74,11 @@ While `WKWebView` does look much nicer than `UIWebView`, it has several show-sto
 Starting from iOS 9, Apple now provides a built-in web view controller of similar functionality named [`SFSafariViewController`](https://developer.apple.com/library/ios/documentation/SafariServices/Reference/SFSafariViewController_Ref/). If your app is only targeting iOS 9, and it completely fills your requirements, then it is absolutely recommended that you adopt `SFSafariViewController` instead of `TOWebViewController`.
 
 That being said, if you are still targeting lower iOS versions, or require more customisability than `SFSafariViewController` provides, then `TOWebViewController` can still serve as a viable alternative.
+
+## Credits
+`TOWebViewController` was originally created by [Tim Oliver](http://twitter.com/TimOliverAU) as a component for [iComics](http://icomics.co), a comic reader app for iOS.
+
+Thanks also goes to `TOWebViewController`'s growing list of [contributors](https://github.com/TimOliver/TOWebViewController/graphs/contributors)!
 
 ## License
 

@@ -112,7 +112,9 @@
 #endif
     
     TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];
+#ifdef TO_ONEPASSWORD_EXAMPLE
     webViewController.showOnePasswordButton = YES;
+#endif
     
     if (indexPath.row == 0) {
         [self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];

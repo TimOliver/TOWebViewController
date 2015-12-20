@@ -678,7 +678,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.timoliver.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TOWebViewControllerExample.app/TOWebViewControllerExample";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TOWVC-DefaultExample.app/TOWVC-DefaultExample";
 			};
 			name = Debug;
 		};
@@ -707,7 +707,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.timoliver.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TOWebViewControllerExample.app/TOWebViewControllerExample";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TOWVC-DefaultExample.app/TOWVC-DefaultExample";
 			};
 			name = Release;
 		};

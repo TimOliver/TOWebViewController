@@ -34,6 +34,10 @@ NSString const *onePasswordExtensionButtonKey = @"au.com.timoliver.webviewcontro
 {
     if (self.showOnePasswordButton == showOnePasswordButton)
         return;
+ 
+    //Don't bother trying if 1Password isn't on the system
+    if ([[OnePasswordExtension sharedExtension] isAppExtensionAvailable] == NO)
+        return;
     
     objc_setAssociatedObject(self, &onePasswordExtensionEnabledKey, @(showOnePasswordButton), OBJC_ASSOCIATION_ASSIGN);
     

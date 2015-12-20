@@ -57,27 +57,12 @@ NSString const *onePasswordExtensionButtonKey = @"au.com.timoliver.webviewcontro
             [buttons addObject:self.applicationBarButtonItems];
             self.applicationBarButtonItems = [NSArray arrayWithArray:buttons];
         }
-        
-        //Add or insert into our existing page load required application bar buttons
-        if (self.loadCompletedApplicationBarButtonItems == nil) {
-            self.loadCompletedApplicationBarButtonItems = @[self.onePasswordButton];
-        }
-        else {
-            NSMutableArray *buttons = [self.loadCompletedApplicationBarButtonItems mutableCopy];
-            [buttons addObject:self.loadCompletedApplicationBarButtonItems];
-            self.loadCompletedApplicationBarButtonItems = [NSArray arrayWithArray:buttons];
-        }
     }
     else {
         //remove it from application bar buttons
         NSMutableArray *buttons = [self.applicationBarButtonItems mutableCopy];
         [buttons removeObject:self.onePasswordButton];
         self.applicationBarButtonItems = [NSArray arrayWithArray:buttons];
-        
-        //remove
-        buttons = [self.loadCompletedApplicationBarButtonItems mutableCopy];
-        [buttons removeObject:self.onePasswordButton];
-        self.loadCompletedApplicationBarButtonItems = [NSArray arrayWithArray:buttons];
         
         objc_setAssociatedObject(self, &onePasswordExtensionButtonKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }

@@ -25,10 +25,15 @@
 @interface TOWebViewController (OnePassword)
 
 /**
+ Creates and inserts a 1Password button alongside the navigation buttons.
  
+ Default is NO
  */
 @property (nonatomic, assign) BOOL showOnePasswordButton;
 
+/**
+ The `UIBarButtonItem` that is created when `showOnePasswordButton` is YES.
+ */
 @property (nonatomic, readonly) UIBarButtonItem *onePasswordButton;
 
 @end

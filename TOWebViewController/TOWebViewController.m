@@ -781,11 +781,16 @@
     
     //interactive means the page has loaded sufficiently to allow user interaction now
     BOOL interactive = [readyState isEqualToString:@"interactive"];
-    if (interactive)
+    BOOL complete = [readyState isEqualToString:@"complete"];
+    if (interactive || complete)
     {
         //see if we can set the proper page title yet
-        if (self.showPageTitles)
-            self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        if (self.showPageTitles) {
+            NSString *title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+            
+            if (title.length)
+                self.title = title;
+        }
         
         //if we're matching the view BG to the web view, update the background colour now
         if (self.hideWebViewBoundaries)

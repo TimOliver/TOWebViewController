@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "22834A3C1737B5A50043F7DF"
-               BuildableName = "TOWebViewControllerExample.app"
-               BlueprintName = "TOWebViewControllerExample"
+               BuildableName = "TOWVC-DefaultExample.app"
+               BlueprintName = "TOWVC-DefaultExample"
                ReferencedContainer = "container:TOWebViewControllerExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -57,8 +57,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "22834A3C1737B5A50043F7DF"
-            BuildableName = "TOWebViewControllerExample.app"
-            BlueprintName = "TOWebViewControllerExample"
+            BuildableName = "TOWVC-DefaultExample.app"
+            BlueprintName = "TOWVC-DefaultExample"
             ReferencedContainer = "container:TOWebViewControllerExample.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -80,8 +80,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "22834A3C1737B5A50043F7DF"
-            BuildableName = "TOWebViewControllerExample.app"
-            BlueprintName = "TOWebViewControllerExample"
+            BuildableName = "TOWVC-DefaultExample.app"
+            BlueprintName = "TOWVC-DefaultExample"
             ReferencedContainer = "container:TOWebViewControllerExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -99,8 +99,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "22834A3C1737B5A50043F7DF"
-            BuildableName = "TOWebViewControllerExample.app"
-            BlueprintName = "TOWebViewControllerExample"
+            BuildableName = "TOWVC-DefaultExample.app"
+            BlueprintName = "TOWVC-DefaultExample"
             ReferencedContainer = "container:TOWebViewControllerExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

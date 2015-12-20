@@ -32,6 +32,10 @@
 		2282E1F21C26879100D53AB1 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2282E1F11C26879100D53AB1 /* MobileCoreServices.framework */; };
 		2282E1F71C26ECEC00D53AB1 /* 1Password.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2282E1F41C26ECEC00D53AB1 /* 1Password.xcassets */; };
 		2282E1F81C26ECEC00D53AB1 /* OnePasswordExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282E1F61C26ECEC00D53AB1 /* OnePasswordExtension.m */; };
+		2282E1FE1C27138600D53AB1 /* NJKWebViewProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282E1FB1C27138600D53AB1 /* NJKWebViewProgress.m */; };
+		2282E1FF1C27138600D53AB1 /* NJKWebViewProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282E1FB1C27138600D53AB1 /* NJKWebViewProgress.m */; };
+		2282E2001C27138600D53AB1 /* NJKWebViewProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282E1FD1C27138600D53AB1 /* NJKWebViewProgressView.m */; };
+		2282E2011C27138600D53AB1 /* NJKWebViewProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282E1FD1C27138600D53AB1 /* NJKWebViewProgressView.m */; };
 		22834A411737B5A50043F7DF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A401737B5A50043F7DF /* UIKit.framework */; };
 		22834A431737B5A50043F7DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A421737B5A50043F7DF /* Foundation.framework */; };
 		22AC285418E98FE1006DB0E9 /* TOActivitySafari.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AC285318E98FE1006DB0E9 /* TOActivitySafari.m */; };
@@ -83,6 +87,10 @@
 		2282E1F41C26ECEC00D53AB1 /* 1Password.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = 1Password.xcassets; sourceTree = "<group>"; };
 		2282E1F51C26ECEC00D53AB1 /* OnePasswordExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnePasswordExtension.h; sourceTree = "<group>"; };
 		2282E1F61C26ECEC00D53AB1 /* OnePasswordExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnePasswordExtension.m; sourceTree = "<group>"; };
+		2282E1FA1C27138600D53AB1 /* NJKWebViewProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJKWebViewProgress.h; sourceTree = "<group>"; };
+		2282E1FB1C27138600D53AB1 /* NJKWebViewProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NJKWebViewProgress.m; sourceTree = "<group>"; };
+		2282E1FC1C27138600D53AB1 /* NJKWebViewProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJKWebViewProgressView.h; sourceTree = "<group>"; };
+		2282E1FD1C27138600D53AB1 /* NJKWebViewProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NJKWebViewProgressView.m; sourceTree = "<group>"; };
 		22834A3D1737B5A50043F7DF /* TOWVC-DefaultExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TOWVC-DefaultExample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		22834A401737B5A50043F7DF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		22834A421737B5A50043F7DF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -263,6 +271,17 @@
 			path = 1PasswordExtension;
 			sourceTree = "<group>";
 		};
+		2282E1F91C27138600D53AB1 /* NJKWebViewProgress */ = {
+			isa = PBXGroup;
+			children = (
+				2282E1FA1C27138600D53AB1 /* NJKWebViewProgress.h */,
+				2282E1FB1C27138600D53AB1 /* NJKWebViewProgress.m */,
+				2282E1FC1C27138600D53AB1 /* NJKWebViewProgressView.h */,
+				2282E1FD1C27138600D53AB1 /* NJKWebViewProgressView.m */,
+			);
+			path = NJKWebViewProgress;
+			sourceTree = "<group>";
+		};
 		22834A341737B5A50043F7DF = {
 			isa = PBXGroup;
 			children = (
@@ -328,6 +347,7 @@
 		22F922391753B15D0034FEF6 /* TOWebViewController */ = {
 			isa = PBXGroup;
 			children = (
+				2282E1F91C27138600D53AB1 /* NJKWebViewProgress */,
 				221CE5EC18EEFC84002D89F5 /* Localizations */,
 				22F922591753B15E0034FEF6 /* TOWebViewController.h */,
 				22F9225A1753B15E0034FEF6 /* TOWebViewController.m */,
@@ -523,8 +543,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2282E1FF1C27138600D53AB1 /* NJKWebViewProgress.m in Sources */,
 				2282E1EE1C266EE100D53AB1 /* TOWebViewController+1Password.m in Sources */,
 				2282E1D41C266D5600D53AB1 /* TOActivityChrome.m in Sources */,
+				2282E2011C27138600D53AB1 /* NJKWebViewProgressView.m in Sources */,
 				2282E1D51C266D5600D53AB1 /* TOViewController.m in Sources */,
 				2282E1F81C26ECEC00D53AB1 /* OnePasswordExtension.m in Sources */,
 				2282E1D61C266D5600D53AB1 /* UIImage+TOWebViewControllerIcons.m in Sources */,
@@ -539,12 +561,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2282E1FE1C27138600D53AB1 /* NJKWebViewProgress.m in Sources */,
 				22AC285718E9920B006DB0E9 /* TOActivityChrome.m in Sources */,
 				227C55FA1750F1F900FC3411 /* TOViewController.m in Sources */,
 				22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */,
 				227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */,
 				22AC285418E98FE1006DB0E9 /* TOActivitySafari.m in Sources */,
 				227C55FB1750F20700FC3411 /* main.m in Sources */,
+				2282E2001C27138600D53AB1 /* NJKWebViewProgressView.m in Sources */,
 				22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

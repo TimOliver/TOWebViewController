@@ -140,6 +140,7 @@
 /* Review the current state of the web view and update the UI controls in the nav bar to match it */
 - (void)refreshButtonsState;
 - (void)layoutButtonsForCurrentSizeClass;
+- (void)showPlaceholderTitle;
 
 /* Event callbacks for button taps */
 - (void)backButtonTapped:(id)sender;
@@ -154,9 +155,6 @@
 - (void)openMailDialog;
 - (void)openMessageDialog;
 - (void)openTwitterDialog;
-
-/* Called each time a request successfully (or unsuccessfully) ends */
-- (void)handleLoadRequestCompletion;
 
 /* Methods to contain all of the functionality needed to properly animate the UIWebView rotating */
 - (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
@@ -356,6 +354,9 @@
 {
     [super viewWillAppear:animated];
     
+    //Show placehodler title until we work out the new one
+    [self showPlaceholderTitle];
+    
     //Capture the present navigation controller state to restore at the end
     if (self.navigationController) {
         self.hideToolbarOnClose = self.navigationController.toolbarHidden;
@@ -367,6 +368,7 @@
     
     //Add the progress bar
     [self.navigationController.navigationBar addSubview:self.progressView];
+    [self.progressView setProgress:0.0f];
     
     //Layout the buttons
     [UIView performWithoutAnimation:^{
@@ -632,6 +634,8 @@
     
     [self.urlRequest setURL:self.url];
     [self.webView loadRequest:self.urlRequest];
+    
+    [self showPlaceholderTitle];
 }
 
 - (void)setLoadingBarTintColor:(UIColor *)loadingBarTintColor
@@ -755,23 +759,6 @@
     
     //TODO: Implement TOModalWebViewController Delegate callback
     
-    //If the URL contrains a fragement jump (eg an anchor tag), check to see if it relates to the current page, or another
-    //If we're merely jumping around the same page, don't perform a new loading bar sequence
-    BOOL isFragmentJump = NO;
-    if (request.URL.fragment)
-    {
-        NSString *nonFragmentURL = [request.URL.absoluteString stringByReplacingOccurrencesOfString:[@"#" stringByAppendingString:request.URL.fragment] withString:@""];
-        isFragmentJump = [nonFragmentURL isEqualToString:webView.request.URL.absoluteString];
-    }
-    
-    BOOL isTopLevelNavigation = [request.mainDocumentURL isEqual:request.URL];
-    BOOL isHTTP = [request.URL.scheme isEqualToString:@"http"] || [request.URL.scheme isEqualToString:@"https"];
-    if (shouldStart && !isFragmentJump && isHTTP && isTopLevelNavigation && navigationType != UIWebViewNavigationTypeBackForward)
-    {
-        //Save the URL in the accessor property
-        _url = [request URL];
-    }
-    
     return shouldStart;
 }
 
@@ -780,31 +767,7 @@
     //show that loading started in the status bar
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
-    //set the title to the URL until we load the page properly
-    if (self.showPageTitles && self.showUrlWhileLoading) {
-        NSString *url = [self.url absoluteString];
-        url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
-        url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
-        self.title = url;
-    }
-    
     //update the navigation bar buttons
-    [self refreshButtonsState];
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    [self handleLoadRequestCompletion];
-    [self refreshButtonsState];
-
-    //see if we can set the proper page title at this point
-    if (self.showPageTitles)
-        self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-    [self handleLoadRequestCompletion];
     [self refreshButtonsState];
 }
 
@@ -812,6 +775,83 @@
 -(void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
 {
     [self.progressView setProgress:progress animated:YES];
+    
+    //Query the webview to see what load state JavaScript perceives it at
+    NSString *readyState = [self.webView stringByEvaluatingJavaScriptFromString:@"document.readyState"];
+    
+    //interactive means the page has loaded sufficiently to allow user interaction now
+    BOOL interactive = [readyState isEqualToString:@"interactive"];
+    if (interactive)
+    {
+        //see if we can set the proper page title yet
+        if (self.showPageTitles)
+            self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        
+        //if we're matching the view BG to the web view, update the background colour now
+        if (self.hideWebViewBoundaries)
+            self.view.backgroundColor = [self webViewPageBackgroundColor];
+        
+        //finally, if the app desires it, disable the ability to tap and hold on links
+        if (self.disableContextualPopupMenu)
+            [self.webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
+    }
+    
+    [self refreshButtonsState];
+}
+
+#pragma mark -
+#pragma mark UI State Handling
+- (void)refreshButtonsState
+{
+    //update the state for the back button
+    if (self.webView.canGoBack)
+        [self.backButton setEnabled:YES];
+    else
+        [self.backButton setEnabled:NO];
+    
+    //Forward button
+    if (self.webView.canGoForward)
+        [self.forwardButton setEnabled:YES];
+    else
+        [self.forwardButton setEnabled:NO];
+    
+    BOOL loaded = (self.progressManager.progress >= 1.0f - FLT_EPSILON);
+    
+    //Stop/Reload Button
+    if (!loaded) {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        self.reloadStopButton.image = self.stopIcon;
+    }
+    else {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        self.reloadStopButton.image = self.reloadIcon;
+    }
+    
+    //Any potential user-specified buttons
+    if (self.loadCompletedApplicationBarButtonItems) {
+        BOOL enabled = NO;
+        if (loaded && self.webView.request.URL.absoluteURL) {
+            enabled = YES;
+        }
+        
+        for (UIBarButtonItem *item in self.loadCompletedApplicationBarButtonItems) {
+            item.enabled = enabled;
+        }
+    }
+}
+
+- (void)showPlaceholderTitle
+{
+    //set the title to the URL until we load the page properly
+    if (self.url && self.showPageTitles && self.showUrlWhileLoading) {
+        NSString *url = [_url absoluteString];
+        url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+        url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+        self.title = url;
+    }
+    else {
+        self.title = NSLocalizedStringFromTable(@"Loading...", @"TOWebViewControllerLocalizable", @"Laoding...");
+    }
 }
 
 #pragma mark -
@@ -1087,74 +1127,6 @@
     [tweetComposer addURL:self.url];
     [self presentViewController:tweetComposer animated:YES completion:nil];
 #pragma clang diagnostic pop
-}
-
-
-#pragma mark -
-#pragma mark Page Load Progress Tracking Handlers
-
-- (void)handleLoadRequestCompletion
-{
-    //Query the webview to see what load state JavaScript perceives it at
-    NSString *readyState = [self.webView stringByEvaluatingJavaScriptFromString:@"document.readyState"];
-    
-    //interactive means the page has loaded sufficiently to allow user interaction now
-    BOOL interactive = [readyState isEqualToString:@"interactive"];
-    if (interactive)
-    {
-        //see if we can set the proper page title yet
-        if (self.showPageTitles)
-            self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-        
-        //if we're matching the view BG to the web view, update the background colour now
-        if (self.hideWebViewBoundaries)
-            self.view.backgroundColor = [self webViewPageBackgroundColor];
-        
-        //finally, if the app desires it, disable the ability to tap and hold on links
-        if (self.disableContextualPopupMenu)
-            [self.webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
-    }
-}
-
-#pragma mark -
-#pragma mark Button State Handling
-- (void)refreshButtonsState
-{
-    //update the state for the back button
-    if (self.webView.canGoBack)
-        [self.backButton setEnabled:YES];
-    else
-        [self.backButton setEnabled:NO];
-    
-    //Forward button
-    if (self.webView.canGoForward)
-        [self.forwardButton setEnabled:YES];
-    else
-        [self.forwardButton setEnabled:NO];
-    
-    BOOL loaded = (self.progressManager.progress >= 1.0f - FLT_EPSILON);
-    
-    //Stop/Reload Button
-    if (loaded) {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        self.reloadStopButton.image = self.stopIcon;
-    }
-    else {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        self.reloadStopButton.image = self.reloadIcon;
-    }
-    
-    //Any potential user-specified buttons
-    if (self.loadCompletedApplicationBarButtonItems) {
-        BOOL enabled = NO;
-        if (loaded && self.webView.request.URL.absoluteURL) {
-            enabled = YES;
-        }
-        
-        for (UIBarButtonItem *item in self.loadCompletedApplicationBarButtonItems) {
-            item.enabled = enabled;
-        }
-    }
 }
 
 #pragma mark -

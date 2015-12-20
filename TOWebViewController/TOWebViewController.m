@@ -145,6 +145,8 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 /* See if we need to revert the navigation bar to 'hidden' when we pop from a navigation controller */
 @property (nonatomic,assign) BOOL hideNavBarOnClose;
 
+@property (nonatomic, assign) BOOL initialLoad;
+
 /* Perform all common setup steps */
 - (void)setup;
 
@@ -247,6 +249,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     _showLoadingBar   = YES;
     _showUrlWhileLoading = YES;
     _showPageTitles   = YES;
+    _initialLoad      = YES;
     
     //Set the initial default style as full screen (But this can be easily overridden)
     self.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -340,7 +343,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         self.reloadIcon = [UIImage TOWebViewControllerIcon_refreshButtonWithAttributes:self.buttonThemeAttributes];
         self.stopIcon   = [UIImage TOWebViewControllerIcon_stopButtonWithAttributes:self.buttonThemeAttributes];
         
-        self.reloadStopButton = [[UIBarButtonItem alloc] initWithImage:self.stopIcon style:UIBarButtonItemStylePlain target:self action:@selector(reloadStopButtonTapped:)];
+        self.reloadStopButton = [[UIBarButtonItem alloc] initWithImage:self.reloadIcon style:UIBarButtonItemStylePlain target:self action:@selector(reloadStopButtonTapped:)];
         self.reloadStopButton.tintColor = self.buttonTintColor;
     }
     
@@ -348,6 +351,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     if (self.showActionButton && self.actionButton == nil) {
         self.actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonTapped:)];
         self.actionButton.tintColor = self.buttonTintColor;
+        
+        if (MINIMAL_UI) {
+            CGFloat topInset = -2.0f;
+            self.actionButton.imageInsets = UIEdgeInsetsMake(topInset, 0.0f, -topInset, 0.0f);
+        }
     }
 }
 
@@ -401,7 +409,9 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.gradientLayer.frame = self.view.bounds;
     
     //Layout the buttons
-    [self layoutButtonsForCurrentSizeClass];
+    [UIView performWithoutAnimation:^{
+        [self layoutButtonsForCurrentSizeClass];
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -535,20 +545,65 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     //Handle iPhone Layout
     if (self.compactPresentation) {
+        
+        // Set up the Done button if presented modally
         if (self.doneButton) {
             self.navigationItem.rightBarButtonItem = self.doneButton;
         }
         
-        UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-        NSMutableArray *items = [NSMutableArray array];
-        [items addObject:flexibleSpace];
-        if (self.backButton)        { [items addObject:self.backButton];    [items addObject:flexibleSpace]; }
-        if (self.forwardButton)     { [items addObject:self.forwardButton]; [items addObject:flexibleSpace]; }
-        if (self.reloadStopButton)  { [items addObject:self.reloadStopButton];  [items addObject:flexibleSpace]; }
-        if (self.actionButton)      { [items addObject:self.actionButton];  [items addObject:flexibleSpace]; }
-        self.toolbarItems = items;
+        // If there are no navigation buttons, and only one auxiliary button, just place that
+        // opposite of the done button
+        if (self.navigationButtonsHidden && self.applicationBarButtonItems.count == 1) {
+            // place on the left or right depending on the type of presentation
+            if (self.beingPresentedModally) {
+                self.navigationItem.leftBarButtonItem = self.applicationBarButtonItems.firstObject;
+            }
+            else {
+                self.navigationItem.rightBarButtonItem = self.applicationBarButtonItems.firstObject;
+            }
+            
+            return;
+        }
         
-        self.navigationItem.rightBarButtonItem = self.doneButton;
+        //Don't bother with laying out any other buttons if they're all disabled
+        if (self.navigationButtonsHidden && self.applicationBarButtonItems.count == 0) {
+            return;
+        }
+        
+        //Set up array of buttons
+        NSMutableArray *items = [NSMutableArray array];
+        
+        if (self.navigationButtonsHidden == NO) {
+            if (self.backButton)        { [items addObject:self.backButton]; }
+            if (self.forwardButton)     { [items addObject:self.forwardButton]; }
+            if (self.reloadStopButton)  { [items addObject:self.reloadStopButton]; }
+            
+            for (UIBarButtonItem *item in self.applicationBarButtonItems) {
+                [items addObject:item];
+            }
+            
+            if (self.actionButton)      { [items addObject:self.actionButton]; }
+        }
+        
+        UIBarButtonItem *(^flexibleSpace)() = ^{
+            return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        };
+        
+        BOOL lessThanFiveItems = items.count < 5;
+        
+        NSInteger index = 1;
+        NSInteger itemsCount = items.count-1;
+        for (NSInteger i = 0; i < itemsCount; i++) {
+            [items insertObject:flexibleSpace() atIndex:index];
+            index += 2;
+        }
+        
+        if (lessThanFiveItems) {
+            [items insertObject:flexibleSpace() atIndex:0];
+            [items addObject:flexibleSpace()];
+        }
+        
+        self.toolbarItems = items;
         
         return;
     }
@@ -567,6 +622,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         
         if (self.doneButton)        { [rightItems addObject:self.doneButton];       [rightItems addObject:fixedSpace]; }
         if (self.actionButton)      { [rightItems addObject:self.actionButton];     [rightItems addObject:fixedSpace]; }
+        
+        for (UIBarButtonItem *item in self.applicationBarButtonItems) {
+            [rightItems addObject:item];
+            [rightItems addObject:fixedSpace];
+        }
     }
     else {
         [leftItems addObject:fixedSpace];
@@ -575,6 +635,11 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         if (self.reloadStopButton)  { [rightItems addObject:self.reloadStopButton]; [rightItems addObject:fixedSpace]; }
         if (self.forwardButton)     { [rightItems addObject:self.forwardButton];    [rightItems addObject:fixedSpace]; }
         if (self.backButton)        { [rightItems addObject:self.backButton];       [rightItems addObject:fixedSpace]; }
+        
+        for (UIBarButtonItem *item in self.applicationBarButtonItems) {
+            [leftItems addObject:item];
+            [leftItems addObject:fixedSpace];
+        }
     }
     
     self.navigationItem.leftBarButtonItems = leftItems;
@@ -709,6 +774,32 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     
     self.buttonThemeAttributes[TOWebViewControllerButtonBevelOpacity] = @(_buttonBevelOpacity);
     [self setUpNavigationButtons];
+}
+
+- (void)setApplicationBarButtonItems:(NSArray *)applicationBarButtonItems
+{
+    if (applicationBarButtonItems == _applicationBarButtonItems)
+        return;
+    
+    _applicationBarButtonItems = applicationBarButtonItems;
+    
+    if (self.presentingViewController && self.compactPresentation) {
+        [self layoutButtonsForCurrentSizeClass];
+    }
+}
+
+- (void)setLoadCompletedApplicationBarButtonItems:(NSArray *)loadCompletedApplicationBarButtonItems
+{
+    if (loadCompletedApplicationBarButtonItems == _loadCompletedApplicationBarButtonItems)
+        return;
+    
+    _loadCompletedApplicationBarButtonItems = loadCompletedApplicationBarButtonItems;
+    
+    //Set disabled initially until we can confirm the load state of the web view
+    for (UIBarButtonItem *item in _loadCompletedApplicationBarButtonItems)
+        item.enabled = NO;
+    
+    [self refreshButtonsState];
 }
 
 #pragma mark -
@@ -1228,11 +1319,13 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     else
         [self.backButton setEnabled:NO];
     
+    //Forward button
     if (self.webView.canGoForward)
         [self.forwardButton setEnabled:YES];
     else
         [self.forwardButton setEnabled:NO];
     
+    //Stop/Reload Button
     if (self.webView.isLoading) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         self.reloadStopButton.image = self.stopIcon;
@@ -1240,6 +1333,18 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     else {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         self.reloadStopButton.image = self.reloadIcon;
+    }
+    
+    //Any potential user-specified buttons
+    if (self.loadCompletedApplicationBarButtonItems) {
+        BOOL enabled = NO;
+        if (self.webView.isLoading == NO && self.webView.request.URL.absoluteURL) {
+            enabled = YES;
+        }
+        
+        for (UIBarButtonItem *item in self.loadCompletedApplicationBarButtonItems) {
+            item.enabled = enabled;
+        }
     }
 }
 
@@ -1386,8 +1491,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
         {
             //set the content offset for the view to be rendered
             rect.origin = contentOffset;
-            if (contentOffset.y + heightInPortraitMode > contentSize.height )
+            if (contentOffset.y + heightInPortraitMode > contentSize.height) {
                 rect.origin.y = contentSize.height - heightInPortraitMode;
+                rect.origin.y = MAX(rect.origin.y, -self.webView.scrollView.contentInset.top);
+            }
             
             rect.size.width = webViewSize.width;
             rect.size.height = heightInPortraitMode; //make it as tall as it is wide

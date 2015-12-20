@@ -95,6 +95,21 @@
 @property (nonatomic,assign)    BOOL navigationButtonsHidden;
 
 /**
+ An array of `UIBarButtonItem` objects that will be inserted alongside the default navigation
+ buttons.
+ 
+ These buttons will remain visible, even if `navigationButtonsHidden` is set to YES.
+ 
+ */
+@property (nonatomic,copy)      NSArray *applicationBarButtonItems;
+
+/**
+ An array of `UIBarButtonItem` objects from `applicationBarButtonitems` that will
+ disabled until pages are completely loaded.
+ */
+@property (nonatomic,copy)      NSArray *loadCompletedApplicationBarButtonItems;
+
+/**
  Shows the iOS 'Activty' button, which when tapped, presents a series of actions the user may
  take, including copying the page URL, tweeting the URL, or switching to Safari or Chrome.
  

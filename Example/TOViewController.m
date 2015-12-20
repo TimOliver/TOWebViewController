@@ -7,7 +7,9 @@
 //
 
 #import "TOViewController.h"
+
 #import "TOWebViewController.h"
+#import "TOWebViewController+1Password.h"
 
 #ifndef NSFoundationVersionNumber_iOS_6_1
     #define NSFoundationVersionNumber_iOS_6_1  993.00
@@ -56,6 +58,14 @@
     
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backItem];
+    
+#ifdef TO_1PASSWORD_DEMO
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in [storage cookies]) {
+        [storage deleteCookie:cookie];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
+#endif
 }
 
 #pragma mark - Table View Protocols -
@@ -90,14 +100,19 @@
     
     NSURL *url = nil;
     
+#ifdef TO_ONEPASSWORD_EXAMPLE
+    url = [NSURL URLWithString:@"http://dropbox.com/login"];
+#else
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         url = [NSURL URLWithString:@"www.apple.com/ipad"];
     else if ([[[UIDevice currentDevice] model] rangeOfString:@"iPod"].location != NSNotFound)
         url = [NSURL URLWithString:@"www.apple.com/ipod-touch"];
     else
         url = [NSURL URLWithString:@"www.apple.com/iphone"];
+#endif
     
     TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];
+    webViewController.showOnePasswordButton = YES;
     
     if (indexPath.row == 0) {
         [self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];

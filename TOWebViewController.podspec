@@ -6,21 +6,22 @@ Pod::Spec.new do |s|
   s.homepage = 'https://github.com/TimOliver/TOWebViewController'
   s.author   = 'Tim Oliver'
   s.source   = { :git => 'https://github.com/TimOliver/TOWebViewController.git', :tag => s.version.to_s }
-  s.platform = :ios, '5.0'
-  s.frameworks = 'QuartzCore', 'CoreGraphics'
-  s.weak_frameworks = 'Twitter', 'MessageUI'
-  s.source_files = 'TOWebViewController/**/*.{h,m}'
-  s.resource_bundles = {'TOWebViewControllerLocalizable' => 'TOWebViewController/**/*.lproj'}
   s.requires_arc = true
   s.default_subspec = 'Core'
 
   s.subspec 'Core' do |core|
-    # Base library with no extra dependencies
+    core.platform = :ios, '5.0'
+    core.frameworks = 'QuartzCore', 'CoreGraphics'
+    core.weak_frameworks = 'Twitter', 'MessageUI'
+    core.source_files = 'TOWebViewController/**/*.{h,m}'
+    core.resource_bundles = {'TOWebViewControllerLocalizable' => 'TOWebViewController/**/*.lproj'}
   end
 
-  spec.subspec '1Password' do |op|
+  s.subspec '1Password' do |op|
+    op.platform = :ios, '8.0'
     op.dependency	'1PasswordExtension'
-    op.source_files = 'TOWebViewController+1Password/*.{h,m}'
+    op.source_files = 'TOWebViewController/**/*.{h,m}', 'TOWebViewController+1Password/*.{h,m}'
+    op.resource_bundles = {'TOWebViewControllerLocalizable' => 'TOWebViewController/**/*.lproj'}
     op.frameworks = 'MobileCoreServices'
   end
 end

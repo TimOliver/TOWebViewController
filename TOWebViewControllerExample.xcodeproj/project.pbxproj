@@ -20,7 +20,6 @@
 		2282E1DA1C266D5600D53AB1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014FE1737B8A200DF6D7E /* main.m */; };
 		2282E1DB1C266D5600D53AB1 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
 		2282E1DD1C266D5600D53AB1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFD1C21DC6900B0C690 /* CoreGraphics.framework */; };
-		2282E1DE1C266D5600D53AB1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FF031C21DCD400B0C690 /* QuartzCore.framework */; };
 		2282E1DF1C266D5600D53AB1 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FF011C21DCAE00B0C690 /* Twitter.framework */; };
 		2282E1E01C266D5600D53AB1 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFF1C21DCA900B0C690 /* MessageUI.framework */; };
 		2282E1E11C266D5600D53AB1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A401737B5A50043F7DF /* UIKit.framework */; };
@@ -40,11 +39,12 @@
 		22834A431737B5A50043F7DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A421737B5A50043F7DF /* Foundation.framework */; };
 		22AC285418E98FE1006DB0E9 /* TOActivitySafari.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AC285318E98FE1006DB0E9 /* TOActivitySafari.m */; };
 		22AC285718E9920B006DB0E9 /* TOActivityChrome.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AC285618E9920B006DB0E9 /* TOActivityChrome.m */; };
+		22B5F6ED1C27EAC30051776A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B5F6EC1C27EAC30051776A /* QuartzCore.framework */; };
+		22B5F6EE1C27EAD10051776A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B5F6EC1C27EAC30051776A /* QuartzCore.framework */; };
 		22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */; };
 		22E060791A3FD0C2001273DF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22E060781A3FD0C2001273DF /* LaunchScreen.xib */; };
 		22E9FF001C21DCA900B0C690 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFF1C21DCA900B0C690 /* MessageUI.framework */; };
 		22E9FF021C21DCAF00B0C690 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FF011C21DCAE00B0C690 /* Twitter.framework */; };
-		22E9FF041C21DCD400B0C690 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FF031C21DCD400B0C690 /* QuartzCore.framework */; };
 		22E9FF051C21DCDA00B0C690 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFD1C21DC6900B0C690 /* CoreGraphics.framework */; };
 		22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
 /* End PBXBuildFile section */
@@ -98,13 +98,13 @@
 		22AC285318E98FE1006DB0E9 /* TOActivitySafari.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOActivitySafari.m; sourceTree = "<group>"; };
 		22AC285518E9920B006DB0E9 /* TOActivityChrome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOActivityChrome.h; sourceTree = "<group>"; };
 		22AC285618E9920B006DB0E9 /* TOActivityChrome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOActivityChrome.m; sourceTree = "<group>"; };
+		22B5F6EC1C27EAC30051776A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		22CB13C318E8158000B948D8 /* UIImage+TOWebViewControllerIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+TOWebViewControllerIcons.h"; sourceTree = "<group>"; };
 		22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TOWebViewControllerIcons.m"; sourceTree = "<group>"; };
 		22E060781A3FD0C2001273DF /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LaunchScreen.xib; path = Example/LaunchScreen.xib; sourceTree = SOURCE_ROOT; };
 		22E9FEFD1C21DC6900B0C690 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		22E9FEFF1C21DCA900B0C690 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		22E9FF011C21DCAE00B0C690 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
-		22E9FF031C21DCD400B0C690 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		22F922591753B15E0034FEF6 /* TOWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebViewController.h; sourceTree = "<group>"; };
 		22F9225A1753B15E0034FEF6 /* TOWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewController.m; sourceTree = "<group>"; };
 		762BBB941A5DB8CF00FF22FC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
@@ -125,10 +125,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22B5F6EE1C27EAD10051776A /* QuartzCore.framework in Frameworks */,
 				2282E1F21C26879100D53AB1 /* MobileCoreServices.framework in Frameworks */,
 				2282E1F01C26868E00D53AB1 /* WebKit.framework in Frameworks */,
 				2282E1DD1C266D5600D53AB1 /* CoreGraphics.framework in Frameworks */,
-				2282E1DE1C266D5600D53AB1 /* QuartzCore.framework in Frameworks */,
 				2282E1DF1C266D5600D53AB1 /* Twitter.framework in Frameworks */,
 				2282E1E01C266D5600D53AB1 /* MessageUI.framework in Frameworks */,
 				2282E1E11C266D5600D53AB1 /* UIKit.framework in Frameworks */,
@@ -140,8 +140,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22B5F6ED1C27EAC30051776A /* QuartzCore.framework in Frameworks */,
 				22E9FF051C21DCDA00B0C690 /* CoreGraphics.framework in Frameworks */,
-				22E9FF041C21DCD400B0C690 /* QuartzCore.framework in Frameworks */,
 				22E9FF021C21DCAF00B0C690 /* Twitter.framework in Frameworks */,
 				22E9FF001C21DCA900B0C690 /* MessageUI.framework in Frameworks */,
 				22834A411737B5A50043F7DF /* UIKit.framework in Frameworks */,
@@ -307,9 +307,9 @@
 		22834A3F1737B5A50043F7DF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				22B5F6EC1C27EAC30051776A /* QuartzCore.framework */,
 				2282E1F11C26879100D53AB1 /* MobileCoreServices.framework */,
 				2282E1EF1C26868E00D53AB1 /* WebKit.framework */,
-				22E9FF031C21DCD400B0C690 /* QuartzCore.framework */,
 				22E9FF011C21DCAE00B0C690 /* Twitter.framework */,
 				22E9FEFF1C21DCA900B0C690 /* MessageUI.framework */,
 				22E9FEFD1C21DC6900B0C690 /* CoreGraphics.framework */,

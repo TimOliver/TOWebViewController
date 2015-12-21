@@ -1,11 +1,7 @@
 //
 //  TOWebViewController.m
 //
-//  Copyright 2013-2015 Timothy Oliver. All rights reserved.
-//
-//  Features logic designed by Satoshi Asano (ninjinkun) for NJKWebViewProgress,
-//  also licensed under the MIT License. Re-implemented by Timothy Oliver.
-//  https://github.com/ninjinkun/NJKWebViewProgress
+//  Copyright 2013-2016 Timothy Oliver. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
@@ -271,6 +267,9 @@
     CGRect barFrame = CGRectMake(0, navigationBarBounds.size.height - progressBarHeight, navigationBarBounds.size.width, progressBarHeight);
     self.progressView = [[NJKWebViewProgressView alloc] initWithFrame:barFrame];
     self.progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    if (self.loadingBarTintColor)
+        self.progressView.progressBarView.backgroundColor = self.loadingBarTintColor;
+    
     
     //only load the buttons if we need to
     if (self.navigationButtonsHidden == NO)
@@ -483,13 +482,17 @@
 
 - (BOOL)splitScreenEnabled
 {
-    //Work out the width in portrait mode
+    //View size
     CGSize viewSize = self.view.frame.size;
+    NSInteger viewHeight = MAX(viewSize.width, viewSize.height);
+    NSInteger viewWidth = MIN(viewSize.width, viewSize.height);
     
-    //Screen width
+    //Screen size
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    NSInteger screenHeight = MAX(screenSize.width, screenSize.height);
+    NSInteger screenWidth = MIN(screenSize.width, screenSize.height);
     
-    return floorf(viewSize.width) < (screenSize.width);
+    return !(viewHeight == screenHeight && viewWidth == screenWidth);
 }
 
 #pragma mark - View Layout/Transitions -
@@ -640,7 +643,15 @@
 
 - (void)setLoadingBarTintColor:(UIColor *)loadingBarTintColor
 {
-
+    if (loadingBarTintColor == _loadingBarTintColor) {
+        return;
+    }
+    
+    _loadingBarTintColor = loadingBarTintColor;
+    
+    if (self.progressView) {
+        self.progressView.progressBarView.backgroundColor = _loadingBarTintColor;
+    }
 }
 
 - (UINavigationBar *)navigationBar
@@ -1358,8 +1369,7 @@
     CGRect  renderBounds            = [self rectForVisibleRegionOfWebViewAnimatingToOrientation:toOrientation];
     
     //generate a snapshot of the webview that we can animate more smoothly
-    CGFloat scale = 1.0f;
-    
+    CGFloat scale = 1.75f;
     UIGraphicsBeginImageContextWithOptions(renderBounds.size, YES, scale);
     {
         CGContextRef context = UIGraphicsGetCurrentContext();

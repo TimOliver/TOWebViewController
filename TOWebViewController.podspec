@@ -7,7 +7,8 @@ Pod::Spec.new do |s|
   s.author   = 'Tim Oliver'
   s.source   = { :git => 'https://github.com/TimOliver/TOWebViewController.git', :tag => s.version.to_s }
   s.platform = :ios, '5.0'
-
+  s.frameworks = 'QuartzCore', 'CoreGraphics'
+  s.weak_frameworks = 'Twitter', 'MessageUI'
   s.source_files = 'TOWebViewController/**/*.{h,m}'
   s.resource_bundles = {'TOWebViewControllerLocalizable' => 'TOWebViewController/**/*.lproj'}
   s.requires_arc = true
@@ -20,5 +21,6 @@ Pod::Spec.new do |s|
   spec.subspec '1Password' do |op|
     op.dependency	'1PasswordExtension'
     op.source_files = 'TOWebViewController+1Password/*.{h,m}'
+    op.frameworks = 'MobileCoreServices'
   end
 end

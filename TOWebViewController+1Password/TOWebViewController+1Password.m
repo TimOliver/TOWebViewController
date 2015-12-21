@@ -1,7 +1,7 @@
 //
 //  TOWebViewController+1Password.m
 //
-//  Copyright 2013-2015 Timothy Oliver. All rights reserved.
+//  Copyright 2013-2016 Timothy Oliver. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
@@ -35,9 +35,12 @@ NSString const *onePasswordExtensionButtonKey = @"au.com.timoliver.webviewcontro
     if (self.showOnePasswordButton == showOnePasswordButton)
         return;
  
+#if TARGET_IPHONE_SIMULATOR
+#else
     //Don't bother trying if 1Password isn't on the system
     if ([[OnePasswordExtension sharedExtension] isAppExtensionAvailable] == NO)
         return;
+#endif
     
     objc_setAssociatedObject(self, &onePasswordExtensionEnabledKey, @(showOnePasswordButton), OBJC_ASSOCIATION_ASSIGN);
     

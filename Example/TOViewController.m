@@ -101,7 +101,7 @@
     NSURL *url = nil;
     
 #ifdef TO_ONEPASSWORD_EXAMPLE
-    url = [NSURL URLWithString:@"http://dropbox.com/login"];
+    url = [NSURL URLWithString:@"https://accounts.google.com/login"];
 #else
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         url = [NSURL URLWithString:@"www.apple.com/ipad"];

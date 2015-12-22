@@ -22,7 +22,9 @@
 * **(TODO)** Reimplement the popup that appears when users tap and hold a link for added flexibility.
 * **(TODO)** An optional text field for which users may manually enter in a URL.
 * **(TODO)** A proper delegate system to allow external classes to interact with this controller.
-* **(TODO)** A rudimentary bookmark system.
+* **(TODO)** A rudimentary bookmark saving and retrieval system.
+* **(TODO)** Basic navigation history that displays when long-pressing the back/forward buttons.
+* **(TODO)** A proper 'Error Occurred/Not connected to the internet' dialog view.
 
 ## Example
 `TOWebViewController` is smart enough to be able to tell when it's being presented as a modal popup, and when it's being pushed onto a `UINavigationController` and to change its button layout accordingly. 

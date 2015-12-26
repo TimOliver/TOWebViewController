@@ -47,10 +47,16 @@ NSString const *onePasswordExtensionButtonKey = @"au.com.timoliver.webviewcontro
     if (showOnePasswordButton) {
         //Create the bar button item
         if (self.onePasswordButton == nil) {
-            UIBarButtonItem *onePasswordButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"onepassword-navbar"]
+            UIImage *onePasswordImage = [UIImage imageNamed:@"onepassword-navbar.png"];
+            if (onePasswordImage == nil) {
+                NSBundle *onepasswordExtensionResourcesBundle = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[OnePasswordExtension class]] pathForResource:@"OnePasswordExtensionResources" ofType:@"bundle"]];
+                onePasswordImage = [UIImage imageNamed:@"onepassword-navbar.png" inBundle:onepasswordExtensionResourcesBundle compatibleWithTraitCollection:nil];
+            }
+            
+            UIBarButtonItem *onePasswordButton = [[UIBarButtonItem alloc] initWithImage:onePasswordImage
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
-                                                                            action:@selector(onePasswordButtonTapped:)];
+                                                                                 action:@selector(onePasswordButtonTapped:)];
             
             objc_setAssociatedObject(self, &onePasswordExtensionButtonKey, onePasswordButton, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         }

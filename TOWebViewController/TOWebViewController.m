@@ -865,8 +865,8 @@
         url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
         self.title = url;
     }
-    else {
-        self.title = NSLocalizedStringFromTable(@"Loading...", @"TOWebViewControllerLocalizable", @"Laoding...");
+    else if (self.showPageTitles) {
+        self.title = NSLocalizedStringFromTable(@"Loading...", @"TOWebViewControllerLocalizable", @"Loading...");
     }
 }
 

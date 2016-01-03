@@ -34,14 +34,14 @@
 When presenting as a modal popup, it is still necessary to create a parent `UINavigationController` in order for the buttons to display properly:
 
 ```objc
-TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://www.apple.com/"];
+TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://www.apple.com/"]];
 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
 [self presentViewController:navigationController animated:YES completion:nil];
 ```
 
 ### Pushing onto a `UINavigationController`
 ```objc
-TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://www.apple.com/"];
+TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://www.apple.com/"]];
 [self.navigationController pushViewController:webViewController animated:YES];
 ```
 

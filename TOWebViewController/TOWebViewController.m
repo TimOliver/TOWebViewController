@@ -498,9 +498,7 @@
 #pragma mark - View Layout/Transitions -
 - (void)layoutButtonsForCurrentSizeClass
 {
-    if (!self.navigationButtonsHidden) {
-        [self.navigationController setToolbarHidden:(!self.compactPresentation) animated:NO];
-    }
+    [self.navigationController setToolbarHidden:(!self.compactPresentation || self.navigationButtonsHidden) animated:NO];
         
     //Reset the lot
     self.toolbarItems = nil;

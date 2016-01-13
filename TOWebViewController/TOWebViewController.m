@@ -916,6 +916,10 @@
 #pragma mark Action Item Event Handlers
 - (void)actionButtonTapped:(id)sender
 {
+    //Do nothing if there is no url for action
+    if (!self.url) {
+        return;
+    }
     // If we're on iOS 6 or above, we can use the super-duper activity view controller :)
     if (NSClassFromString(@"UIPresentationController")) {
         NSArray *browserActivities = @[[TOActivitySafari new], [TOActivityChrome new]];

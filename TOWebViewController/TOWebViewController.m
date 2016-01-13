@@ -102,6 +102,8 @@
 @property (nonatomic,strong) UIBarButtonItem *actionButton;           /* Shows the UIActivityViewController */
 @property (nonatomic,strong) UIBarButtonItem *doneButton;             /* The 'Done' button for modal contorllers */
 
+@property (nonatomic, strong) NSArray *keptApplicationLeftBarButtonItems;
+
 /* Load Progress Manager */
 @property (nonatomic,strong) NJKWebViewProgress *progressManager;
 
@@ -224,6 +226,7 @@
     _progressManager = [[NJKWebViewProgress alloc] init];
     _progressManager.webViewProxyDelegate = self;
     _progressManager.progressDelegate = self;
+    _keepApplicationLeftBarButtonItems = NO;
     
     //Set the initial default style as full screen (But this can be easily overridden)
     self.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -316,6 +319,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.keptApplicationLeftBarButtonItems = self.navigationItem.leftBarButtonItems;
     
     //remove the shadow that lines the bottom of the webview
     if (MINIMAL_UI == NO) {
@@ -502,7 +506,11 @@
         
     //Reset the lot
     self.toolbarItems = nil;
-    self.navigationItem.leftBarButtonItems = nil;
+    if (self.keepApplicationLeftBarButtonItems) {
+        self.navigationItem.leftBarButtonItems = self.keptApplicationLeftBarButtonItems;
+    } else {
+        self.navigationItem.leftBarButtonItems = nil;
+    }
     self.navigationItem.rightBarButtonItems = nil;
     
     //Handle iPhone Layout
@@ -518,7 +526,9 @@
         if (self.navigationButtonsHidden && self.applicationBarButtonItems.count == 1) {
             // place on the left or right depending on the type of presentation
             if (self.beingPresentedModally) {
-                self.navigationItem.leftBarButtonItem = self.applicationBarButtonItems.firstObject;
+                if (!self.keepApplicationLeftBarButtonItems) {
+                    self.navigationItem.leftBarButtonItem = self.applicationBarButtonItems.firstObject;
+                }
             }
             else {
                 self.navigationItem.rightBarButtonItem = self.applicationBarButtonItems.firstObject;
@@ -569,10 +579,11 @@
         
         return;
     }
-
+    
     //Handle iPad layout
     BOOL modal = self.beingPresentedModally;
-    NSMutableArray *leftItems = [NSMutableArray array];
+    NSMutableArray *leftItems = self.keepApplicationLeftBarButtonItems ? [NSMutableArray arrayWithArray:self.navigationItem.leftBarButtonItems] : [NSMutableArray array];
+    
     NSMutableArray *rightItems = [NSMutableArray array];
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixedSpace.width = NAVIGATION_ICON_SPACING;

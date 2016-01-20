@@ -47,6 +47,7 @@
 		22E9FF021C21DCAF00B0C690 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FF011C21DCAE00B0C690 /* Twitter.framework */; };
 		22E9FF051C21DCDA00B0C690 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFD1C21DC6900B0C690 /* CoreGraphics.framework */; };
 		22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
+		ABC752F81C4FEB720093283B /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = ABC752F61C4FEB720093283B /* TOWebViewControllerLocalizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +109,7 @@
 		22F922591753B15E0034FEF6 /* TOWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebViewController.h; sourceTree = "<group>"; };
 		22F9225A1753B15E0034FEF6 /* TOWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewController.m; sourceTree = "<group>"; };
 		762BBB941A5DB8CF00FF22FC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		ABC752F71C4FEB720093283B /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		F66F5CB41B79DAFB0051B142 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		F66F5CB71B79DB080051B142 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		F66F5CBA1B79DB080051B142 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 		221CE5EC18EEFC84002D89F5 /* Localizations */ = {
 			isa = PBXGroup;
 			children = (
+				ABC752F51C4FEB450093283B /* it.lproj */,
 				221CE5CC18EEFC76002D89F5 /* de.lproj */,
 				F66F5CB21B79DAFB0051B142 /* en.lproj */,
 				221CE5D218EEFC76002D89F5 /* es.lproj */,
@@ -370,6 +373,15 @@
 			path = TOWebViewController/fr.lproj;
 			sourceTree = SOURCE_ROOT;
 		};
+		ABC752F51C4FEB450093283B /* it.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				ABC752F61C4FEB720093283B /* TOWebViewControllerLocalizable.strings */,
+			);
+			name = it.lproj;
+			path = TOWebViewController/it.lproj;
+			sourceTree = SOURCE_ROOT;
+		};
 		F66F5CB21B79DAFB0051B142 /* en.lproj */ = {
 			isa = PBXGroup;
 			children = (
@@ -488,6 +500,7 @@
 				ru,
 				uk,
 				fr,
+				it,
 			);
 			mainGroup = 22834A341737B5A50043F7DF;
 			productRefGroup = 22834A3E1737B5A50043F7DF /* Products */;
@@ -523,6 +536,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABC752F81C4FEB720093283B /* TOWebViewControllerLocalizable.strings in Resources */,
 				22E060791A3FD0C2001273DF /* LaunchScreen.xib in Resources */,
 				227B3CEF1BAECF95009AC60E /* LaunchImages.xcassets in Resources */,
 			);
@@ -644,6 +658,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				762BBB941A5DB8CF00FF22FC /* fr */,
+			);
+			name = TOWebViewControllerLocalizable.strings;
+			sourceTree = "<group>";
+		};
+		ABC752F61C4FEB720093283B /* TOWebViewControllerLocalizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ABC752F71C4FEB720093283B /* it */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";

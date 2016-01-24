@@ -100,6 +100,12 @@
 @property (nonatomic,copy)      NSArray *applicationBarButtonItems;
 
 /**
+ Unlike `applicationBarButtonItems`, `UIBarButtonItem` objects placed set here
+ will ALWAYS remain on the left hand side of this controller's `UINavigationController`.
+ */
+@property (nonatomic, copy)   NSArray *applicationLeftBarButtonItems;
+
+/**
  An array of `UIBarButtonItem` objects from `applicationBarButtonitems` that will
  disabled until pages are completely loaded.
  */
@@ -162,13 +168,10 @@
  */
 @property (nonatomic,copy)      BOOL (^shouldStartLoadRequestHandler)(NSURLRequest *request, UIWebViewNavigationType navigationType);
 
-
 /**
-An optional block when webview finish load
+An optional block that when set, will be triggered each time the web view has finished a load operation.
 */
-
-@property (nonatomic,copy)      void (^didFinishLoadHandler)(UIWebView *webivew);
-
+@property (nonatomic,copy)      void (^didFinishLoadHandler)(UIWebView *webView);
 
 /** 
  This can be used to override the default tint color of the navigation button icons.
@@ -181,11 +184,5 @@ An optional block when webview finish load
  On iOS 6 or below, this overrides the default opacity level of the bevel around the navigation buttons.
  */
 @property (nonatomic,assign)    CGFloat buttonBevelOpacity;
-
-/**
- This property allows to keep original left bar button items based on main application.
- The use case is when left menu item is being used and menu button should be kept.
- */
-@property (nonatomic, assign)   BOOL keepApplicationLeftBarButtonItems;
 
 @end

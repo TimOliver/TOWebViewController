@@ -115,6 +115,10 @@
 #ifdef TO_ONEPASSWORD_EXAMPLE
     webViewController.showOnePasswordButton = YES;
 #endif
+
+// Uncomment this if you want to test out placing buttons permanently in the left hand side of the navigation bar
+//    UIBarButtonItem *testItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:nil action:nil];
+//    webViewController.applicationLeftBarButtonItems = @[testItem];
     
     if (indexPath.row == 0) {
         [self presentViewController:[[UINavigationController alloc] initWithRootViewController:webViewController] animated:YES completion:nil];

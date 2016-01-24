@@ -102,8 +102,6 @@
 @property (nonatomic,strong) UIBarButtonItem *actionButton;           /* Shows the UIActivityViewController */
 @property (nonatomic,strong) UIBarButtonItem *doneButton;             /* The 'Done' button for modal contorllers */
 
-@property (nonatomic, strong) NSArray *keptApplicationLeftBarButtonItems;
-
 /* Load Progress Manager */
 @property (nonatomic,strong) NJKWebViewProgress *progressManager;
 
@@ -226,7 +224,6 @@
     _progressManager = [[NJKWebViewProgress alloc] init];
     _progressManager.webViewProxyDelegate = self;
     _progressManager.progressDelegate = self;
-    _keepApplicationLeftBarButtonItems = NO;
     
     //Set the initial default style as full screen (But this can be easily overridden)
     self.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -319,7 +316,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.keptApplicationLeftBarButtonItems = self.navigationItem.leftBarButtonItems;
     
     //remove the shadow that lines the bottom of the webview
     if (MINIMAL_UI == NO) {
@@ -506,13 +502,16 @@
         
     //Reset the lot
     self.toolbarItems = nil;
-    if (self.keepApplicationLeftBarButtonItems) {
-        self.navigationItem.leftBarButtonItems = self.keptApplicationLeftBarButtonItems;
-    } else {
-        self.navigationItem.leftBarButtonItems = nil;
-    }
+    self.navigationItem.leftBarButtonItems = nil;
     self.navigationItem.rightBarButtonItems = nil;
+    self.navigationItem.leftItemsSupplementBackButton = NO;
     
+    //If we've got explicitly set application items in the navigation bar, set them up before handling screen cases
+    if (self.applicationLeftBarButtonItems) {
+        self.navigationItem.leftBarButtonItems = self.applicationLeftBarButtonItems;
+        self.navigationItem.leftItemsSupplementBackButton = YES;
+    }
+
     //Handle iPhone Layout
     if (self.compactPresentation) {
         
@@ -526,7 +525,7 @@
         if (self.navigationButtonsHidden && self.applicationBarButtonItems.count == 1) {
             // place on the left or right depending on the type of presentation
             if (self.beingPresentedModally) {
-                if (!self.keepApplicationLeftBarButtonItems) {
+                if (!self.applicationLeftBarButtonItems) {
                     self.navigationItem.leftBarButtonItem = self.applicationBarButtonItems.firstObject;
                 }
             }
@@ -582,7 +581,7 @@
     
     //Handle iPad layout
     BOOL modal = self.beingPresentedModally;
-    NSMutableArray *leftItems = self.keepApplicationLeftBarButtonItems ? [NSMutableArray arrayWithArray:self.navigationItem.leftBarButtonItems] : [NSMutableArray array];
+    NSMutableArray *leftItems = self.applicationLeftBarButtonItems ? [NSMutableArray arrayWithArray:self.navigationItem.leftBarButtonItems] : [NSMutableArray array];
     
     NSMutableArray *rightItems = [NSMutableArray array];
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
@@ -767,6 +766,16 @@
     [self refreshButtonsState];
 }
 
+- (void)setApplicationLeftBarButtonItems:(NSArray *)applicationLeftBarButtonItems
+{
+    if (applicationLeftBarButtonItems == _applicationLeftBarButtonItems) {
+        return;
+    }
+    
+    _applicationLeftBarButtonItems = applicationLeftBarButtonItems;
+    [self refreshButtonsState];
+}
+
 #pragma mark -
 #pragma mark WebView Delegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -796,7 +805,6 @@
         self.didFinishLoadHandler(webView);
     }
 }
-
 
 #pragma mark - Progress Delegate -
 -(void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress

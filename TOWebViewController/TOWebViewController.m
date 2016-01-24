@@ -780,6 +780,13 @@
     [self refreshButtonsState];
 }
 
+-(void)webViewDidFinishLoad:(UIWebView *)webView{
+    if(self.didFinishLoadHandler){
+        self.didFinishLoadHandler(webView);
+    }
+}
+
+
 #pragma mark - Progress Delegate -
 -(void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
 {

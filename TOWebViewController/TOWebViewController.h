@@ -162,6 +162,14 @@
  */
 @property (nonatomic,copy)      BOOL (^shouldStartLoadRequestHandler)(NSURLRequest *request, UIWebViewNavigationType navigationType);
 
+
+/**
+An optional block when webview finish load
+*/
+
+@property (nonatomic,copy)      void (^didFinishLoadHandler)(UIWebView *webivew);
+
+
 /** 
  This can be used to override the default tint color of the navigation button icons.
  This property is mainly for iOS 6 and lower. Where possible, you should use iOS 7's proper color styling

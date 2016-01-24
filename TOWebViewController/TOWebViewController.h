@@ -182,4 +182,10 @@ An optional block when webview finish load
  */
 @property (nonatomic,assign)    CGFloat buttonBevelOpacity;
 
+/**
+ This property allows to keep original left bar button items based on main application.
+ The use case is when left menu item is being used and menu button should be kept.
+ */
+@property (nonatomic, assign)   BOOL keepApplicationLeftBarButtonItems;
+
 @end

@@ -122,6 +122,8 @@
 @property (nonatomic,assign) BOOL hideToolbarOnClose;
 /* See if we need to revert the navigation bar to 'hidden' when we pop from a navigation controller */
 @property (nonatomic,assign) BOOL hideNavBarOnClose;
+/* See if the navigation controller state is captured, to make sure the state is captured only once */
+@property (nonatomic,assign) BOOL capturedNavigationControllerState;
 
 @property (nonatomic, assign) BOOL initialLoad;
 
@@ -357,9 +359,10 @@
     [self showPlaceholderTitle];
     
     //Capture the present navigation controller state to restore at the end
-    if (self.navigationController) {
+    if (self.navigationController && !self.capturedNavigationControllerState) {
         self.hideToolbarOnClose = self.navigationController.toolbarHidden;
         self.hideNavBarOnClose  = self.navigationBar.hidden;
+        self.capturedNavigationControllerState = YES;
     }
     
     //reset the gradient layer in case the bounds changed before display

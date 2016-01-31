@@ -82,6 +82,8 @@ That being said, if you are still targeting lower iOS versions, or require more 
 
 Thanks also goes to `TOWebViewController`'s growing list of [contributors](https://github.com/TimOliver/TOWebViewController/graphs/contributors)!
 
+iPad Air 2 and iPhone 6s Plus device mockups by [Pixeden](http://www.pixeden.com).
+
 ## License
 
 TOWebViewController is licensed under the MIT License. For more information, please see the [LICENSE](LICENSE) file.

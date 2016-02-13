@@ -50,7 +50,7 @@ iOS 5.0 or above
 
 ## Installation
 
-#### As a Cocoapods Dependency
+#### As a CocoaPods Dependency
 
 Add the following to your Podfile:
 ``` ruby

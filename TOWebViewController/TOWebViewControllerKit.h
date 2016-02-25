@@ -17,11 +17,12 @@ FOUNDATION_EXPORT const unsigned char TOWebViewControllerVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <TOWebViewController/PublicHeader.h>
 
 
-#import <TOWebViewController/NJKWebViewProgress.h>
-#import <TOWebViewController/NJKWebViewProgressView.h>
-#import <TOWebViewController/TOWebViewController.h>
-#import <TOWebViewController/TOActivitySafari.h>
-#import <TOWebViewController/TOActivityChrome.h>
-#import <TOWebViewController/UIImage+TOWebViewControllerIcons.h>
-#import <TOWebViewController/OnePasswordExtension.h>
-#import <TOWebViewController/TOWebViewController+1Password.h>
+#import <TOWebViewControllerKit/NJKWebViewProgress.h>
+#import <TOWebViewControllerKit/NJKWebViewProgressView.h>
+#import <TOWebViewControllerKit/TOWebViewController.h>
+#import <TOWebViewControllerKit/TOActivitySafari.h>
+#import <TOWebViewControllerKit/TOActivityChrome.h>
+#import <TOWebViewControllerKit/UIImage+TOWebViewControllerIcons.h>
+#import <TOWebViewControllerKit/OnePasswordExtension.h>
+#import <TOWebViewControllerKit/TOWebViewController+1Password.h>
+

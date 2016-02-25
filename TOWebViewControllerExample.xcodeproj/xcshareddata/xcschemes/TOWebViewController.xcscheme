@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D2A653CC1C7E86FC00566F54"
-               BuildableName = "TOWebViewControllerKit.framework"
-               BlueprintName = "TOWebViewControllerKit"
+               BuildableName = "TOWebViewController.framework"
+               BlueprintName = "TOWebViewController"
                ReferencedContainer = "container:TOWebViewControllerExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,8 +46,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2A653CC1C7E86FC00566F54"
-            BuildableName = "TOWebViewControllerKit.framework"
-            BlueprintName = "TOWebViewControllerKit"
+            BuildableName = "TOWebViewController.framework"
+            BlueprintName = "TOWebViewController"
             ReferencedContainer = "container:TOWebViewControllerExample.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,8 +64,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2A653CC1C7E86FC00566F54"
-            BuildableName = "TOWebViewControllerKit.framework"
-            BlueprintName = "TOWebViewControllerKit"
+            BuildableName = "TOWebViewController.framework"
+            BlueprintName = "TOWebViewController"
             ReferencedContainer = "container:TOWebViewControllerExample.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

@@ -48,7 +48,6 @@
 		22E9FF051C21DCDA00B0C690 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFD1C21DC6900B0C690 /* CoreGraphics.framework */; };
 		22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
 		ABC752F81C4FEB720093283B /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = ABC752F61C4FEB720093283B /* TOWebViewControllerLocalizable.strings */; };
-		D2A653D01C7E86FC00566F54 /* TOWebViewControllerKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D2A653CF1C7E86FC00566F54 /* TOWebViewControllerKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D2A653D51C7E871C00566F54 /* NJKWebViewProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282E1FB1C27138600D53AB1 /* NJKWebViewProgress.m */; };
 		D2A653D61C7E871F00566F54 /* NJKWebViewProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 2282E1FA1C27138600D53AB1 /* NJKWebViewProgress.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D2A653D71C7E872600566F54 /* NJKWebViewProgressView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2282E1FC1C27138600D53AB1 /* NJKWebViewProgressView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -128,8 +127,7 @@
 		22F9225A1753B15E0034FEF6 /* TOWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewController.m; sourceTree = "<group>"; };
 		762BBB941A5DB8CF00FF22FC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		ABC752F71C4FEB720093283B /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		D2A653CD1C7E86FC00566F54 /* TOWebViewControllerKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TOWebViewControllerKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D2A653CF1C7E86FC00566F54 /* TOWebViewControllerKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TOWebViewControllerKit.h; sourceTree = "<group>"; };
+		D2A653CD1C7E86FC00566F54 /* TOWebViewController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TOWebViewController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2A653D11C7E86FC00566F54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F66F5CB41B79DAFB0051B142 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		F66F5CB71B79DB080051B142 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
@@ -332,7 +330,7 @@
 				22834A3D1737B5A50043F7DF /* TOWVC-DefaultExample.app */,
 				2282AEE71B2E473900BD92FC /* TOWebViewControllerTests.xctest */,
 				2282E1EA1C266D5600D53AB1 /* TOWVC-1PasswordExample.app */,
-				D2A653CD1C7E86FC00566F54 /* TOWebViewControllerKit.framework */,
+				D2A653CD1C7E86FC00566F54 /* TOWebViewController.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -415,7 +413,6 @@
 		D2A653CE1C7E86FC00566F54 /* TOWebViewController */ = {
 			isa = PBXGroup;
 			children = (
-				D2A653CF1C7E86FC00566F54 /* TOWebViewControllerKit.h */,
 				D2A653D11C7E86FC00566F54 /* Info.plist */,
 			);
 			path = TOWebViewController;
@@ -456,7 +453,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2A653D71C7E872600566F54 /* NJKWebViewProgressView.h in Headers */,
-				D2A653D01C7E86FC00566F54 /* TOWebViewControllerKit.h in Headers */,
 				D2A653DA1C7E873700566F54 /* TOActivitySafari.h in Headers */,
 				D2A653E51C7EAAF900566F54 /* TOWebViewController.h in Headers */,
 				D2A653DC1C7E873700566F54 /* TOActivityChrome.h in Headers */,
@@ -522,9 +518,9 @@
 			productReference = 22834A3D1737B5A50043F7DF /* TOWVC-DefaultExample.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D2A653CC1C7E86FC00566F54 /* TOWebViewControllerKit */ = {
+		D2A653CC1C7E86FC00566F54 /* TOWebViewController */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D2A653D41C7E86FC00566F54 /* Build configuration list for PBXNativeTarget "TOWebViewControllerKit" */;
+			buildConfigurationList = D2A653D41C7E86FC00566F54 /* Build configuration list for PBXNativeTarget "TOWebViewController" */;
 			buildPhases = (
 				D2A653C81C7E86FC00566F54 /* Sources */,
 				D2A653C91C7E86FC00566F54 /* Frameworks */,
@@ -535,9 +531,9 @@
 			);
 			dependencies = (
 			);
-			name = TOWebViewControllerKit;
+			name = TOWebViewController;
 			productName = TOWebViewController;
-			productReference = D2A653CD1C7E86FC00566F54 /* TOWebViewControllerKit.framework */;
+			productReference = D2A653CD1C7E86FC00566F54 /* TOWebViewController.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -589,7 +585,7 @@
 				22834A3C1737B5A50043F7DF /* TOWVC-DefaultExample */,
 				2282E1D21C266D5600D53AB1 /* TOWVC-1PasswordExample */,
 				2282AEE61B2E473900BD92FC /* TOWebViewControllerTests */,
-				D2A653CC1C7E86FC00566F54 /* TOWebViewControllerKit */,
+				D2A653CC1C7E86FC00566F54 /* TOWebViewController */,
 			);
 		};
 /* End PBXProject section */
@@ -1116,7 +1112,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D2A653D41C7E86FC00566F54 /* Build configuration list for PBXNativeTarget "TOWebViewControllerKit" */ = {
+		D2A653D41C7E86FC00566F54 /* Build configuration list for PBXNativeTarget "TOWebViewController" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D2A653D21C7E86FC00566F54 /* Debug */,

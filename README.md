@@ -57,6 +57,13 @@ Add the following to your Podfile:
 pod 'TOWebViewController'
 ```
 
+#### As a Carthage Dependency
+
+Add the following to your Cartfile:
+``` 
+github "https://github.com/TimOliver/TOWebViewController"
+```
+
 #### Manual Installation
 
 Download this project from GitHub, move the subfolder named 'TOWebViewController' over to your project folder, and drag it into your Xcode project.

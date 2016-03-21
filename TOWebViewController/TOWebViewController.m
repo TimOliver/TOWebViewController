@@ -127,6 +127,11 @@
 
 @property (nonatomic, assign) BOOL initialLoad;
 
+/* The UIWebView inline srollView*/
+@property (nonatomic, strong) UIScrollView *webViewScrollView;
+/* Store scrollView offset Y */
+@property (nonatomic) CGFloat previousScrollViewYOffset;
+
 /* Perform all common setup steps */
 - (void)setup;
 
@@ -261,9 +266,11 @@
     self.webView.backgroundColor = [UIColor clearColor];
     self.webView.scalesPageToFit = YES;
     self.webView.contentMode = UIViewContentModeRedraw;
-    self.webView.opaque = YES;
     [self.view addSubview:self.webView];
 
+    self.webViewScrollView = [self scrollViewInsideWebView];
+    self.webViewScrollView.delegate = self;
+    
     CGFloat progressBarHeight = 2.f;
     CGRect navigationBarBounds = self.navigationController.navigationBar.bounds;
     CGRect barFrame = CGRectMake(0, navigationBarBounds.size.height - progressBarHeight, navigationBarBounds.size.width, progressBarHeight);
@@ -1703,6 +1710,108 @@
     
     //Try and restart device rotation
     [UIViewController attemptRotationToDeviceOrientation];
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // navigation bar.
+    CGRect frame = self.navigationController.navigationBar.frame;
+    CGFloat size = frame.size.height - 21;
+    CGFloat framePercentageHidden = ((20 - frame.origin.y) / (frame.size.height - 1));
+    CGFloat scrollOffset = scrollView.contentOffset.y;
+    CGFloat scrollDiff = scrollOffset - self.previousScrollViewYOffset;
+    CGFloat scrollHeight = scrollView.frame.size.height;
+    CGFloat scrollContentSizeHeight = scrollView.contentSize.height + scrollView.contentInset.bottom;
+    
+    if (scrollOffset <= -scrollView.contentInset.top) {
+        // NavigationBar has been to the top, maybe still continue to roll up.
+        // So we keep them to initial state.
+        frame.origin.y = 20;
+    } else if ((scrollOffset + scrollHeight) >= scrollContentSizeHeight) {
+        // NavigationBar has been to the bottom. So keep them to final state.
+        frame.origin.y = -size;
+    } else {
+        // This is real roll up/pull down.
+        frame.origin.y = MIN(20, MAX(-size, frame.origin.y - scrollDiff));
+    }
+    
+    if (!self.navigationButtonsHidden) {
+        // toolbar.
+        CGRect frameForToolbar = self.navigationController.toolbar.frame;
+        // This means initial Y.
+        CGFloat initialYForToolbar = [UIScreen mainScreen].bounds.size.height - frameForToolbar.size.height;
+        // This means toolbar is hidden.
+        CGFloat finalYForToolbar = [UIScreen mainScreen].bounds.size.height;
+        
+        if (scrollOffset <= -scrollView.contentInset.top) {
+            // NavigationBar has been to the top, maybe still continue to roll up.
+            // So we keep them to initial state.
+            if (self.navigationButtonsHidden) frameForToolbar.origin.y = initialYForToolbar;
+        } else if ((scrollOffset + scrollHeight) >= scrollContentSizeHeight) {
+            // NavigationBar has been to the bottom. So keep them to final state.
+            if (self.navigationButtonsHidden) frameForToolbar.origin.y = finalYForToolbar;
+        } else {
+            // This is real roll up/pull down.
+            if (self.navigationButtonsHidden) frameForToolbar.origin.y = MAX(initialYForToolbar, MIN(finalYForToolbar, frameForToolbar.origin.y + scrollDiff));
+        }
+        
+        [self.navigationController.toolbar setFrame:frameForToolbar];
+    }
+    
+    [self.navigationController.navigationBar setFrame:frame];
+    [self updateBarButtonItems:(1 - framePercentageHidden)];
+    self.previousScrollViewYOffset = scrollOffset;
+    
+}
+
+#pragma mark - Helpers
+
+// Hide items.
+- (void)updateBarButtonItems:(CGFloat)alpha {
+    [self.navigationItem.leftBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* item, NSUInteger i, BOOL *stop) {
+        item.customView.alpha = alpha;
+    }];
+    [self.navigationItem.rightBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* item, NSUInteger i, BOOL *stop) {
+        item.customView.alpha = alpha;
+    }];
+    
+    [self navigationBarCenterView].alpha = alpha;
+    self.navigationController.navigationBar.tintColor = [self.navigationController.navigationBar.tintColor colorWithAlphaComponent:alpha];
+}
+
+// Get real centerView, titleView or label.
+- (UIView *)navigationBarCenterView {
+    if (self.navigationItem.titleView) {
+        return self.navigationItem.titleView;
+    } else {
+        for (UILabel *view in self.navigationBar.subviews) {
+            if ([view isKindOfClass:[UILabel class]] && [view.text isEqualToString:self.title]) {
+                return view;
+            } else if ([view isKindOfClass:NSClassFromString(@"UINavigationItemView")]) {
+                for (UILabel *label in view.subviews) {
+                    if ([label isKindOfClass:[UILabel class]] && [label.text isEqualToString:self.title]) {
+                        return label;
+                    }
+                }
+                
+                return nil;
+            }
+            
+        }
+        
+        return nil;
+    }
+}
+
+- (UIScrollView *)scrollViewInsideWebView {
+    for (UIScrollView *scrollView in self.webView.subviews) {
+        if ([scrollView isKindOfClass:NSClassFromString(@"_UIWebViewScrollView")]) {
+            return scrollView;
+        }
+    }
+    
+    return nil;
 }
 
 @end

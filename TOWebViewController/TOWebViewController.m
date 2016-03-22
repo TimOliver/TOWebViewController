@@ -1747,13 +1747,13 @@
         if (scrollOffset <= -scrollView.contentInset.top) {
             // NavigationBar has been to the top, maybe still continue to roll up.
             // So we keep them to initial state.
-            if (self.navigationButtonsHidden) frameForToolbar.origin.y = initialYForToolbar;
+            frameForToolbar.origin.y = initialYForToolbar;
         } else if ((scrollOffset + scrollHeight) >= scrollContentSizeHeight) {
             // NavigationBar has been to the bottom. So keep them to final state.
-            if (self.navigationButtonsHidden) frameForToolbar.origin.y = finalYForToolbar;
+            frameForToolbar.origin.y = finalYForToolbar;
         } else {
             // This is real roll up/pull down.
-            if (self.navigationButtonsHidden) frameForToolbar.origin.y = MAX(initialYForToolbar, MIN(finalYForToolbar, frameForToolbar.origin.y + scrollDiff));
+            frameForToolbar.origin.y = MAX(initialYForToolbar, MIN(finalYForToolbar, frameForToolbar.origin.y + scrollDiff));
         }
         
         [self.navigationController.toolbar setFrame:frameForToolbar];

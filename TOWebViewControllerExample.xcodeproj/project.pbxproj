@@ -11,6 +11,11 @@
 		227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F21737B87600DF6D7E /* TOAppDelegate.m */; };
 		227C55FA1750F1F900FC3411 /* TOViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F41737B87600DF6D7E /* TOViewController.m */; };
 		227C55FB1750F20700FC3411 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014FE1737B8A200DF6D7E /* main.m */; };
+		227D20A91CB52411008F641B /* TOWebHistoryitem.h in Headers */ = {isa = PBXBuildFile; fileRef = 227D20A71CB52411008F641B /* TOWebHistoryitem.h */; };
+		227D20AA1CB52411008F641B /* TOWebHistoryitem.m in Sources */ = {isa = PBXBuildFile; fileRef = 227D20A81CB52411008F641B /* TOWebHistoryitem.m */; };
+		227D20AB1CB52411008F641B /* TOWebHistoryitem.m in Sources */ = {isa = PBXBuildFile; fileRef = 227D20A81CB52411008F641B /* TOWebHistoryitem.m */; };
+		227D20AC1CB52411008F641B /* TOWebHistoryitem.m in Sources */ = {isa = PBXBuildFile; fileRef = 227D20A81CB52411008F641B /* TOWebHistoryitem.m */; };
+		227D20AD1CB52411008F641B /* TOWebHistoryitem.m in Sources */ = {isa = PBXBuildFile; fileRef = 227D20A81CB52411008F641B /* TOWebHistoryitem.m */; };
 		2282AEEC1B2E473900BD92FC /* TOWebViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282AEEB1B2E473900BD92FC /* TOWebViewControllerTests.m */; };
 		2282E1D41C266D5600D53AB1 /* TOActivityChrome.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AC285618E9920B006DB0E9 /* TOActivityChrome.m */; };
 		2282E1D51C266D5600D53AB1 /* TOViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F41737B87600DF6D7E /* TOViewController.m */; };
@@ -93,6 +98,8 @@
 		225014FF1737B8A200DF6D7E /* DefaultExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "DefaultExample-Info.plist"; path = "Example/DefaultExample-Info.plist"; sourceTree = SOURCE_ROOT; };
 		225015001737B8A200DF6D7E /* TOWebViewControllerExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TOWebViewControllerExample-Prefix.pch"; path = "Example/TOWebViewControllerExample-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		227B3CEE1BAECF95009AC60E /* LaunchImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = LaunchImages.xcassets; path = Example/LaunchImages.xcassets; sourceTree = SOURCE_ROOT; };
+		227D20A71CB52411008F641B /* TOWebHistoryitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebHistoryitem.h; sourceTree = "<group>"; };
+		227D20A81CB52411008F641B /* TOWebHistoryitem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebHistoryitem.m; sourceTree = "<group>"; };
 		2282AEE71B2E473900BD92FC /* TOWebViewControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TOWebViewControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2282AEEA1B2E473900BD92FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2282AEEB1B2E473900BD92FC /* TOWebViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOWebViewControllerTests.m; sourceTree = "<group>"; };
@@ -382,6 +389,8 @@
 				221CE5EC18EEFC84002D89F5 /* Localizations */,
 				22F922591753B15E0034FEF6 /* TOWebViewController.h */,
 				22F9225A1753B15E0034FEF6 /* TOWebViewController.m */,
+				227D20A71CB52411008F641B /* TOWebHistoryitem.h */,
+				227D20A81CB52411008F641B /* TOWebHistoryitem.m */,
 				22AC285218E98FE1006DB0E9 /* TOActivitySafari.h */,
 				22AC285318E98FE1006DB0E9 /* TOActivitySafari.m */,
 				22AC285518E9920B006DB0E9 /* TOActivityChrome.h */,
@@ -453,6 +462,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2A653D71C7E872600566F54 /* NJKWebViewProgressView.h in Headers */,
+				227D20A91CB52411008F641B /* TOWebHistoryitem.h in Headers */,
 				D2A653DA1C7E873700566F54 /* TOActivitySafari.h in Headers */,
 				D2A653E51C7EAAF900566F54 /* TOWebViewController.h in Headers */,
 				D2A653DC1C7E873700566F54 /* TOActivityChrome.h in Headers */,
@@ -634,6 +644,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2282AEEC1B2E473900BD92FC /* TOWebViewControllerTests.m in Sources */,
+				227D20AC1CB52411008F641B /* TOWebHistoryitem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -652,6 +663,7 @@
 				2282E1D91C266D5600D53AB1 /* TOActivitySafari.m in Sources */,
 				2282E1DA1C266D5600D53AB1 /* main.m in Sources */,
 				2282E1DB1C266D5600D53AB1 /* TOWebViewController.m in Sources */,
+				227D20AB1CB52411008F641B /* TOWebHistoryitem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -664,6 +676,7 @@
 				227C55FA1750F1F900FC3411 /* TOViewController.m in Sources */,
 				22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */,
 				227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */,
+				227D20AA1CB52411008F641B /* TOWebHistoryitem.m in Sources */,
 				22AC285418E98FE1006DB0E9 /* TOActivitySafari.m in Sources */,
 				227C55FB1750F20700FC3411 /* main.m in Sources */,
 				2282E2001C27138600D53AB1 /* NJKWebViewProgressView.m in Sources */,
@@ -677,6 +690,7 @@
 			files = (
 				D2A653E11C7E873F00566F54 /* OnePasswordExtension.m in Sources */,
 				D2A653E41C7E874500566F54 /* TOWebViewController+1Password.m in Sources */,
+				227D20AD1CB52411008F641B /* TOWebHistoryitem.m in Sources */,
 				D2A653D91C7E872E00566F54 /* TOWebViewController.m in Sources */,
 				D2A653D51C7E871C00566F54 /* NJKWebViewProgress.m in Sources */,
 				D2A653D81C7E872B00566F54 /* NJKWebViewProgressView.m in Sources */,

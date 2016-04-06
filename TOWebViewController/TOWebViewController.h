@@ -156,6 +156,14 @@
  */
 @property (nonatomic,assign)    BOOL hideWebViewBoundaries;
 
+/**
+ When set to YES, this disables the popup menus that appear when the user
+ taps and holds on the back or forward buttons.
+ 
+ Default value is NO.
+ */
+@property (nonatomic,assign)    BOOL historyPopupsDisabled;
+
 /** 
  When the view controller is being presented as a modal popup, this block will be automatically performed
  right after the view controller is dismissed.

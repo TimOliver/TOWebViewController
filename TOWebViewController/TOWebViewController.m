@@ -102,6 +102,14 @@
 @property (nonatomic,strong) UIBarButtonItem *actionButton;           /* Shows the UIActivityViewController */
 @property (nonatomic,strong) UIBarButtonItem *doneButton;             /* The 'Done' button for modal contorllers */
 
+/* Back and Forward Button Gesture Recognizers */
+@property (nonatomic,strong) UILongPressGestureRecognizer *backButtonLongPressGestureRecognizer;
+@property (nonatomic,strong) UILongPressGestureRecognizer *forwardButtonLongPressGestureRecognizer;
+
+/* History tracking */
+@property (nonatomic,strong) NSMutableArray *backHistoryItems;
+@property (nonatomic,strong) NSMutableArray *forwardHistoryItems;
+
 /* Load Progress Manager */
 @property (nonatomic,strong) NJKWebViewProgress *progressManager;
 
@@ -116,6 +124,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 @property (nonatomic,strong) UIPopoverController *sharingPopoverController;
+@property (nonatomic,strong) UIPopoverController *historyPopoverController;
 #pragma GCC diagnostic pop
 
 /* See if we need to revert the toolbar to 'hidden' when we pop off a navigation controller. */
@@ -134,6 +143,7 @@
 
 /* Init and configure various sections of the controller */
 - (void)setUpNavigationButtons;
+- (void)setUpNavigationButtonGestureRecognizers;
 
 /* Review the current state of the web view and update the UI controls in the nav bar to match it */
 - (void)refreshButtonsState;
@@ -146,6 +156,9 @@
 - (void)reloadStopButtonTapped:(id)sender;
 - (void)actionButtonTapped:(id)sender;
 - (void)doneButtonTapped:(id)sender;
+
+/* Gesture Recognizer Callbacks */
+- (void)longPressGestureRecognized:(UILongPressGestureRecognizer *)gestureRecognizer;
 
 /* Event handlers for items in the 'action' popup */
 - (void)copyURLToClipboard;
@@ -274,8 +287,9 @@
     
     
     //only load the buttons if we need to
-    if (self.navigationButtonsHidden == NO)
+    if (self.navigationButtonsHidden == NO) {
         [self setUpNavigationButtons];
+    }
 }
 
 - (void)setUpNavigationButtons
@@ -315,6 +329,34 @@
     }
 }
 
+- (void)setUpNavigationButtonGestureRecognizers
+{
+    if (self.navigationButtonsHidden || self.historyPopupsDisabled) {
+        return;
+    }
+    
+    if (self.backButtonLongPressGestureRecognizer && self.forwardButtonLongPressGestureRecognizer) {
+        return;
+    }
+    
+    if (self.backButtonLongPressGestureRecognizer == nil) {
+        self.backButtonLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureRecognized:)];
+    }
+    UIView *backButtonView = [self.backButton valueForKey:@"view"];
+    if (backButtonView.gestureRecognizers.count == 0) {
+        [backButtonView addGestureRecognizer:self.backButtonLongPressGestureRecognizer];
+    }
+    
+    if (self.forwardButtonLongPressGestureRecognizer == nil) {
+        self.forwardButtonLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureRecognized:)];
+    }
+    
+    UIView *forwardButtonView = [self.forwardButton valueForKey:@"view"];
+    if (forwardButtonView.gestureRecognizers.count == 0) {
+        [forwardButtonView addGestureRecognizer:self.forwardButtonLongPressGestureRecognizer];
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -347,6 +389,11 @@
         }
         
         self.doneButton.tintColor = self.buttonTintColor;
+    }
+    
+    if (self.historyPopupsDisabled == NO) {
+        self.backHistoryItems = [NSMutableArray array];
+        self.forwardHistoryItems = [NSMutableArray array];
     }
 }
 
@@ -387,6 +434,8 @@
         [self.urlRequest setURL:self.url];
         [self.webView loadRequest:self.urlRequest];
     }
+    
+    [self setUpNavigationButtonGestureRecognizers];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -578,7 +627,6 @@
         }
         
         self.toolbarItems = items;
-        
         return;
     }
     
@@ -779,6 +827,23 @@
     [self refreshButtonsState];
 }
 
+- (void)setHistoryPopupsDisabled:(BOOL)disableHistoryPopups
+{
+    if (self.historyPopupsDisabled == disableHistoryPopups) {
+        return;
+    }
+    
+    _historyPopupsDisabled = disableHistoryPopups;
+    
+    if (_historyPopupsDisabled == YES) {
+        [self.backButtonLongPressGestureRecognizer.view removeGestureRecognizer:self.backButtonLongPressGestureRecognizer];
+        [self.forwardButtonLongPressGestureRecognizer.view removeGestureRecognizer:self.forwardButtonLongPressGestureRecognizer];
+    }
+    else {
+        [self setUpNavigationButtonGestureRecognizers];
+    }
+}
+
 #pragma mark -
 #pragma mark WebView Delegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -823,11 +888,10 @@
     if (interactive || complete)
     {
         //see if we can set the proper page title yet
-        if (self.showPageTitles) {
-            NSString *title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-            
-            if (title.length)
-                self.title = title;
+        NSString *title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        
+        if (title.length && self.showPageTitles) {
+            self.title = title;
         }
         
         //if we're matching the view BG to the web view, update the background colour now
@@ -1174,6 +1238,13 @@
     [tweetComposer addURL:self.url];
     [self presentViewController:tweetComposer animated:YES completion:nil];
 #pragma clang diagnostic pop
+}
+
+- (void)longPressGestureRecognized:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan) {
+        return;
+    }
 }
 
 #pragma mark -

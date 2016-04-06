@@ -22,13 +22,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "NJKWebViewProgress.h"
-#import "NJKWebViewProgressView.h"
-#import "TOActivitySafari.h"
-#import "TOActivityChrome.h"
-#import "UIImage+TOWebViewControllerIcons.h"
-
-
 @interface TOWebViewController : UIViewController <UIWebViewDelegate>
 
 /**

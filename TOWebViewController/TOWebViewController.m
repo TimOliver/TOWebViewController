@@ -457,7 +457,7 @@
         return (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact);
     }
     
-    return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
+    return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone);
 }
 
 - (BOOL)beingPresentedModally

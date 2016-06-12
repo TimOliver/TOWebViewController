@@ -112,6 +112,7 @@
 #endif
     
     TOWebViewController *webViewController = [[TOWebViewController alloc] initWithURL:url];
+    [webViewController setDoneButtonTintColor:[UIColor redColor]];
 #ifdef TO_ONEPASSWORD_EXAMPLE
     webViewController.showOnePasswordButton = YES;
 #endif

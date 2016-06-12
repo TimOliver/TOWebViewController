@@ -173,12 +173,19 @@ An optional block that when set, will be triggered each time the web view has fi
 */
 @property (nonatomic,copy)      void (^didFinishLoadHandler)(UIWebView *webView);
 
-/** 
+/**
  This can be used to override the default tint color of the navigation button icons.
  This property is mainly for iOS 6 and lower. Where possible, you should use iOS 7's proper color styling
  system instead.
  */
 @property (nonatomic,strong)    UIColor *buttonTintColor;
+
+/**
+ This can be used to override the default tint color of done button icon.
+ This property is mainly for iOS 6 and lower. Where possible, you should use iOS 7's proper color styling
+ system instead.
+ */
+@property (nonatomic,strong)    UIColor *doneButtonTintColor;
 
 /** 
  On iOS 6 or below, this overrides the default opacity level of the bevel around the navigation buttons.

@@ -1,11 +1,13 @@
 # TOWebViewController
 ### An Inline Web Browser for iOS Apps
 
-![TOCropViewController](Screenshots/TOWebViewController-2015.jpg)
+![TOWebViewController](Screenshots/TOWebViewController-2015.jpg)
 
 [![CI Status](http://img.shields.io/travis/TimOliver/TOWebViewController.svg?style=flat)](http://api.travis-ci.org/TimOliver/TOWebViewController.svg)
+[![CocoaPods](https://img.shields.io/cocoapods/dt/TOWebViewController.svg?maxAge=2592000)](https://cocoapods.org/pods/TOWebViewController)
 [![Version](https://img.shields.io/cocoapods/v/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)
-[![License](https://img.shields.io/cocoapods/l/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/TimOliver/TOWebViewController/master/LICENSE)
 [![Platform](https://img.shields.io/cocoapods/p/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)
 
 `TOWebViewController` is an open-source `UIViewController` subclass designed to let apps quickly present web page content to its users, without needing to kick them over to Safari. `TOWebViewController` has been designed from the ground up to be easily integrated into existing projects, to take advantage of the latest features of iOS, and to optionally be backwards compatible with (significantly) earlier versions of iOS.

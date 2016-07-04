@@ -349,7 +349,7 @@
                                                                                         action:@selector(doneButtonTapped:)];
         }
         
-        self.doneButton.tintColor = self.buttonTintColor;
+        self.doneButton.tintColor = self.doneButtonTintColor;
     }
 }
 
@@ -727,6 +727,14 @@
         self.buttonThemeAttributes[TOWebViewControllerButtonTintColor] = _buttonTintColor;
         [self setUpNavigationButtons];
     }
+}
+
+- (void)setDoneButtonTintColor:(UIColor *)doneButtonTintColor
+{
+    if (doneButtonTintColor == _doneButtonTintColor)
+        return;
+    
+    _doneButtonTintColor = doneButtonTintColor;
 }
 
 - (void)setButtonBevelOpacity:(CGFloat)buttonBevelOpacity

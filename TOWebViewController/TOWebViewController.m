@@ -318,7 +318,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
+    //Show placehodler title until we work out the new one
+    [self showPlaceholderTitle];
+
     //remove the shadow that lines the bottom of the webview
     if (MINIMAL_UI == NO) {
         for (UIView *view in self.webView.scrollView.subviews) {
@@ -354,9 +357,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    //Show placehodler title until we work out the new one
-    [self showPlaceholderTitle];
     
     //Capture the present navigation controller state to restore at the end
     if (self.navigationController && !self.capturedNavigationControllerState) {

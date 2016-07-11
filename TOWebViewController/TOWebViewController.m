@@ -356,7 +356,12 @@
     [super viewWillAppear:animated];
     
     //Show placehodler title until we work out the new one
-    [self showPlaceholderTitle];
+    
+    if (self.title && ![[self title] isEqualToString:@"Loading..."]) {
+        self.title = self.title;
+    } else {
+        [self showPlaceholderTitle];
+    }
     
     //Capture the present navigation controller state to restore at the end
     if (self.navigationController && !self.capturedNavigationControllerState) {

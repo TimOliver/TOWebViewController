@@ -4,7 +4,7 @@
 ![TOWebViewController](Screenshots/TOWebViewController-2015.jpg)
 
 [![CI Status](http://img.shields.io/travis/TimOliver/TOWebViewController.svg?style=flat)](http://api.travis-ci.org/TimOliver/TOWebViewController.svg)
-[![CocoaPods](https://img.shields.io/cocoapods/dt/TOWebViewController.svg?maxAge=2592000)](https://cocoapods.org/pods/TOWebViewController)
+[![CocoaPods](https://img.shields.io/cocoapods/dt/TOWebViewController.svg?maxAge=3600)](https://cocoapods.org/pods/TOWebViewController)
 [![Version](https://img.shields.io/cocoapods/v/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/TimOliver/TOWebViewController/master/LICENSE)

@@ -64,7 +64,7 @@
                                    UIPopoverControllerDelegate,
                                    MFMailComposeViewControllerDelegate,
                                    MFMessageComposeViewControllerDelegate,
-                                   NJKWebViewProgressDelegate>
+                                   NJKWebViewProgressDelegate,CAAnimationDelegate>
 {
     
     //The state of the UIWebView's scroll view before the rotation animation has started

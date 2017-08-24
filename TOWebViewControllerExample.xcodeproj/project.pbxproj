@@ -7,25 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		227B3CEF1BAECF95009AC60E /* LaunchImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 227B3CEE1BAECF95009AC60E /* LaunchImages.xcassets */; };
-		227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F21737B87600DF6D7E /* TOAppDelegate.m */; };
-		227C55FA1750F1F900FC3411 /* TOViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F41737B87600DF6D7E /* TOViewController.m */; };
-		227C55FB1750F20700FC3411 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014FE1737B8A200DF6D7E /* main.m */; };
+		2253FE5A1F4EA2C800CE36D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2253FE301F4EA20800CE36D2 /* main.m */; };
+		2253FE5B1F4EA2D300CE36D2 /* TOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2253FE331F4EA20800CE36D2 /* TOAppDelegate.m */; };
+		2253FE5C1F4EA2D500CE36D2 /* TOViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2253FE351F4EA20800CE36D2 /* TOViewController.m */; };
+		2253FE5D1F4EA38700CE36D2 /* TOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2253FE331F4EA20800CE36D2 /* TOAppDelegate.m */; };
+		2253FE5E1F4EA38A00CE36D2 /* TOViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2253FE351F4EA20800CE36D2 /* TOViewController.m */; };
+		2253FE5F1F4EA39600CE36D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2253FE301F4EA20800CE36D2 /* main.m */; };
+		2253FE601F4EA3B100CE36D2 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2253FE2F1F4EA20800CE36D2 /* LaunchScreen.xib */; };
+		2253FE611F4EA3C500CE36D2 /* LaunchImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2253FE2E1F4EA20800CE36D2 /* LaunchImages.xcassets */; };
 		2282AEEC1B2E473900BD92FC /* TOWebViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282AEEB1B2E473900BD92FC /* TOWebViewControllerTests.m */; };
 		2282E1D41C266D5600D53AB1 /* TOActivityChrome.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AC285618E9920B006DB0E9 /* TOActivityChrome.m */; };
-		2282E1D51C266D5600D53AB1 /* TOViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F41737B87600DF6D7E /* TOViewController.m */; };
 		2282E1D61C266D5600D53AB1 /* UIImage+TOWebViewControllerIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */; };
-		2282E1D81C266D5600D53AB1 /* TOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014F21737B87600DF6D7E /* TOAppDelegate.m */; };
 		2282E1D91C266D5600D53AB1 /* TOActivitySafari.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AC285318E98FE1006DB0E9 /* TOActivitySafari.m */; };
-		2282E1DA1C266D5600D53AB1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 225014FE1737B8A200DF6D7E /* main.m */; };
 		2282E1DB1C266D5600D53AB1 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
 		2282E1DD1C266D5600D53AB1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFD1C21DC6900B0C690 /* CoreGraphics.framework */; };
 		2282E1DF1C266D5600D53AB1 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FF011C21DCAE00B0C690 /* Twitter.framework */; };
 		2282E1E01C266D5600D53AB1 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFF1C21DCA900B0C690 /* MessageUI.framework */; };
 		2282E1E11C266D5600D53AB1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A401737B5A50043F7DF /* UIKit.framework */; };
 		2282E1E21C266D5600D53AB1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22834A421737B5A50043F7DF /* Foundation.framework */; };
-		2282E1E41C266D5600D53AB1 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22E060781A3FD0C2001273DF /* LaunchScreen.xib */; };
-		2282E1E51C266D5600D53AB1 /* LaunchImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 227B3CEE1BAECF95009AC60E /* LaunchImages.xcassets */; };
 		2282E1EE1C266EE100D53AB1 /* TOWebViewController+1Password.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282E1ED1C266EE100D53AB1 /* TOWebViewController+1Password.m */; };
 		2282E1F01C26868E00D53AB1 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2282E1EF1C26868E00D53AB1 /* WebKit.framework */; };
 		2282E1F21C26879100D53AB1 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2282E1F11C26879100D53AB1 /* MobileCoreServices.framework */; };
@@ -42,12 +41,10 @@
 		22B5F6ED1C27EAC30051776A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B5F6EC1C27EAC30051776A /* QuartzCore.framework */; };
 		22B5F6EE1C27EAD10051776A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B5F6EC1C27EAC30051776A /* QuartzCore.framework */; };
 		22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */; };
-		22E060791A3FD0C2001273DF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22E060781A3FD0C2001273DF /* LaunchScreen.xib */; };
 		22E9FF001C21DCA900B0C690 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFF1C21DCA900B0C690 /* MessageUI.framework */; };
 		22E9FF021C21DCAF00B0C690 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FF011C21DCAE00B0C690 /* Twitter.framework */; };
 		22E9FF051C21DCDA00B0C690 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E9FEFD1C21DC6900B0C690 /* CoreGraphics.framework */; };
 		22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F9225A1753B15E0034FEF6 /* TOWebViewController.m */; };
-		ABC752F81C4FEB720093283B /* TOWebViewControllerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = ABC752F61C4FEB720093283B /* TOWebViewControllerLocalizable.strings */; };
 		D2A653D51C7E871C00566F54 /* NJKWebViewProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282E1FB1C27138600D53AB1 /* NJKWebViewProgress.m */; };
 		D2A653D61C7E871F00566F54 /* NJKWebViewProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 2282E1FA1C27138600D53AB1 /* NJKWebViewProgress.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D2A653D71C7E872600566F54 /* NJKWebViewProgressView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2282E1FC1C27138600D53AB1 /* NJKWebViewProgressView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -78,26 +75,32 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		221CE5CE18EEFC76002D89F5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		221CE5D418EEFC76002D89F5 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		221CE5D718EEFC76002D89F5 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		221CE5DA18EEFC76002D89F5 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		221CE5DD18EEFC76002D89F5 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		221CE5E018EEFC76002D89F5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		221CE5E318EEFC76002D89F5 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		225014F11737B87600DF6D7E /* TOAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TOAppDelegate.h; path = Example/TOAppDelegate.h; sourceTree = SOURCE_ROOT; };
-		225014F21737B87600DF6D7E /* TOAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TOAppDelegate.m; path = Example/TOAppDelegate.m; sourceTree = SOURCE_ROOT; };
-		225014F31737B87600DF6D7E /* TOViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TOViewController.h; path = Example/TOViewController.h; sourceTree = SOURCE_ROOT; };
-		225014F41737B87600DF6D7E /* TOViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TOViewController.m; path = Example/TOViewController.m; sourceTree = SOURCE_ROOT; };
-		225014FE1737B8A200DF6D7E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Example/main.m; sourceTree = SOURCE_ROOT; };
-		225014FF1737B8A200DF6D7E /* DefaultExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "DefaultExample-Info.plist"; path = "Example/DefaultExample-Info.plist"; sourceTree = SOURCE_ROOT; };
-		225015001737B8A200DF6D7E /* TOWebViewControllerExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TOWebViewControllerExample-Prefix.pch"; path = "Example/TOWebViewControllerExample-Prefix.pch"; sourceTree = SOURCE_ROOT; };
-		227B3CEE1BAECF95009AC60E /* LaunchImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = LaunchImages.xcassets; path = Example/LaunchImages.xcassets; sourceTree = SOURCE_ROOT; };
+		2253FE271F4EA20800CE36D2 /* DefaultExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DefaultExample-Info.plist"; sourceTree = "<group>"; };
+		2253FE291F4EA20800CE36D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2253FE2E1F4EA20800CE36D2 /* LaunchImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LaunchImages.xcassets; sourceTree = "<group>"; };
+		2253FE2F1F4EA20800CE36D2 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
+		2253FE301F4EA20800CE36D2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2253FE311F4EA20800CE36D2 /* TOWebViewControllerExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TOWebViewControllerExample-Prefix.pch"; sourceTree = "<group>"; };
+		2253FE321F4EA20800CE36D2 /* TOAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TOAppDelegate.h; sourceTree = "<group>"; };
+		2253FE331F4EA20800CE36D2 /* TOAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOAppDelegate.m; sourceTree = "<group>"; };
+		2253FE341F4EA20800CE36D2 /* TOViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TOViewController.h; sourceTree = "<group>"; };
+		2253FE351F4EA20800CE36D2 /* TOViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOViewController.m; sourceTree = "<group>"; };
+		2253FE381F4EA22700CE36D2 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE3B1F4EA22800CE36D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE3E1F4EA22800CE36D2 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE411F4EA22800CE36D2 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE441F4EA22800CE36D2 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE471F4EA22800CE36D2 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE4A1F4EA22900CE36D2 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE4D1F4EA22900CE36D2 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE501F4EA22900CE36D2 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE531F4EA22900CE36D2 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE561F4EA22A00CE36D2 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
+		2253FE591F4EA22A00CE36D2 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		2282AEE71B2E473900BD92FC /* TOWebViewControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TOWebViewControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2282AEEA1B2E473900BD92FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2282AEEB1B2E473900BD92FC /* TOWebViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOWebViewControllerTests.m; sourceTree = "<group>"; };
 		2282E1EA1C266D5600D53AB1 /* TOWVC-1PasswordExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TOWVC-1PasswordExample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2282E1EB1C266D5600D53AB1 /* OnePasswordExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "OnePasswordExample-Info.plist"; path = "/Users/TiM/Dropbox/Projects/TOWebViewController/OnePasswordExample-Info.plist"; sourceTree = "<absolute>"; };
 		2282E1EC1C266EE100D53AB1 /* TOWebViewController+1Password.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TOWebViewController+1Password.h"; sourceTree = "<group>"; };
 		2282E1ED1C266EE100D53AB1 /* TOWebViewController+1Password.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TOWebViewController+1Password.m"; sourceTree = "<group>"; };
 		2282E1EF1C26868E00D53AB1 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
@@ -119,19 +122,13 @@
 		22B5F6EC1C27EAC30051776A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		22CB13C318E8158000B948D8 /* UIImage+TOWebViewControllerIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+TOWebViewControllerIcons.h"; sourceTree = "<group>"; };
 		22CB13C418E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TOWebViewControllerIcons.m"; sourceTree = "<group>"; };
-		22E060781A3FD0C2001273DF /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LaunchScreen.xib; path = Example/LaunchScreen.xib; sourceTree = SOURCE_ROOT; };
 		22E9FEFD1C21DC6900B0C690 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		22E9FEFF1C21DCA900B0C690 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		22E9FF011C21DCAE00B0C690 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		22F922591753B15E0034FEF6 /* TOWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOWebViewController.h; sourceTree = "<group>"; };
 		22F9225A1753B15E0034FEF6 /* TOWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOWebViewController.m; sourceTree = "<group>"; };
-		762BBB941A5DB8CF00FF22FC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		ABC752F71C4FEB720093283B /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 		D2A653CD1C7E86FC00566F54 /* TOWebViewController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TOWebViewController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2A653D11C7E86FC00566F54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F66F5CB41B79DAFB0051B142 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		F66F5CB71B79DB080051B142 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
-		F66F5CBA1B79DB080051B142 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = TOWebViewControllerLocalizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,88 +177,126 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		221CE5CC18EEFC76002D89F5 /* de.lproj */ = {
+		2253FE251F4EA20800CE36D2 /* TOWebViewControllerExample */ = {
 			isa = PBXGroup;
 			children = (
-				221CE5CD18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */,
+				2253FE261F4EA20800CE36D2 /* Supporting Files */,
+				2253FE321F4EA20800CE36D2 /* TOAppDelegate.h */,
+				2253FE331F4EA20800CE36D2 /* TOAppDelegate.m */,
+				2253FE341F4EA20800CE36D2 /* TOViewController.h */,
+				2253FE351F4EA20800CE36D2 /* TOViewController.m */,
 			);
-			name = de.lproj;
-			path = TOWebViewController/de.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		221CE5D218EEFC76002D89F5 /* es.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				221CE5D318EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = es.lproj;
-			path = TOWebViewController/es.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		221CE5D518EEFC76002D89F5 /* ja.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				221CE5D618EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = ja.lproj;
-			path = TOWebViewController/ja.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		221CE5D818EEFC76002D89F5 /* ko.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				221CE5D918EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = ko.lproj;
-			path = TOWebViewController/ko.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		221CE5DB18EEFC76002D89F5 /* pl.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				221CE5DC18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = pl.lproj;
-			path = TOWebViewController/pl.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		221CE5DE18EEFC76002D89F5 /* zh-Hans.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				221CE5DF18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = "zh-Hans.lproj";
-			path = "TOWebViewController/zh-Hans.lproj";
-			sourceTree = SOURCE_ROOT;
-		};
-		221CE5E118EEFC76002D89F5 /* zh-Hant.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				221CE5E218EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = "zh-Hant.lproj";
-			path = "TOWebViewController/zh-Hant.lproj";
-			sourceTree = SOURCE_ROOT;
-		};
-		221CE5EC18EEFC84002D89F5 /* Localizations */ = {
-			isa = PBXGroup;
-			children = (
-				ABC752F51C4FEB450093283B /* it.lproj */,
-				221CE5CC18EEFC76002D89F5 /* de.lproj */,
-				F66F5CB21B79DAFB0051B142 /* en.lproj */,
-				221CE5D218EEFC76002D89F5 /* es.lproj */,
-				762BBB921A5DB8CF00FF22FC /* fr.lproj */,
-				221CE5D518EEFC76002D89F5 /* ja.lproj */,
-				221CE5D818EEFC76002D89F5 /* ko.lproj */,
-				221CE5DB18EEFC76002D89F5 /* pl.lproj */,
-				F66F5CB51B79DB080051B142 /* ru.lproj */,
-				F66F5CB81B79DB080051B142 /* uk.lproj */,
-				221CE5DE18EEFC76002D89F5 /* zh-Hans.lproj */,
-				221CE5E118EEFC76002D89F5 /* zh-Hant.lproj */,
-			);
-			name = Localizations;
 			path = TOWebViewControllerExample;
-			sourceTree = SOURCE_ROOT;
+			sourceTree = "<group>";
+		};
+		2253FE261F4EA20800CE36D2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE271F4EA20800CE36D2 /* DefaultExample-Info.plist */,
+				2253FE281F4EA20800CE36D2 /* InfoPlist.strings */,
+				2253FE2E1F4EA20800CE36D2 /* LaunchImages.xcassets */,
+				2253FE2F1F4EA20800CE36D2 /* LaunchScreen.xib */,
+				2253FE301F4EA20800CE36D2 /* main.m */,
+				2253FE311F4EA20800CE36D2 /* TOWebViewControllerExample-Prefix.pch */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2253FE361F4EA22700CE36D2 /* uk.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE371F4EA22700CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = uk.lproj;
+			sourceTree = "<group>";
+		};
+		2253FE391F4EA22800CE36D2 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE3A1F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = en.lproj;
+			sourceTree = "<group>";
+		};
+		2253FE3C1F4EA22800CE36D2 /* ko.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE3D1F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = ko.lproj;
+			sourceTree = "<group>";
+		};
+		2253FE3F1F4EA22800CE36D2 /* pl.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE401F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = pl.lproj;
+			sourceTree = "<group>";
+		};
+		2253FE421F4EA22800CE36D2 /* zh-Hant.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE431F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = "zh-Hant.lproj";
+			sourceTree = "<group>";
+		};
+		2253FE451F4EA22800CE36D2 /* fr.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE461F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = fr.lproj;
+			sourceTree = "<group>";
+		};
+		2253FE481F4EA22900CE36D2 /* ja.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE491F4EA22900CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = ja.lproj;
+			sourceTree = "<group>";
+		};
+		2253FE4B1F4EA22900CE36D2 /* zh-Hans.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE4C1F4EA22900CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = "zh-Hans.lproj";
+			sourceTree = "<group>";
+		};
+		2253FE4E1F4EA22900CE36D2 /* it.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE4F1F4EA22900CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = it.lproj;
+			sourceTree = "<group>";
+		};
+		2253FE511F4EA22900CE36D2 /* de.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE521F4EA22900CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = de.lproj;
+			sourceTree = "<group>";
+		};
+		2253FE541F4EA22A00CE36D2 /* es.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE551F4EA22A00CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = es.lproj;
+			sourceTree = "<group>";
+		};
+		2253FE571F4EA22A00CE36D2 /* ru.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2253FE581F4EA22A00CE36D2 /* TOWebViewControllerLocalizable.strings */,
+			);
+			path = ru.lproj;
+			sourceTree = "<group>";
 		};
 		2282AEE81B2E473900BD92FC /* TOWebViewControllerTests */ = {
 			isa = PBXGroup;
@@ -316,7 +351,7 @@
 			children = (
 				22F922391753B15D0034FEF6 /* TOWebViewController */,
 				2282E1CB1C266A6400D53AB1 /* TOWebViewController+1Password */,
-				22834A461737B5A50043F7DF /* TOWebViewControllerExample */,
+				2253FE251F4EA20800CE36D2 /* TOWebViewControllerExample */,
 				2282AEE81B2E473900BD92FC /* TOWebViewControllerTests */,
 				D2A653CE1C7E86FC00566F54 /* TOWebViewController */,
 				22834A3F1737B5A50043F7DF /* Frameworks */,
@@ -350,36 +385,22 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		22834A461737B5A50043F7DF /* TOWebViewControllerExample */ = {
-			isa = PBXGroup;
-			children = (
-				225014F11737B87600DF6D7E /* TOAppDelegate.h */,
-				225014F21737B87600DF6D7E /* TOAppDelegate.m */,
-				225014F31737B87600DF6D7E /* TOViewController.h */,
-				225014F41737B87600DF6D7E /* TOViewController.m */,
-				22834A471737B5A50043F7DF /* Supporting Files */,
-			);
-			path = TOWebViewControllerExample;
-			sourceTree = "<group>";
-		};
-		22834A471737B5A50043F7DF /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				225014FE1737B8A200DF6D7E /* main.m */,
-				225014FF1737B8A200DF6D7E /* DefaultExample-Info.plist */,
-				2282E1EB1C266D5600D53AB1 /* OnePasswordExample-Info.plist */,
-				225015001737B8A200DF6D7E /* TOWebViewControllerExample-Prefix.pch */,
-				22E060781A3FD0C2001273DF /* LaunchScreen.xib */,
-				227B3CEE1BAECF95009AC60E /* LaunchImages.xcassets */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		22F922391753B15D0034FEF6 /* TOWebViewController */ = {
 			isa = PBXGroup;
 			children = (
+				2253FE4E1F4EA22900CE36D2 /* it.lproj */,
+				2253FE511F4EA22900CE36D2 /* de.lproj */,
+				2253FE391F4EA22800CE36D2 /* en.lproj */,
+				2253FE541F4EA22A00CE36D2 /* es.lproj */,
+				2253FE451F4EA22800CE36D2 /* fr.lproj */,
+				2253FE481F4EA22900CE36D2 /* ja.lproj */,
+				2253FE3C1F4EA22800CE36D2 /* ko.lproj */,
+				2253FE3F1F4EA22800CE36D2 /* pl.lproj */,
+				2253FE571F4EA22A00CE36D2 /* ru.lproj */,
+				2253FE361F4EA22700CE36D2 /* uk.lproj */,
+				2253FE4B1F4EA22900CE36D2 /* zh-Hans.lproj */,
+				2253FE421F4EA22800CE36D2 /* zh-Hant.lproj */,
 				2282E1F91C27138600D53AB1 /* NJKWebViewProgress */,
-				221CE5EC18EEFC84002D89F5 /* Localizations */,
 				22F922591753B15E0034FEF6 /* TOWebViewController.h */,
 				22F9225A1753B15E0034FEF6 /* TOWebViewController.m */,
 				22AC285218E98FE1006DB0E9 /* TOActivitySafari.h */,
@@ -392,24 +413,6 @@
 			path = TOWebViewController;
 			sourceTree = SOURCE_ROOT;
 		};
-		762BBB921A5DB8CF00FF22FC /* fr.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				762BBB931A5DB8CF00FF22FC /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = fr.lproj;
-			path = TOWebViewController/fr.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		ABC752F51C4FEB450093283B /* it.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				ABC752F61C4FEB720093283B /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = it.lproj;
-			path = TOWebViewController/it.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
 		D2A653CE1C7E86FC00566F54 /* TOWebViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -417,33 +420,6 @@
 			);
 			path = TOWebViewController;
 			sourceTree = "<group>";
-		};
-		F66F5CB21B79DAFB0051B142 /* en.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				F66F5CB31B79DAFB0051B142 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = en.lproj;
-			path = TOWebViewController/en.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		F66F5CB51B79DB080051B142 /* ru.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				F66F5CB61B79DB080051B142 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = ru.lproj;
-			path = TOWebViewController/ru.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		F66F5CB81B79DB080051B142 /* uk.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				F66F5CB91B79DB080051B142 /* TOWebViewControllerLocalizable.strings */,
-			);
-			name = uk.lproj;
-			path = TOWebViewController/uk.lproj;
-			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -543,12 +519,15 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = TO;
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Tim Oliver";
 				TargetAttributes = {
 					2282AEE61B2E473900BD92FC = {
 						CreatedOnToolsVersion = 6.3.2;
 						TestTargetID = 22834A3C1737B5A50043F7DF;
+					};
+					2282E1D21C266D5600D53AB1 = {
+						DevelopmentTeam = 6LF3GMKZAB;
 					};
 					22834A3C1737B5A50043F7DF = {
 						DevelopmentTeam = 6LF3GMKZAB;
@@ -602,9 +581,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2282E1E41C266D5600D53AB1 /* LaunchScreen.xib in Resources */,
-				2282E1E51C266D5600D53AB1 /* LaunchImages.xcassets in Resources */,
 				2282E1F71C26ECEC00D53AB1 /* 1Password.xcassets in Resources */,
+				2253FE601F4EA3B100CE36D2 /* LaunchScreen.xib in Resources */,
+				2253FE611F4EA3C500CE36D2 /* LaunchImages.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,9 +591,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABC752F81C4FEB720093283B /* TOWebViewControllerLocalizable.strings in Resources */,
-				22E060791A3FD0C2001273DF /* LaunchScreen.xib in Resources */,
-				227B3CEF1BAECF95009AC60E /* LaunchImages.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -645,12 +621,12 @@
 				2282E1EE1C266EE100D53AB1 /* TOWebViewController+1Password.m in Sources */,
 				2282E1D41C266D5600D53AB1 /* TOActivityChrome.m in Sources */,
 				2282E2011C27138600D53AB1 /* NJKWebViewProgressView.m in Sources */,
-				2282E1D51C266D5600D53AB1 /* TOViewController.m in Sources */,
 				2282E1F81C26ECEC00D53AB1 /* OnePasswordExtension.m in Sources */,
 				2282E1D61C266D5600D53AB1 /* UIImage+TOWebViewControllerIcons.m in Sources */,
-				2282E1D81C266D5600D53AB1 /* TOAppDelegate.m in Sources */,
 				2282E1D91C266D5600D53AB1 /* TOActivitySafari.m in Sources */,
-				2282E1DA1C266D5600D53AB1 /* main.m in Sources */,
+				2253FE5F1F4EA39600CE36D2 /* main.m in Sources */,
+				2253FE5E1F4EA38A00CE36D2 /* TOViewController.m in Sources */,
+				2253FE5D1F4EA38700CE36D2 /* TOAppDelegate.m in Sources */,
 				2282E1DB1C266D5600D53AB1 /* TOWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -659,13 +635,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2253FE5A1F4EA2C800CE36D2 /* main.m in Sources */,
+				2253FE5C1F4EA2D500CE36D2 /* TOViewController.m in Sources */,
 				2282E1FE1C27138600D53AB1 /* NJKWebViewProgress.m in Sources */,
 				22AC285718E9920B006DB0E9 /* TOActivityChrome.m in Sources */,
-				227C55FA1750F1F900FC3411 /* TOViewController.m in Sources */,
 				22CB13C518E8158000B948D8 /* UIImage+TOWebViewControllerIcons.m in Sources */,
-				227C55F91750F1F800FC3411 /* TOAppDelegate.m in Sources */,
+				2253FE5B1F4EA2D300CE36D2 /* TOAppDelegate.m in Sources */,
 				22AC285418E98FE1006DB0E9 /* TOActivitySafari.m in Sources */,
-				227C55FB1750F20700FC3411 /* main.m in Sources */,
 				2282E2001C27138600D53AB1 /* NJKWebViewProgressView.m in Sources */,
 				22F922791753B15E0034FEF6 /* TOWebViewController.m in Sources */,
 			);
@@ -697,98 +673,106 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		221CE5CD18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE281F4EA20800CE36D2 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				221CE5CE18EEFC76002D89F5 /* de */,
+				2253FE291F4EA20800CE36D2 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		2253FE371F4EA22700CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2253FE381F4EA22700CE36D2 /* uk */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		221CE5D318EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE3A1F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				221CE5D418EEFC76002D89F5 /* es */,
+				2253FE3B1F4EA22800CE36D2 /* en */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		221CE5D618EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE3D1F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				221CE5D718EEFC76002D89F5 /* ja */,
+				2253FE3E1F4EA22800CE36D2 /* ko */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		221CE5D918EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE401F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				221CE5DA18EEFC76002D89F5 /* ko */,
+				2253FE411F4EA22800CE36D2 /* pl */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		221CE5DC18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE431F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				221CE5DD18EEFC76002D89F5 /* pl */,
+				2253FE441F4EA22800CE36D2 /* zh-Hant */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		221CE5DF18EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE461F4EA22800CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				221CE5E018EEFC76002D89F5 /* zh-Hans */,
+				2253FE471F4EA22800CE36D2 /* fr */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		221CE5E218EEFC76002D89F5 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE491F4EA22900CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				221CE5E318EEFC76002D89F5 /* zh-Hant */,
+				2253FE4A1F4EA22900CE36D2 /* ja */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		762BBB931A5DB8CF00FF22FC /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE4C1F4EA22900CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				762BBB941A5DB8CF00FF22FC /* fr */,
+				2253FE4D1F4EA22900CE36D2 /* zh-Hans */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		ABC752F61C4FEB720093283B /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE4F1F4EA22900CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				ABC752F71C4FEB720093283B /* it */,
+				2253FE501F4EA22900CE36D2 /* it */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		F66F5CB31B79DAFB0051B142 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE521F4EA22900CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F66F5CB41B79DAFB0051B142 /* en */,
+				2253FE531F4EA22900CE36D2 /* de */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		F66F5CB61B79DB080051B142 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE551F4EA22A00CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F66F5CB71B79DB080051B142 /* ru */,
+				2253FE561F4EA22A00CE36D2 /* es */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
 		};
-		F66F5CB91B79DB080051B142 /* TOWebViewControllerLocalizable.strings */ = {
+		2253FE581F4EA22A00CE36D2 /* TOWebViewControllerLocalizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F66F5CBA1B79DB080051B142 /* uk */,
+				2253FE591F4EA22A00CE36D2 /* ru */,
 			);
 			name = TOWebViewControllerLocalizable.strings;
 			sourceTree = "<group>";
@@ -863,9 +847,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 6LF3GMKZAB;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Example/TOWebViewControllerExample-Prefix.pch";
+				GCC_PREFIX_HEADER = "TOWebViewControllerExample/Supporting Files/TOWebViewControllerExample-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"TO_ONEPASSWORD_EXAMPLE=1",
 					"DEBUG=1",
@@ -888,9 +873,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 6LF3GMKZAB;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Example/TOWebViewControllerExample-Prefix.pch";
+				GCC_PREFIX_HEADER = "TOWebViewControllerExample/Supporting Files/TOWebViewControllerExample-Prefix.pch";
 				INFOPLIST_FILE = "TOWebViewController+1Password/OnePasswordExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.timoliver.${PRODUCT_NAME:rfc1034identifier}";
@@ -904,30 +890,46 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -938,22 +940,38 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -970,9 +988,9 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Example/TOWebViewControllerExample-Prefix.pch";
-				INFOPLIST_FILE = "$(SRCROOT)/Example/DefaultExample-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				GCC_PREFIX_HEADER = "TOWebViewControllerExample/Supporting Files/TOWebViewControllerExample-Prefix.pch";
+				INFOPLIST_FILE = "$(SRCROOT)/TOWebViewControllerExample/Supporting Files/DefaultExample-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				"OTHER_LDFLAGS[arch=*]" = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.timoliver.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -990,9 +1008,9 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Example/TOWebViewControllerExample-Prefix.pch";
-				INFOPLIST_FILE = "$(SRCROOT)/Example/DefaultExample-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				GCC_PREFIX_HEADER = "TOWebViewControllerExample/Supporting Files/TOWebViewControllerExample-Prefix.pch";
+				INFOPLIST_FILE = "$(SRCROOT)/TOWebViewControllerExample/Supporting Files/DefaultExample-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.timoliver.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1008,6 +1026,7 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
@@ -1044,6 +1063,7 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";

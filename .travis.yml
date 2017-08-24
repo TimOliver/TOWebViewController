@@ -1,5 +1,5 @@
 language: objective-c
-osx_image: xcode8
+osx_image: xcode8.3
 xcode_project: TOWebViewControllerExample.xcodeproj
 xcode_scheme: TOWebViewControllerTests
-script: xcodebuild -verbose -scheme TOWebViewControllerTests -sdk iphonesimulator -destination "name=iPhone SE" test
+script: xcodebuild -verbose -scheme TOWebViewControllerTests -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone SE,OS=latest' test

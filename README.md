@@ -92,4 +92,4 @@ iPad Air 2 and iPhone 6s Plus device mockups by [Pixeden](http://www.pixeden.com
 
 ## License
 
-TOWebViewController is licensed under the MIT License. For more information, please see the [LICENSE](LICENSE) file.
+TOWebViewController is licensed under the MIT License. For more information, please see the [LICENSE](LICENSE) file. ![analytics](https://ga-beacon.appspot.com/UA-5643664-16/TOWebViewController/README.md?pixel)

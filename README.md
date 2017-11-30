@@ -93,3 +93,8 @@ iPad Air 2 and iPhone 6s Plus device mockups by [Pixeden](http://www.pixeden.com
 ## License
 
 TOWebViewController is licensed under the MIT License. For more information, please see the [LICENSE](LICENSE) file. ![analytics](https://ga-beacon.appspot.com/UA-5643664-16/TOWebViewController/README.md?pixel)
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/TimOliver/TOWebViewController/badge.svg?style=beer-square)](https://beerpay.io/TimOliver/TOWebViewController)  [![Beerpay](https://beerpay.io/TimOliver/TOWebViewController/make-wish.svg?style=flat-square)](https://beerpay.io/TimOliver/TOWebViewController?focus=wish)

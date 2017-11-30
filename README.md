@@ -9,6 +9,9 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/TimOliver/TOWebViewController/master/LICENSE)
 [![Platform](https://img.shields.io/cocoapods/p/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)
+[![Beerpay](https://beerpay.io/TimOliver/TOWebViewController/badge.svg?style=flat)](https://beerpay.io/TimOliver/TOWebViewController)
+[![PayPal](https://img.shields.io/badge/paypal-donate-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M4RKULAVKV7K8)
+
 
 `TOWebViewController` is an open-source `UIViewController` subclass designed to let apps quickly present web page content to its users, without needing to kick them over to Safari. `TOWebViewController` has been designed from the ground up to be easily integrated into existing projects, to take advantage of the latest features of iOS, and to optionally be backwards compatible with (significantly) earlier versions of iOS.
 
@@ -93,8 +96,3 @@ iPad Air 2 and iPhone 6s Plus device mockups by [Pixeden](http://www.pixeden.com
 ## License
 
 TOWebViewController is licensed under the MIT License. For more information, please see the [LICENSE](LICENSE) file. ![analytics](https://ga-beacon.appspot.com/UA-5643664-16/TOWebViewController/README.md?pixel)
-
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/TimOliver/TOWebViewController/badge.svg?style=beer-square)](https://beerpay.io/TimOliver/TOWebViewController)  [![Beerpay](https://beerpay.io/TimOliver/TOWebViewController/make-wish.svg?style=flat-square)](https://beerpay.io/TimOliver/TOWebViewController?focus=wish)

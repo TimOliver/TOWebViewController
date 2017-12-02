@@ -794,6 +794,13 @@
     return shouldStart;
 }
 
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    //If a request handler has been set, check to see if we should go ahead
+    if (self.didFailLoadWithErrorRequestHandler)
+        return self.didFailLoadWithErrorRequestHandler(error);
+}
+
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
     //show that loading started in the status bar

@@ -169,6 +169,11 @@
 @property (nonatomic,copy)      BOOL (^shouldStartLoadRequestHandler)(NSURLRequest *request, UIWebViewNavigationType navigationType);
 
 /**
+ An optional block that when set, will be triggered if the web view failed to load a frame.
+ */
+@property (nonatomic,copy)      void (^didFailLoadWithErrorRequestHandler)(NSError *error);
+
+/**
 An optional block that when set, will be triggered each time the web view has finished a load operation.
 */
 @property (nonatomic,copy)      void (^didFinishLoadHandler)(UIWebView *webView);

@@ -221,6 +221,7 @@
     _showLoadingBar   = YES;
     _showUrlWhileLoading = YES;
     _showPageTitles   = YES;
+    _showPageHost   = NO;
     _initialLoad      = YES;
     
     _progressManager = [[NJKWebViewProgress alloc] init];
@@ -779,6 +780,20 @@
     [self refreshButtonsState];
 }
 
+- (void)setShowPageHost:(BOOL)showPageHost {
+    _showPageHost = showPageHost;
+    if (_showPageHost && _showPageTitles) {
+        _showPageTitles = NO;
+    }
+}
+
+- (void)setShowPageTitles:(BOOL)showPageTitles {
+    _showPageTitles = showPageTitles;
+    if (_showPageTitles && _showPageHost) {
+        _showPageHost = NO;
+    }
+}
+
 #pragma mark -
 #pragma mark WebView Delegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -835,6 +850,11 @@
             
             if (title.length)
                 self.title = title;
+        } else if (self.showPageHost) {
+            NSString *host = [self.webView stringByEvaluatingJavaScriptFromString:@"window.location.hostname"];
+            if (host.length) {
+                self.title = [self shortenHostname:host];
+            }
         }
         
         //if we're matching the view BG to the web view, update the background colour now
@@ -847,6 +867,15 @@
     }
     
     [self refreshButtonsState];
+}
+
+- (NSString *)shortenHostname:(NSString *)hostname {
+    if (hostname && hostname.length) {
+        if ([hostname hasPrefix:@"www"]) {
+            return [hostname substringFromIndex:4];
+        }
+    }
+    return hostname;
 }
 
 #pragma mark -
@@ -893,11 +922,8 @@
 - (void)showPlaceholderTitle
 {
     //set the title to the URL until we load the page properly
-    if (self.url && self.showPageTitles && self.showUrlWhileLoading) {
-        NSString *url = [_url absoluteString];
-        url = [url stringByReplacingOccurrencesOfString:@"http://" withString:@""];
-        url = [url stringByReplacingOccurrencesOfString:@"https://" withString:@""];
-        self.title = url;
+    if (self.url && (self.showPageTitles || self.showPageHost) && self.showUrlWhileLoading) {
+        self.title = [self shortenHostname:_url.host];
     }
     else if (self.showPageTitles) {
         self.title = NSLocalizedStringFromTable(@"Loading...", @"TOWebViewControllerLocalizable", @"Loading...");

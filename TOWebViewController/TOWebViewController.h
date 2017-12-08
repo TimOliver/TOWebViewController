@@ -141,6 +141,13 @@
  */
 @property (nonatomic,assign)    BOOL showPageTitles;
 
+/**
+ View controller's title property will be set to the page's host. www prefix will be stripped
+ 
+ Default value is NO.
+ */
+@property (nonatomic,assign)    BOOL showPageHost;
+
 /** 
  Disables the contextual popups that can appear when the user taps and holds on a page link.
  

@@ -258,11 +258,11 @@
     //Create the web view
     self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     self.webView.delegate = self.progressManager;
-    self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.backgroundColor = [UIColor clearColor];
+    self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.scalesPageToFit = YES;
     self.webView.contentMode = UIViewContentModeRedraw;
-    self.webView.opaque = YES;
+    self.webView.opaque = NO; // Must  be NO to avoid the initial black bars
     [self.view addSubview:self.webView];
 
     CGFloat progressBarHeight = LOADING_BAR_HEIGHT;
@@ -421,6 +421,8 @@
     return UIStatusBarStyleDefault;
 }
 
+- (BOOL)prefersStatusBarHidden { return NO; }
+
 #pragma mark - Screen Rotation Interface -
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
@@ -500,6 +502,18 @@
 }
 
 #pragma mark - View Layout/Transitions -
+- (void)viewDidLayoutSubviews
+{
+    // For some reason, the web pages were being inset correctly on iOS 11.2
+    // This brute forces the content inset to make sure it's being set each time
+    if (@available(iOS 11.0, *)) {
+        UIEdgeInsets insets = UIEdgeInsetsZero;
+        insets.top = CGRectGetMaxY(self.navigationBar.frame);
+        self.webView.scrollView.contentInset = insets;
+        self.webView.scrollView.scrollIndicatorInsets = insets;
+    }
+}
+
 - (void)layoutButtonsForCurrentSizeClass
 {
     [self.navigationController setToolbarHidden:(!self.compactPresentation || self.navigationButtonsHidden) animated:NO];
@@ -825,7 +839,8 @@
     [self refreshButtonsState];
 }
 
--(void)webViewDidFinishLoad:(UIWebView *)webView{
+-(void)webViewDidFinishLoad:(UIWebView *)webView
+{
     if(self.didFinishLoadHandler){
         self.didFinishLoadHandler(webView);
     }
@@ -835,6 +850,12 @@
 -(void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
 {
     [self.progressView setProgress:progress animated:YES];
+    
+    // Once loading has started, the black bars bug in UIWebView will be gone, so we can
+    // swap back to opaque for performance
+    if (self.webView.opaque == NO) {
+        self.webView.opaque = YES;
+    }
     
     //Query the webview to see what load state JavaScript perceives it at
     NSString *readyState = [self.webView stringByEvaluatingJavaScriptFromString:@"document.readyState"];

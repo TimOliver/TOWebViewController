@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'TOWebViewController'
-  s.version  = '2.2.6'
+  s.version  = '2.2.7'
   s.license  =  { :type => 'MIT', :file => 'LICENSE' }
   s.summary  = 'An inline browser view controller that allows users to view and navigate web pages from within an app.'
   s.homepage = 'https://github.com/TimOliver/TOWebViewController'

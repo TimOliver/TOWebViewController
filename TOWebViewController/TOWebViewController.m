@@ -502,18 +502,6 @@
 }
 
 #pragma mark - View Layout/Transitions -
-- (void)viewDidLayoutSubviews
-{
-    // For some reason, the web pages were being inset correctly on iOS 11.2
-    // This brute forces the content inset to make sure it's being set each time
-    if (@available(iOS 11.0, *)) {
-        UIEdgeInsets insets = UIEdgeInsetsZero;
-        insets.top = CGRectGetMaxY(self.navigationBar.frame);
-        self.webView.scrollView.contentInset = insets;
-        self.webView.scrollView.scrollIndicatorInsets = insets;
-    }
-}
-
 - (void)layoutButtonsForCurrentSizeClass
 {
     [self.navigationController setToolbarHidden:(!self.compactPresentation || self.navigationButtonsHidden) animated:NO];

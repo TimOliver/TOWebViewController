@@ -62,6 +62,7 @@
 #pragma mark Hidden Properties/Methods
 @interface TOWebViewController () <UIActionSheetDelegate,
                                    UIPopoverControllerDelegate,
+                                   CAAnimationDelegate,
                                    MFMailComposeViewControllerDelegate,
                                    MFMessageComposeViewControllerDelegate,
                                    NJKWebViewProgressDelegate,CAAnimationDelegate>

@@ -501,7 +501,7 @@
     
     return !(viewHeight == screenHeight && viewWidth == screenWidth);
 }
-
+/*
 #pragma mark - View Layout/Transitions -
 - (void)viewDidLayoutSubviews
 {
@@ -516,7 +516,7 @@
         }
     }
 }
-
+*/
 - (void)layoutButtonsForCurrentSizeClass
 {
     [self.navigationController setToolbarHidden:(!self.compactPresentation || self.navigationButtonsHidden) animated:NO];

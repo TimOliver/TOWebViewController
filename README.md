@@ -98,7 +98,7 @@ That being said, if you are still targeting lower iOS versions, or require more 
 
 Thanks also goes to `TOWebViewController`'s growing list of [contributors](https://github.com/TimOliver/TOWebViewController/graphs/contributors)!
 
-iPad Air 2 and iPhone 6s Plus device mockups by [Pixeden](http://www.pixeden.com).
+iPad Pro and iPhone X device mockups by [Pixeden](http://www.pixeden.com). [iPod touch mockup](https://dribbble.com/shots/1129682-iPod-touch-5G-PSD-Template) by Tim Oliver.
 
 ## License
 

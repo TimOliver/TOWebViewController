@@ -11,6 +11,7 @@
 [![Platform](https://img.shields.io/cocoapods/p/TOWebViewController.svg?style=flat)](http://cocoadocs.org/docsets/TOWebViewController)
 [![Beerpay](https://beerpay.io/TimOliver/TOWebViewController/badge.svg?style=flat)](https://beerpay.io/TimOliver/TOWebViewController)
 [![PayPal](https://img.shields.io/badge/paypal-donate-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M4RKULAVKV7K8)
+[![Twitch](https://img.shields.io/badge/twitch-timXD-6441a5.svg)](http://twitch.tv/timXD)
 
 
 `TOWebViewController` is an open-source `UIViewController` subclass designed to let apps quickly present web page content to its users, without needing to kick them over to Safari. `TOWebViewController` has been designed from the ground up to be easily integrated into existing projects, to take advantage of the latest features of iOS, and to optionally be backwards compatible with (significantly) earlier versions of iOS.

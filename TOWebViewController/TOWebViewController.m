@@ -398,6 +398,9 @@
 }
 
 #pragma mark - Screen Rotation Interface -
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     if (self.webViewRotationSnapshot)
@@ -425,6 +428,7 @@
 {
     [self restoreWebViewFromRotationFromOrientation:fromInterfaceOrientation];
 }
+#pragma clang diagnostic pop
 
 #pragma mark -
 #pragma mark State Tracking

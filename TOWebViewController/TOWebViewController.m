@@ -113,6 +113,9 @@
 /* Theming attributes for generating navigation button art. */
 @property (nonatomic,strong) NSMutableDictionary *buttonThemeAttributes;
 
+/* The content inset of the webview scroll view */
+@property (nonatomic, readonly) UIEdgeInsets scrollViewContentInsets;
+
 /* Popover View Controller Handlers */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -125,46 +128,8 @@
 @property (nonatomic,assign) BOOL hideNavBarOnClose;
 /* See if the navigation controller state is captured, to make sure the state is captured only once */
 @property (nonatomic,assign) BOOL capturedNavigationControllerState;
-
+/* First time the view controller has been loaded. */
 @property (nonatomic, assign) BOOL initialLoad;
-
-/* Perform all common setup steps */
-- (void)setup;
-
-- (NSURL *)cleanURL:(NSURL *)url;
-
-/* Init and configure various sections of the controller */
-- (void)setUpNavigationButtons;
-
-/* Review the current state of the web view and update the UI controls in the nav bar to match it */
-- (void)refreshButtonsState;
-- (void)layoutButtonsForCurrentSizeClass;
-- (void)showPlaceholderTitle;
-
-/* Event callbacks for button taps */
-- (void)backButtonTapped:(id)sender;
-- (void)forwardButtonTapped:(id)sender;
-- (void)reloadStopButtonTapped:(id)sender;
-- (void)actionButtonTapped:(id)sender;
-- (void)doneButtonTapped:(id)sender;
-
-/* Event handlers for items in the 'action' popup */
-- (void)copyURLToClipboard;
-- (void)openInBrowser;
-- (void)openMailDialog;
-- (void)openMessageDialog;
-- (void)openTwitterDialog;
-
-/* Methods to contain all of the functionality needed to properly animate the UIWebView rotating */
-- (CGRect)rectForVisibleRegionOfWebViewAnimatingToOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
-- (void)setUpWebViewForRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
-- (void)animateWebViewRotationToOrientation:(UIInterfaceOrientation)toOrientation withDuration:(NSTimeInterval)duration;
-- (void)restoreWebViewFromRotationFromOrientation:(UIInterfaceOrientation)fromOrientation;
-
-/* Methods to derive state information from the web view */
-- (UIView *)webViewContentView;             //pull out the actual UIView used to display the web content so we can render a snapshot from it
-- (BOOL)webViewPageWidthIsDynamic;          //The page will rescale its own content if the web view frame is changed (ie DON'T play a zooming animation)
-- (UIColor *)webViewPageBackgroundColor;    //try and determine the background colour of the current page
 
 @end
 
@@ -264,6 +229,9 @@
     self.webView.scalesPageToFit = YES;
     self.webView.contentMode = UIViewContentModeRedraw;
     self.webView.opaque = NO; // Must  be NO to avoid the initial black bars
+    if (@available(iOS 11.0, *)) {
+        self.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAutomatic;
+    }
     [self.view addSubview:self.webView];
 
     CGFloat progressBarHeight = LOADING_BAR_HEIGHT;
@@ -271,13 +239,14 @@
     CGRect barFrame = CGRectMake(0, navigationBarBounds.size.height - progressBarHeight, navigationBarBounds.size.width, progressBarHeight);
     self.progressView = [[NJKWebViewProgressView alloc] initWithFrame:barFrame];
     self.progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    if (self.loadingBarTintColor)
+    if (self.loadingBarTintColor) {
         self.progressView.progressBarView.backgroundColor = self.loadingBarTintColor;
-    
+    }
     
     //only load the buttons if we need to
-    if (self.navigationButtonsHidden == NO)
+    if (self.navigationButtonsHidden == NO) {
         [self setUpNavigationButtons];
+    }
 }
 
 - (void)setUpNavigationButtons
@@ -422,8 +391,6 @@
     return UIStatusBarStyleDefault;
 }
 
-- (BOOL)prefersStatusBarHidden { return NO; }
-
 #pragma mark - Screen Rotation Interface -
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
@@ -503,20 +470,6 @@
 }
 
 #pragma mark - View Layout/Transitions -
-- (void)viewDidLayoutSubviews
-{
-    // For some reason, the web pages were being inset correctly on iOS 11.2
-    // This brute forces the content inset to make sure it's being set each time
-    if (@available(iOS 11.0, *)) {
-        if (self.tabBarController == nil) {
-            UIEdgeInsets insets = UIEdgeInsetsZero;
-            insets.top = CGRectGetMaxY(self.navigationBar.frame);
-            self.webView.scrollView.contentInset = insets;
-            self.webView.scrollView.scrollIndicatorInsets = insets;
-        }
-    }
-}
-
 - (void)layoutButtonsForCurrentSizeClass
 {
     [self.navigationController setToolbarHidden:(!self.compactPresentation || self.navigationButtonsHidden) animated:NO];
@@ -648,8 +601,9 @@
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     //Necessary to forcibly hide/show the toolbar at this point, or else the translucency will screw up.  :(
-    if (!self.navigationButtonsHidden)
+    if (!self.navigationButtonsHidden) {
         self.navigationController.toolbarHidden = newCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact;
+    }
 }
 
 #pragma mark -
@@ -797,7 +751,8 @@
     [self refreshButtonsState];
 }
 
-- (void)setShowPageHost:(BOOL)showPageHost {
+- (void)setShowPageHost:(BOOL)showPageHost
+{
     _showPageHost = showPageHost;
     if (_showPageHost && _showPageTitles) {
         _showPageTitles = NO;
@@ -811,6 +766,15 @@
     }
 }
 
+- (UIEdgeInsets)scrollViewContentInsets
+{
+    if (@available(iOS 11.0, *)) {
+        return self.webView.scrollView.adjustedContentInset;
+    }
+    
+    return self.webView.scrollView.contentInset;
+}
+
 #pragma mark -
 #pragma mark WebView Delegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -818,19 +782,19 @@
     BOOL shouldStart = YES;
     
     //If a request handler has been set, check to see if we should go ahead
-    if (self.shouldStartLoadRequestHandler)
+    if (self.shouldStartLoadRequestHandler) {
         shouldStart = self.shouldStartLoadRequestHandler(request, navigationType);
-    
-    //TODO: Implement TOModalWebViewController Delegate callback
-    
+    }
+        
     return shouldStart;
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     //If a request handler has been set, check to see if we should go ahead
-    if (self.didFailLoadWithErrorRequestHandler)
+    if (self.didFailLoadWithErrorRequestHandler) {
         return self.didFailLoadWithErrorRequestHandler(error);
+    }
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
@@ -844,7 +808,7 @@
 
 -(void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    if(self.didFinishLoadHandler){
+    if (self.didFinishLoadHandler) {
         self.didFinishLoadHandler(webView);
     }
 }
@@ -1260,27 +1224,32 @@
                                 @"})()";
     
     NSString *pageViewPortContent = [self.webView stringByEvaluatingJavaScriptFromString:metaDataQuery];
-    if ([pageViewPortContent length] == 0)
+    if ([pageViewPortContent length] == 0) {
         return NO;
+    }
     
     //remove all white space and make sure it's all lower case
     pageViewPortContent = [[pageViewPortContent stringByReplacingOccurrencesOfString:@" " withString:@""] lowercaseString];
     
     //check if the max page zoom is locked at 1
-    if ([pageViewPortContent rangeOfString:@"maximum-scale=1"].location != NSNotFound)
+    if ([pageViewPortContent rangeOfString:@"maximum-scale=1"].location != NSNotFound) {
         return YES;
+    }
     
     //check if zooming is intentionally disabled
-    if ([pageViewPortContent rangeOfString:@"user-scalable=no"].location != NSNotFound)
+    if ([pageViewPortContent rangeOfString:@"user-scalable=no"].location != NSNotFound) {
         return YES;
+    }
     
     //check if width is set to align to the width of the device
-    if ([pageViewPortContent rangeOfString:@"width=device-width"].location != NSNotFound)
+    if ([pageViewPortContent rangeOfString:@"width=device-width"].location != NSNotFound) {
         return YES;
+    }
     
     //check if initial scale is being forced (Apple seem to blanket apply this in Safari)
-    if ([pageViewPortContent rangeOfString:@"initial-scale=1"].location != NSNotFound)
+    if ([pageViewPortContent rangeOfString:@"initial-scale=1"].location != NSNotFound) {
         return YES;
+    }
     
     return NO;
 }
@@ -1334,7 +1303,7 @@
     CGPoint contentOffset   = self.webView.scrollView.contentOffset;
     CGSize  webViewSize     = self.webView.bounds.size;
     CGSize  contentSize     = self.webView.scrollView.contentSize;
-    CGFloat topInset        = self.webView.scrollView.contentInset.top;
+    CGFloat topInset        = self.scrollViewContentInsets.top;
     
     //we're in portrait now, target orientation is landscape
     //(So since we're zooming in, we don't need to worry about content outside the visible boundaries)
@@ -1378,7 +1347,7 @@
             rect.origin = contentOffset;
             if (contentOffset.y + heightInPortraitMode > contentSize.height) {
                 rect.origin.y = contentSize.height - heightInPortraitMode;
-                rect.origin.y = MAX(rect.origin.y, -self.webView.scrollView.contentInset.top);
+                rect.origin.y = MAX(rect.origin.y, -self.scrollViewContentInsets.top);
             }
             
             rect.size.width = webViewSize.width;
@@ -1448,8 +1417,8 @@
     _webViewState.contentOffset     = self.webView.scrollView.contentOffset;
     _webViewState.minimumZoomScale  = self.webView.scrollView.minimumZoomScale;
     _webViewState.maximumZoomScale  = self.webView.scrollView.maximumZoomScale;
-    _webViewState.topEdgeInset      = self.webView.scrollView.contentInset.top;
-    _webViewState.bottomEdgeInset   = self.webView.scrollView.contentInset.bottom;
+    _webViewState.topEdgeInset      = self.scrollViewContentInsets.top;
+    _webViewState.bottomEdgeInset   = self.scrollViewContentInsets.bottom;
     
     UIView  *webContentView         = [self webViewContentView];
     UIColor *pageBackgroundColor    = [self webViewPageBackgroundColor];
@@ -1575,8 +1544,9 @@
     }
     
     // form sheet style controllers' bounds don't change, so implemeting this is rather pointless
-    if (!self.compactPresentation && self.modalPresentationStyle == UIModalPresentationFormSheet)
+    if (!self.compactPresentation && self.modalPresentationStyle == UIModalPresentationFormSheet) {
         return;
+    }
     
     //remove all animations presently applied to the web view
     [self.webView.layer removeAllAnimations];
@@ -1586,8 +1556,7 @@
     CGRect frame = self.webView.bounds;
     
     //We only need to scale/translate the image view if the web page has a static width
-    if ([self webViewPageWidthIsDynamic] == NO)
-    {
+    if ([self webViewPageWidthIsDynamic] == NO) {
         CGFloat scale = CGRectGetHeight(self.webViewRotationSnapshot.frame)/CGRectGetWidth(self.webViewRotationSnapshot.frame);
         frame.size.height = CGRectGetWidth(frame) * scale;
         
@@ -1605,10 +1574,10 @@
             
             //adjust as needed to fit the top or bottom
             if (topContentOffset < -_webViewState.topEdgeInset) { //re-align to the top
-                frame.origin.y = self.webView.scrollView.contentInset.top;
+                frame.origin.y = self.scrollViewContentInsets.top;
             }
             else if (bottomContentOffset > _webViewState.contentSize.height) { // re-align along the bottom
-                frame.origin.y = (CGRectGetMaxY(self.webView.frame) - (CGRectGetHeight(frame) + self.webView.scrollView.contentInset.bottom));
+                frame.origin.y = (CGRectGetMaxY(self.webView.frame) - (CGRectGetHeight(frame) + self.scrollViewContentInsets.bottom));
             }
             else { //position the webview in the center
                 frame.origin.y = ((destinationBoundsHeight*0.5f) - (CGRectGetHeight(frame)*0.5f));
@@ -1621,7 +1590,7 @@
             }
         }
         else {
-            frame.origin.y = self.webView.scrollView.contentInset.top;
+            frame.origin.y = self.scrollViewContentInsets.top;
         }
     }
     else {
@@ -1629,18 +1598,23 @@
         if (_webViewState.contentOffset.y < 0.0f) {
             CGFloat delta = _webViewState.topEdgeInset - (_webViewState.topEdgeInset + _webViewState.contentOffset.y);
             
-            if (UIInterfaceOrientationIsLandscape(toOrientation))
-                frame.origin.y += delta - (_webViewState.topEdgeInset - self.webView.scrollView.contentInset.top);
-            else
-                frame.origin.y -= (_webViewState.topEdgeInset - self.webView.scrollView.contentInset.top);
+            if (UIInterfaceOrientationIsLandscape(toOrientation)) {
+                frame.origin.y += delta - (_webViewState.topEdgeInset - self.scrollViewContentInsets.top);
+            }
+            else {
+                frame.origin.y -= (_webViewState.topEdgeInset - self.scrollViewContentInsets.top);
+            }
         }
         
+        CGFloat delta = (_webViewState.topEdgeInset - self.scrollViewContentInsets.top);
+        frame.origin.y -= delta;
+        
         //ensure the image view stays horizontally aligned to the center when we rotate back to portrait
-        if (UIInterfaceOrientationIsPortrait(toOrientation))
+        if (UIInterfaceOrientationIsPortrait(toOrientation)) {
             frame.origin.x = floor(CGRectGetWidth(self.view.bounds) * 0.5f) - (CGRectGetWidth(self.webViewRotationSnapshot.frame) * 0.5f);
+        }
     }
-    
-    
+
     self.webViewRotationSnapshot.frame = frame;
 }
 
@@ -1702,8 +1676,8 @@
     //if the page is a mobile site, just re-add the original content offset. It'll size itself properly
     if ([self webViewPageWidthIsDynamic])
     {
-        //adjust the offset for any UINavigationBar size changess
-        CGFloat delta = (_webViewState.topEdgeInset - self.webView.scrollView.contentInset.top);
+        //adjust the offset for any UINavigationBar size changes
+        CGFloat delta = (_webViewState.topEdgeInset - self.scrollViewContentInsets.top);
         translatedContentOffset.y += delta;
     }
     else //else, determine the magnitude we zoomed in/out by and translate the scroll offset to line it up properly
@@ -1718,7 +1692,7 @@
         if ((_webViewState.contentOffset.y + _webViewState.topEdgeInset) > FLT_EPSILON)
         {
             
-            if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+            if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
                 translatedContentOffset.y += (CGRectGetHeight(self.webViewRotationSnapshot.frame)*0.5f) - (CGRectGetHeight(self.webView.frame)*0.5f);
             }
             else {
@@ -1730,23 +1704,25 @@
                 CGFloat bottomContentOffset = webViewOffsetOrigin + (destinationHeight * 0.5f); // the bottom offset
                 
                 //If our original state meant we clipped the bottom of the scroll view, just clamp it to the bottom
-                if (bottomContentOffset > _webViewState.contentSize.height)
-                    translatedContentOffset.y = self.webView.scrollView.contentSize.height - (CGRectGetHeight(self.webView.frame)) + self.webView.scrollView.contentInset.top;
-                else
+                if (bottomContentOffset > _webViewState.contentSize.height) {
+                    translatedContentOffset.y = self.webView.scrollView.contentSize.height - (CGRectGetHeight(self.webView.frame)) + self.scrollViewContentInsets.top;
+                }
+                else {
                     translatedContentOffset.y -= (CGRectGetHeight(self.webView.frame)*0.5f) - (((_webViewState.frameSize.height*magnitude)*0.5f));
+                }
             }
         }
         else { //otherwise, just reset the origin to the top
-            translatedContentOffset.y = -self.webView.scrollView.contentInset.top;
+            translatedContentOffset.y = -self.scrollViewContentInsets.top;
         }
     }
     
     //clamp it to the actual scroll region
-    translatedContentOffset.x = MAX(translatedContentOffset.x, -self.webView.scrollView.contentInset.left);
+    translatedContentOffset.x = MAX(translatedContentOffset.x, -self.scrollViewContentInsets.left);
     translatedContentOffset.x = MIN(translatedContentOffset.x, contentSize.width - CGRectGetWidth(self.webView.frame));
     
-    translatedContentOffset.y = MAX(translatedContentOffset.y, -self.webView.scrollView.contentInset.top);
-    translatedContentOffset.y = MIN(translatedContentOffset.y, contentSize.height - (CGRectGetHeight(self.webView.frame) - self.webView.scrollView.contentInset.bottom));
+    translatedContentOffset.y = MAX(translatedContentOffset.y, -self.scrollViewContentInsets.top);
+    translatedContentOffset.y = MIN(translatedContentOffset.y, contentSize.height - (CGRectGetHeight(self.webView.frame) - self.scrollViewContentInsets.bottom));
     
     //apply the translated offset (Thankfully, this one doens't have to be animated in order to work properly)
     [self.webView.scrollView setContentOffset:translatedContentOffset animated:NO];

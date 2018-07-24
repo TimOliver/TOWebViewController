@@ -1,7 +1,7 @@
 # TOWebViewController
 ### An Inline Web Browser for iOS Apps
 
-![TOWebViewController](Screenshots/TOWebViewController-2015.jpg)
+![TOWebViewController](Screenshots/TOWebViewController-2018.jpg)
 
 [![CI Status](http://img.shields.io/travis/TimOliver/TOWebViewController.svg?style=flat)](http://api.travis-ci.org/TimOliver/TOWebViewController.svg)
 [![CocoaPods](https://img.shields.io/cocoapods/dt/TOWebViewController.svg?maxAge=3600)](https://cocoapods.org/pods/TOWebViewController)

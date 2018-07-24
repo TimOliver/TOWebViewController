@@ -1,3 +1,9 @@
+
+#### Deprecation Notice
+*With the announcement of iOS 12, [`UIWebView`](https://developer.apple.com/documentation/uikit/uiwebview) is now officially deprecated. Since this library relies on UIWebView, it has now effectively been rendered obsolete by Apple.*
+
+*This library will continue to be maintained as long as developers are still supporting older versions of iOS, but no new features will be added.*
+
 # TOWebViewController
 ### An Inline Web Browser for iOS Apps
 
@@ -12,7 +18,6 @@
 [![Beerpay](https://beerpay.io/TimOliver/TOWebViewController/badge.svg?style=flat)](https://beerpay.io/TimOliver/TOWebViewController)
 [![PayPal](https://img.shields.io/badge/paypal-donate-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M4RKULAVKV7K8)
 [![Twitch](https://img.shields.io/badge/twitch-timXD-6441a5.svg)](http://twitch.tv/timXD)
-
 
 `TOWebViewController` is an open-source `UIViewController` subclass designed to let apps quickly present web page content to its users, without needing to kick them over to Safari. `TOWebViewController` has been designed from the ground up to be easily integrated into existing projects, to take advantage of the latest features of iOS, and to optionally be backwards compatible with (significantly) earlier versions of iOS.
 

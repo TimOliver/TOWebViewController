@@ -1,5 +1,5 @@
 
-#### Deprecation Notice
+# Deprecation Notice
 *With the announcement of iOS 12, [`UIWebView`](https://developer.apple.com/documentation/uikit/uiwebview) is now officially deprecated. Since this library relies on UIWebView, it has now effectively been rendered obsolete by Apple.*
 
 *This library will continue to be maintained as long as developers are still supporting older versions of iOS, but no new features will be added.*

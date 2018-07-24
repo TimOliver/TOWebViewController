@@ -168,6 +168,12 @@
     return [self initWithURL:[NSURL URLWithString:urlString]];
 }
 
+#pragma mark - Class Cleanup -
+- (void)dealloc
+{
+    self.webView.delegate = nil;
+}
+
 #pragma mark - Setup -
 - (NSURL *)cleanURL:(NSURL *)url
 {

@@ -4,6 +4,8 @@
 
 *This library will continue to be maintained as long as developers are still supporting older versions of iOS, but no new features will be added.*
 
+---
+
 # TOWebViewController
 ### An Inline Web Browser for iOS Apps
 

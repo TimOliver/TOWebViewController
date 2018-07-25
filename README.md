@@ -81,7 +81,7 @@ After that, you'll need to link the following system frameworks to your project:
 * Twitter.framework
 
 ## Why no `WKWebView` adoption?
-This library was built around iOS 5, with the explicit goal of supporting as many versions of iOS as possible. While there were some experiments in trying to drop `WKWebView` into this controller as an option for devices running iOS 8 and above, its API is so inherantly different to `UIWebView` that it would be very challenging to properly support switching between the two. As a result, the best option would be to write a new web view controller from scratch, designed around `WKWebView`.
+This library was originally built around iOS 5, with the explicit goal of supporting as many versions of iOS as possible. While there were some experiments in trying to drop `WKWebView` into this controller as an option for devices running iOS 8 and above, its API is so inherantly different to `UIWebView` that it would be very challenging to properly support switching between the two. As a result, the best option would be to write a new web view controller from scratch, designed around `WKWebView`.
 
 `TOWebViewController` will not be adopting `WKWebView` at any point in the future. If you would like an alternative view controller that does, please give [DZNWebViewController](https://github.com/dzenbot/DZNWebViewController) a try!
 

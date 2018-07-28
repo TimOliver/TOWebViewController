@@ -568,16 +568,19 @@
     NSMutableArray *leftItems = self.applicationLeftBarButtonItems ? [NSMutableArray arrayWithArray:self.navigationItem.leftBarButtonItems] : [NSMutableArray array];
     
     NSMutableArray *rightItems = [NSMutableArray array];
-    UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixedSpace.width = NAVIGATION_ICON_SPACING;
+    UIBarButtonItem *(^fixedSpace)(void) = ^{
+        UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        fixedSpace.width = NAVIGATION_ICON_SPACING;
+        return fixedSpace;
+    };
     
     if (modal) {
-        if (self.backButton)        { [leftItems addObject:self.backButton];        [leftItems addObject:fixedSpace]; }
-        if (self.forwardButton)     { [leftItems addObject:self.forwardButton];     [leftItems addObject:fixedSpace]; }
-        if (self.reloadStopButton)  { [leftItems addObject:self.reloadStopButton];  [leftItems addObject:fixedSpace]; }
+        if (self.backButton)        { [leftItems addObject:self.backButton];        [leftItems addObject:fixedSpace()]; }
+        if (self.forwardButton)     { [leftItems addObject:self.forwardButton];     [leftItems addObject:fixedSpace()]; }
+        if (self.reloadStopButton)  { [leftItems addObject:self.reloadStopButton]; }
         
-        if (self.doneButton)        { [rightItems addObject:self.doneButton];       [rightItems addObject:fixedSpace]; }
-        if (self.actionButton)      { [rightItems addObject:self.actionButton];     [rightItems addObject:fixedSpace]; }
+        if (self.doneButton)        { [rightItems addObject:self.doneButton];       [rightItems addObject:fixedSpace()]; }
+        if (self.actionButton)      { [rightItems addObject:self.actionButton];     [rightItems addObject:fixedSpace()]; }
         
         for (UIBarButtonItem *item in self.applicationBarButtonItems) {
             [rightItems addObject:item];
@@ -586,15 +589,15 @@
     }
     else {
         [leftItems addObject:fixedSpace];
-        if (self.actionButton)      { [leftItems addObject:self.actionButton];      [leftItems addObject:fixedSpace]; }
+        if (self.actionButton)      { [leftItems addObject:self.actionButton];}
         
-        if (self.reloadStopButton)  { [rightItems addObject:self.reloadStopButton]; [rightItems addObject:fixedSpace]; }
-        if (self.forwardButton)     { [rightItems addObject:self.forwardButton];    [rightItems addObject:fixedSpace]; }
-        if (self.backButton)        { [rightItems addObject:self.backButton];       [rightItems addObject:fixedSpace]; }
+        if (self.reloadStopButton)  { [rightItems addObject:self.reloadStopButton]; [rightItems addObject:fixedSpace()]; }
+        if (self.forwardButton)     { [rightItems addObject:self.forwardButton];    [rightItems addObject:fixedSpace()]; }
+        if (self.backButton)        { [rightItems addObject:self.backButton];       [rightItems addObject:fixedSpace()]; }
         
         for (UIBarButtonItem *item in self.applicationBarButtonItems) {
             [leftItems addObject:item];
-            [leftItems addObject:fixedSpace];
+            [leftItems addObject:fixedSpace()];
         }
     }
     

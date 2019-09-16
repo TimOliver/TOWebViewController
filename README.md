@@ -1,7 +1,7 @@
 
-*With the announcement of iOS 12, [`UIWebView`](https://developer.apple.com/documentation/uikit/uiwebview) is now officially deprecated. Since this library relies on UIWebView, it has now effectively been rendered obsolete by Apple.*
+*With the announcement of iOS 12, [`UIWebView`](https://developer.apple.com/documentation/uikit/uiwebview) is now officially deprecated. As of iOS 13, Apple have started rejecting apps that implement `UIWebView`, rendering this library completely defunct.* 
 
-*This library will continue to be maintained as long as developers are still supporting older versions of iOS, but no new features will be added.*
+*This library will be left up for developers who may still need to support iOS 7, but no new features will be added, nor will support be provided. Stay tuned. Plans for a `WKWebView` version are in the making. :D*
 
 ---
 
